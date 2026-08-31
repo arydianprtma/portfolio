@@ -1,26 +1,95 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
     --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground: #f5f5f5;
+    --muted: #777777;
+    --accent: #e31b23;
+    --accent-glow: rgba(227, 27, 35, 0.25);
+    --border: #222222;
+    --border-light: #333333;
+    --surface: #121212;
+    --surface-hover: #181818;
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: #ffffff;
   }
 }
 
-body {
-  background: var(--background);
+/* Custom Typography & Utility Classes */
+.font-display {
+  font-family: var(--font-display), sans-serif;
+}
+
+.font-mono {
+  font-family: var(--font-mono), monospace;
+}
+
+/* Outline Typography */
+.text-outline-stroke {
+  -webkit-text-stroke: 1px rgba(245, 245, 245, 0.35);
+  color: transparent;
+  transition: -webkit-text-stroke 0.3s ease, color 0.3s ease;
+}
+
+.text-outline-stroke-thick {
+  -webkit-text-stroke: 2px rgba(245, 245, 245, 0.4);
+  color: transparent;
+}
+
+.text-outline-red {
+  -webkit-text-stroke: 1px var(--accent);
+  color: transparent;
+}
+
+.text-outline-hover:hover {
+  -webkit-text-stroke: 1px transparent;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Editorial Noise Texture overlay if needed */
+.bg-grid-pattern {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }

@@ -1,0 +1,85 @@
+// This is your Prisma schema file configured for Supabase (PostgreSQL),
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Project {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  number       String
+  title        String
+  subtitle     String
+  description  String
+  overview     String?  @db.Text
+  category     String
+  year         Int
+  technologies String   @db.Text // Stored as JSON string
+  thumbnail    String   @db.Text
+  images       String?  @db.Text // Stored as JSON string
+  featured     Boolean  @default(false)
+  published    Boolean  @default(true)
+  github       String?  @db.Text
+  demo         String?  @db.Text
+  role         String?
+  features     String?  @db.Text // Stored as JSON string
+  challenges   String?  @db.Text // Stored as JSON string
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Profile {
+  id         String   @id @default("profile_default")
+  name       String
+  moniker    String
+  role       String
+  tagline    String
+  bio        String   @db.Text // Stored as JSON string array
+  location   String
+  status     String
+  email      String
+  resumeUrl  String?  @db.Text
+  socials    String   @db.Text // Stored as JSON string object
+  updatedAt  DateTime @updatedAt
+}
+
+model SkillCategory {
+  id     String @id @default(cuid())
+  title  String
+  skills String @db.Text // Stored as JSON string array
+  order  Int    @default(0)
+}
+
+model Experiment {
+  id           String  @id
+  title        String
+  category     String
+  description  String  @db.Text
+  year         Int
+  technologies String  @db.Text // Stored as JSON string array
+  link         String? @db.Text
+  github       String? @db.Text
+}
+
+model Admin {
+  id                String   @id @default("admin_default")
+  email             String   @unique
+  password          String
+  twoFactorSecret   String?  @db.Text
+  twoFactorEnabled  Boolean  @default(false)
+  updatedAt         DateTime @updatedAt
+}
+
+model Analytics {
+  id          String   @id @default("analytics_default")
+  pageViews   Int      @default(0)
+  cvDownloads Int      @default(0)
+  updatedAt   DateTime @updatedAt
+}

@@ -1,0 +1,130 @@
+import { Project } from "@/types";
+
+export const projectsData: Project[] = [
+  {
+    slug: "enterprise",
+    number: "01",
+    title: "ENTERPRISE",
+    subtitle: "GTA V BUSINESS MANAGEMENT MOD",
+    description:
+      "A comprehensive economic and business empire management mod built for Grand Theft Auto V with custom in-game UI, telemetry, and native memory hooks.",
+    overview:
+      "Enterprise reimagines the economic simulation inside GTA V, introducing real-time stock markets, supply chain logistics, real estate acquisition, and hierarchical business operations seamlessly rendered inside the game engine.",
+    category: "Game Modding & Systems",
+    year: 2026,
+    technologies: ["C#", ".NET", "NativeUI", "GTA V ScriptHook", "SQLite"],
+    thumbnail: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=1600&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=1600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1600&auto=format&fit=crop",
+    ],
+    featured: true,
+    github: "https://github.com",
+    demo: "https://youtube.com",
+    role: "Lead Mod Developer & Architecture",
+    features: [
+      "Real-time corporate asset tracking and revenue simulation",
+      "Dynamic in-game UI overlay with hardware-accelerated rendering",
+      "Custom persistence engine utilizing embedded SQLite",
+      "Asynchronous background worker threads for AI business competitors",
+    ],
+    challenges: [
+      "Managing thread-safe memory hooks into the native game process without causing frame drops or race conditions.",
+      "Designing responsive custom UI components compliant with the game loop constraint of 60+ FPS.",
+    ],
+  },
+  {
+    slug: "kasir-pos",
+    number: "02",
+    title: "KASIR",
+    subtitle: "MODERN POINT OF SALE ECOSYSTEM",
+    description:
+      "High-throughput offline-first Point of Sale application designed for fast-paced retail & F&B businesses with real-time multi-terminal synchronization.",
+    overview:
+      "Kasir POS is engineered to operate resiliently in low-connectivity retail environments, offering sub-millisecond transaction scanning, split-bill handling, receipt thermal printer integration, and cloud aggregation.",
+    category: "Web & Desktop Application",
+    year: 2025,
+    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Prisma", "PostgreSQL", "WebSockets"],
+    thumbnail: "https://images.unsplash.com/photo-1556740758-90de374c12ad?q=80&w=1600&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1556740758-90de374c12ad?q=80&w=1600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=1600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1600&auto=format&fit=crop",
+    ],
+    featured: true,
+    github: "https://github.com",
+    demo: "https://demo.example.com",
+    role: "Full Stack Engineer & UI/UX Designer",
+    features: [
+      "Offline-first indexed database with conflict-free replicated sync",
+      "ESC/POS thermal printer direct raw driver via WebUSB / Network",
+      "Instant barcode scanner keyboard wedge listener",
+      "Real-time analytics dashboard with revenue projections",
+    ],
+    challenges: [
+      "Ensuring zero data loss during sudden network disconnections during high-volume checkout rushes.",
+      "Optimizing rendering performance with thousands of inventory line items on touch displays.",
+    ],
+  },
+  {
+    slug: "clipflow",
+    number: "03",
+    title: "CLIPFLOW",
+    subtitle: "INTELLIGENT VIDEO CLIPPING TOOL",
+    description:
+      "Automated video processing pipeline that detects viral highlights from long-form streams using audio amplitude and scene change detection algorithms.",
+    overview:
+      "Clipflow cuts video editing time by 80% by analyzing audio loudness graphs, speech timestamps, and visual motion to automatically generate 9:16 vertical shorts ready for publishing.",
+    category: "Automation & Media Tooling",
+    year: 2025,
+    technologies: ["Python", "FFmpeg", "FastAPI", "React", "Tailwind CSS"],
+    thumbnail: "https://images.unsplash.com/photo-1536240478700-b869070f9279?q=80&w=1600&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1536240478700-b869070f9279?q=80&w=1600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?q=80&w=1600&auto=format&fit=crop",
+    ],
+    featured: true,
+    github: "https://github.com",
+    demo: "https://demo.example.com",
+    role: "Backend & Systems Developer",
+    features: [
+      "GPU-accelerated hardware decoding and subtitle burning via FFmpeg",
+      "Dynamic vertical cropping algorithm following face & motion tracking",
+      "Batch queue worker with distributed progress websockets",
+    ],
+    challenges: [
+      "Efficiently streaming multi-gigabyte video files without loading entire files into memory buffers.",
+      "Minimizing CPU bottleneck during multi-stream subtitle burn-in rendering.",
+    ],
+  },
+  {
+    slug: "lens-meta",
+    number: "04",
+    title: "LENSMETA",
+    subtitle: "RAW PHOTO METADATA & COLOR ANALYZER",
+    description:
+      "High-speed browser-based EXIF and color histogram analyzer extracting sensor profiles and color science data without server upload.",
+    overview:
+      "Built with WebAssembly and Rust, LensMeta delivers instant client-side parsing of complex RAW image formats (CR3, ARW, NEF) directly in the browser with privacy-first execution.",
+    category: "WebAssembly & Web Tools",
+    year: 2024,
+    technologies: ["Rust", "WebAssembly", "TypeScript", "Canvas API"],
+    thumbnail: "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?q=80&w=1600&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?q=80&w=1600&auto=format&fit=crop",
+    ],
+    featured: false,
+    github: "https://github.com",
+    demo: "https://demo.example.com",
+    role: "Developer",
+    features: [
+      "100% Client-side zero-upload EXIF parsing",
+      "Spectral and RGB histogram rendering on WebGL canvas",
+      "Batch metadata export to JSON/CSV",
+    ],
+    challenges: [
+      "Compiling proprietary camera maker notes parser into an ultra-lean WASM binary under 500KB.",
+    ],
+  },
+];

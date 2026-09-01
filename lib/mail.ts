@@ -118,22 +118,23 @@ export async function sendInquiryNotification(
     </html>
   `;
 
-    const subjectLine = data.subject
-      ? `${data.name} — ${data.subject}`
-      : `Pesan Baru dari ${data.name} (ARDP Portfolio)`;
+    try {
+      const subjectLine = data.subject
+        ? `${data.name} — ${data.subject}`
+        : `Pesan Baru dari ${data.name} (ARDP Portfolio)`;
 
-    await transporter.sendMail({
-      from: `"ARDP Portfolio" <${process.env.SMTP_USER || process.env.EMAIL_USER}>`,
-      to: recipientEmail,
-      replyTo: data.email,
-      subject: subjectLine,
-      text: `Pesan Baru dari ${data.name} (${data.email})\n\nTopik: ${data.subject || "-"}\nBudget: ${data.budget || "-"}\n\nPesan:\n${data.message}`,
-      html: htmlContent,
-    });
+      await transporter.sendMail({
+        from: `"ARDP Portfolio" <${process.env.SMTP_USER || process.env.EMAIL_USER}>`,
+        to: recipientEmail,
+        replyTo: data.email,
+        subject: subjectLine,
+        text: `Pesan Baru dari ${data.name} (${data.email})\n\nTopik: ${data.subject || "-"}\nBudget: ${data.budget || "-"}\n\nPesan:\n${data.message}`,
+        html: htmlContent,
+      });
 
-    return { success: true };
-  } catch (err: any) {
-    console.error("Nodemailer send error:", err);
-    return { success: false, error: err.message };
-  }
+      return { success: true };
+    } catch (err: any) {
+      console.error("Nodemailer send error:", err);
+      return { success: false, error: err.message };
+    }
 }

@@ -58,7 +58,7 @@ export default async function ProjectDetail({ params }: ProjectPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#F5F5F5] selection:bg-[#E31B23] selection:text-white">
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] selection:bg-[#E31B23] selection:text-white transition-colors duration-200">
       <Navbar />
       <ProjectDetailClient project={project} />
       <Footer />

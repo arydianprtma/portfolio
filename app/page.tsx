@@ -22,7 +22,7 @@ export default async function Home() {
   const experiments = store.experiments;
 
   return (
-    <div className="relative min-h-screen bg-[#0A0A0A] text-[#F5F5F5] selection:bg-[#E31B23] selection:text-white">
+    <div className="relative min-h-screen bg-[var(--background)] text-[var(--foreground)] selection:bg-[#E31B23] selection:text-white transition-colors duration-200">
       {/* Top Navbar */}
       <Navbar />
 

@@ -148,7 +148,7 @@ export const ProjectImageSlices: React.FC<ProjectImageSlicesProps> = ({
               height: `${config.heightPercent}%`,
               marginTop: `${config.topPercent}%`,
             }}
-            className="relative flex-1 overflow-hidden bg-[#161616] border border-[#2A2A2A] group-hover:border-[#E31B23] transition-colors duration-500 rounded-sm"
+            className="relative flex-1 overflow-hidden bg-[var(--surface)] border border-[var(--border)] group-hover:border-[#E31B23] transition-colors duration-500 rounded-sm"
           >
             {/* The continuous seamless image container */}
             <div
@@ -174,7 +174,7 @@ export const ProjectImageSlices: React.FC<ProjectImageSlicesProps> = ({
       })}
 
       {/* Case Study Pill Badge */}
-      <div className="absolute top-3 right-3 bg-[#0A0A0A]/90 backdrop-blur-md border border-[#333333] px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-[#F5F5F5] flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none">
+      <div className="absolute top-3 right-3 bg-[var(--background)]/90 backdrop-blur-md border border-[var(--border)] px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-[var(--foreground)] flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none">
         <span className="w-1.5 h-1.5 rounded-full bg-[#E31B23]" />
         <span>CASE STUDY</span>
       </div>

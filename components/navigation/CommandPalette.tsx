@@ -16,6 +16,7 @@ import {
   Check,
   Globe,
   FileText,
+  Terminal,
 } from "lucide-react";
 import { Project, Post } from "@/types";
 import { trackCvDownload } from "@/components/analytics/PageTracker";
@@ -309,13 +310,13 @@ export const CommandPalette: React.FC = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className="relative w-full max-w-2xl bg-[#0D0D0D] border border-[#262626] shadow-[0_0_60px_rgba(0,0,0,0.8)] overflow-hidden z-10"
+            className="relative w-full max-w-2xl bg-[var(--surface)] border border-[var(--border)] shadow-[0_0_60px_rgba(0,0,0,0.4)] overflow-hidden z-10"
           >
             {/* Top Red Laser Accent Line */}
             <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#E31B23] to-transparent" />
 
             {/* Terminal Search Input Bar */}
-            <div className="flex items-center px-4 py-3.5 border-b border-[#1F1F1F] bg-[#121212] gap-3">
+            <div className="flex items-center px-4 py-3.5 border-b border-[var(--border)] bg-[var(--background)] gap-3">
               <Search className="w-4 h-4 text-[#E31B23] shrink-0" />
               <input
                 ref={inputRef}
@@ -327,9 +328,9 @@ export const CommandPalette: React.FC = () => {
                 }}
                 onKeyDown={handleKeyNav}
                 placeholder={t.palette.searchPlaceholder}
-                className="w-full bg-transparent text-[#F5F5F5] placeholder-[#555555] text-xs sm:text-sm outline-none font-mono"
+                className="w-full bg-transparent text-[var(--foreground)] placeholder-[var(--muted)] text-xs sm:text-sm outline-none font-mono"
               />
-              <kbd className="hidden sm:inline-block text-[10px] bg-[#1A1A1A] text-[#666666] border border-[#2B2B2B] px-1.5 py-0.5">
+              <kbd className="hidden sm:inline-block text-[10px] bg-[var(--surface)] text-[var(--muted)] border border-[var(--border)] px-1.5 py-0.5">
                 ESC
               </kbd>
             </div>
@@ -337,10 +338,10 @@ export const CommandPalette: React.FC = () => {
             {/* Command Results List */}
             <div
               ref={listRef}
-              className="max-h-[380px] overflow-y-auto divide-y divide-[#151515] p-2"
+              className="max-h-[380px] overflow-y-auto divide-y divide-[var(--border)] p-2"
             >
               {filteredItems.length === 0 ? (
-                <div className="py-12 text-center text-[#555555] text-xs">
+                <div className="py-12 text-center text-[var(--muted)] text-xs">
                   <p>{t.palette.noCommandsFound} &ldquo;{query}&rdquo;</p>
                 </div>
               ) : (
@@ -356,16 +357,16 @@ export const CommandPalette: React.FC = () => {
                       onMouseEnter={() => setSelectedIndex(idx)}
                       className={`flex items-center justify-between p-3 cursor-pointer transition-colors text-xs ${
                         isSelected
-                          ? "bg-[#181818] text-[#F5F5F5] border-l-2 border-l-[#E31B23]"
-                          : "text-[#888888] hover:bg-[#141414] hover:text-[#D5D5D5]"
+                          ? "bg-[var(--surface-hover)] text-[var(--foreground)] border-l-2 border-l-[#E31B23]"
+                          : "text-[var(--muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--foreground)]"
                       }`}
                     >
                       <div className="flex items-center gap-3 min-w-0 pr-2">
                         <div
                           className={`p-1.5 border transition-colors shrink-0 ${
                             isSelected
-                              ? "bg-[#222222] border-[#E31B23]/60 text-[#E31B23]"
-                              : "bg-[#141414] border-[#222222] text-[#666666]"
+                              ? "bg-[var(--surface)] border-[#E31B23]/60 text-[#E31B23]"
+                              : "bg-[var(--background)] border-[var(--border)] text-[var(--muted)]"
                           }`}
                         >
                           <Icon className="w-3.5 h-3.5" />
@@ -373,29 +374,27 @@ export const CommandPalette: React.FC = () => {
                         <div className="min-w-0">
                           <div className="font-bold text-xs truncate flex items-center gap-2">
                             <span>{item.title}</span>
-                            <span className="text-[10px] text-[#555555] font-normal uppercase">
+                            <span className="text-[10px] text-[var(--muted)] font-normal uppercase">
                               [{item.category}]
                             </span>
                           </div>
                           {item.description && (
-                            <div className="text-[10px] text-[#666666] truncate mt-0.5">
+                            <p className="text-[11px] text-[var(--muted)] truncate mt-0.5">
                               {item.description}
-                            </div>
+                            </p>
                           )}
                         </div>
                       </div>
 
                       <div className="flex items-center gap-2 shrink-0">
-                        {item.shortcut && (
-                          <kbd className="text-[10px] bg-[#141414] text-[#888888] border border-[#2B2B2B] px-1.5 py-0.5 font-mono">
-                            {item.shortcut}
-                          </kbd>
+                        {isSelected && (
+                          <span className="text-[10px] text-[#E31B23] font-bold uppercase hidden sm:inline">
+                            EXECUTE
+                          </span>
                         )}
                         <ArrowRight
-                          className={`w-3.5 h-3.5 transition-transform ${
-                            isSelected
-                              ? "text-[#E31B23] translate-x-1"
-                              : "text-[#444444] opacity-0"
+                          className={`w-3.5 h-3.5 ${
+                            isSelected ? "text-[#E31B23]" : "text-[var(--muted)]"
                           }`}
                         />
                       </div>
@@ -405,16 +404,17 @@ export const CommandPalette: React.FC = () => {
               )}
             </div>
 
-            {/* Bottom Status Bar */}
-            <div className="flex items-center justify-between px-4 py-2 border-t border-[#1C1C1C] bg-[#0A0A0A] text-[10px] text-[#555555]">
-              <div className="flex items-center gap-3">
-                <span>↑↓ Navigate</span>
-                <span>↵ Select</span>
-                <span>ESC Close</span>
+            {/* Bottom Footer Info Bar */}
+            <div className="flex items-center justify-between px-4 py-2 bg-[var(--background)] border-t border-[var(--border)] text-[10px] text-[var(--muted)]">
+              <div className="flex items-center gap-2">
+                <Terminal className="w-3 h-3 text-[#E31B23]" />
+                <span className="uppercase">{t.palette.activeNotice}</span>
               </div>
-              <span className="text-[#E31B23] tracking-widest uppercase font-bold text-[9px]">
-                {t.palette.activeNotice}
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="hidden sm:inline">↑↓ NAVIGATE</span>
+                <span>↵ SELECT</span>
+                <span>ESC CLOSE</span>
+              </div>
             </div>
           </motion.div>
         </div>

@@ -167,7 +167,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ content }) => {
   }
 
   return (
-    <div className="space-y-6 text-[#C0C0C0] text-base md:text-lg leading-relaxed font-light text-left overflow-hidden">
+    <div className="space-y-6 text-[var(--foreground)] text-base md:text-lg leading-relaxed font-light text-left overflow-hidden">
       {blocks.map((block, idx) => {
         if (block.type === "code") {
           return <CodeBlock key={idx} code={block.content} language={block.lang} />;
@@ -184,7 +184,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ content }) => {
             {paragraphs.map((p, pIdx) => {
               // Horizontal Divider
               if (p === "---" || p === "***" || p === "___") {
-                return <hr key={pIdx} className="border-[#222222] my-8" />;
+                return <hr key={pIdx} className="border-[var(--border)] my-8" />;
               }
 
               // Section Heading Level 2
@@ -192,7 +192,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ content }) => {
                 return (
                   <h2
                     key={pIdx}
-                    className="font-display text-2xl md:text-3xl font-bold uppercase tracking-tight text-[#F5F5F5] pt-8 pb-2 border-b border-[#1A1A1A] text-left break-words"
+                    className="font-display text-2xl md:text-3xl font-bold uppercase tracking-tight text-[var(--foreground)] pt-8 pb-2 border-b border-[var(--border)] text-left break-words"
                   >
                     {p.replace("## ", "")}
                   </h2>
@@ -216,7 +216,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ content }) => {
                 return (
                   <blockquote
                     key={pIdx}
-                    className="border-l-2 border-[#E31B23] pl-4 py-2 italic text-[#E0E0E0] bg-[#121212]/50 my-6 text-justify [text-align-last:left] break-words"
+                    className="border-l-2 border-[#E31B23] pl-4 py-2 italic text-[var(--foreground)] bg-[var(--surface)] my-6 text-justify [text-align-last:left] break-words"
                   >
                     {formatInlineText(p.replace("> ", ""))}
                   </blockquote>
@@ -229,7 +229,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ content }) => {
                 return (
                   <ul key={pIdx} className="space-y-2.5 my-4 pl-5 list-disc text-left marker:text-[#E31B23]">
                     {items.map((item, itemIdx) => (
-                      <li key={itemIdx} className="text-justify [text-align-last:left] break-words text-[#B5B5B5]">
+                      <li key={itemIdx} className="text-justify [text-align-last:left] break-words text-[var(--muted)]">
                         {formatInlineText(item.replace(/^[-*]\s+/, ""))}
                       </li>
                     ))}
@@ -243,7 +243,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ content }) => {
                 return (
                   <ol key={pIdx} className="space-y-2.5 my-4 pl-5 list-decimal text-left marker:text-[#E31B23] font-mono text-sm">
                     {items.map((item, itemIdx) => (
-                      <li key={itemIdx} className="text-justify [text-align-last:left] break-words text-[#B5B5B5] font-sans text-base md:text-lg">
+                      <li key={itemIdx} className="text-justify [text-align-last:left] break-words text-[var(--muted)] font-sans text-base md:text-lg">
                         {formatInlineText(item.replace(/^\d+\.\s+/, ""))}
                       </li>
                     ))}
@@ -255,7 +255,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ content }) => {
               return (
                 <p
                   key={pIdx}
-                  className="text-justify [text-align-last:left] [overflow-wrap:break-word] break-words text-[#B5B5B5] leading-relaxed"
+                  className="text-justify [text-align-last:left] [overflow-wrap:break-word] break-words text-[var(--muted)] leading-relaxed"
                 >
                   {formatInlineText(p)}
                 </p>

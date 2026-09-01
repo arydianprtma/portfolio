@@ -52,7 +52,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#F5F5F5] font-sans selection:bg-[#E31B23] selection:text-white">
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] font-sans selection:bg-[#E31B23] selection:text-white transition-colors duration-200">
       <Navbar />
 
       <main className="pt-32 pb-24 md:pt-40 md:pb-36">

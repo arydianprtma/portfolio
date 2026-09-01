@@ -87,7 +87,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
   };
 
   return (
-    <section id="contact" className="py-24 md:py-36 px-6 md:px-12 max-w-7xl mx-auto border-t border-[#1A1A1A] relative overflow-hidden scroll-mt-10">
+    <section id="contact" className="py-24 md:py-36 px-6 md:px-12 max-w-7xl mx-auto border-t border-[var(--border)] relative overflow-hidden scroll-mt-10">
       {/* Decorative Red Blur Accent */}
       <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-[#E31B23]/10 rounded-full blur-[100px] pointer-events-none -z-10" />
 
@@ -97,7 +97,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
         {/* Left Column: Headline & Interactive Inquiry Form (7 cols) */}
         <div className="lg:col-span-7 space-y-8">
           <div>
-            <h2 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight text-[#F5F5F5] leading-[0.9]">
+            <h2 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight text-[var(--foreground)] leading-[0.9]">
               {t.contact.headlinePart1}
               <br />
               {t.contact.headlinePart2}
@@ -105,19 +105,19 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
               <span className="text-[#E31B23]">{t.contact.headlinePart3}</span>
             </h2>
 
-            <p className="mt-6 text-[#888888] text-base md:text-lg font-light leading-relaxed">
+            <p className="mt-6 text-[var(--muted)] text-base md:text-lg font-light leading-relaxed">
               {t.contact.description}
             </p>
           </div>
 
           {/* Interactive Contact Form Card */}
-          <div className="bg-[#101010] border border-[#222222] p-6 sm:p-8 font-mono text-xs space-y-6">
-            <div className="flex items-center justify-between border-b border-[#1C1C1C] pb-3">
+          <div className="bg-[var(--surface)] border border-[var(--border)] p-6 sm:p-8 font-mono text-xs space-y-6">
+            <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
               <span className="text-[#E31B23] font-bold uppercase tracking-widest flex items-center gap-2">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>{t.contact.directInquiry}</span>
               </span>
-              <span className="text-[10px] text-[#666666]">{t.contact.encryptedNotice}</span>
+              <span className="text-[10px] text-[var(--muted)]">{t.contact.encryptedNotice}</span>
             </div>
 
             {success && (
@@ -140,7 +140,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[#A0A0A0] uppercase tracking-wider block text-[11px]">
+                  <label className="text-[var(--foreground)] uppercase tracking-wider block text-[11px] font-medium">
                     {t.contact.yourName}
                   </label>
                   <input
@@ -149,12 +149,12 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="e.g. Alex Morgan"
-                    className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none text-xs"
+                    className="w-full bg-[var(--background)] border border-[var(--border)] focus:border-[#E31B23] px-3.5 py-2.5 text-[var(--foreground)] outline-none text-xs"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[#A0A0A0] uppercase tracking-wider block text-[11px]">
+                  <label className="text-[var(--foreground)] uppercase tracking-wider block text-[11px] font-medium">
                     {t.contact.emailAddress}
                   </label>
                   <input
@@ -163,14 +163,14 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="alex@company.com"
-                    className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none text-xs"
+                    className="w-full bg-[var(--background)] border border-[var(--border)] focus:border-[#E31B23] px-3.5 py-2.5 text-[var(--foreground)] outline-none text-xs"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[#A0A0A0] uppercase tracking-wider block text-[11px]">
+                  <label className="text-[var(--foreground)] uppercase tracking-wider block text-[11px] font-medium">
                     {t.contact.topicService}
                   </label>
                   <input
@@ -178,12 +178,12 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                     placeholder="e.g. Web Development"
-                    className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none text-xs"
+                    className="w-full bg-[var(--background)] border border-[var(--border)] focus:border-[#E31B23] px-3.5 py-2.5 text-[var(--foreground)] outline-none text-xs"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[#A0A0A0] uppercase tracking-wider block text-[11px]">
+                  <label className="text-[var(--foreground)] uppercase tracking-wider block text-[11px] font-medium">
                     {t.contact.budgetScope}
                   </label>
                   <input
@@ -191,13 +191,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
                     value={formData.budget}
                     onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
                     placeholder="e.g. $1k - $5k / Flexible"
-                    className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none text-xs"
+                    className="w-full bg-[var(--background)] border border-[var(--border)] focus:border-[#E31B23] px-3.5 py-2.5 text-[var(--foreground)] outline-none text-xs"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[#A0A0A0] uppercase tracking-wider block text-[11px]">
+                <label className="text-[var(--foreground)] uppercase tracking-wider block text-[11px] font-medium">
                   {t.contact.yourMessage}
                 </label>
                 <textarea
@@ -206,7 +206,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder={t.contact.messagePlaceholder}
-                  className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] p-3.5 text-[#F5F5F5] outline-none resize-none leading-relaxed text-xs"
+                  className="w-full bg-[var(--background)] border border-[var(--border)] focus:border-[#E31B23] p-3.5 text-[var(--foreground)] outline-none resize-none leading-relaxed text-xs"
                 />
               </div>
 
@@ -230,38 +230,46 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
         {/* Right Column: Direct Channels & Socials (5 cols) */}
         <div className="lg:col-span-5 flex flex-col gap-4 sticky top-28">
           {/* Status Beacon Card */}
-          <div className="bg-[#121212] border border-[#222222] p-5 flex items-center justify-between">
+          <div className="bg-[var(--surface)] border border-[var(--border)] p-5 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
-              <span className="font-mono text-xs text-[#F5F5F5] uppercase tracking-wider font-semibold">
+              <span className="font-mono text-xs text-[var(--foreground)] uppercase tracking-wider font-semibold">
                 {t.contact.availableForHireBadge}
               </span>
             </div>
-            <span className="font-mono text-[10px] text-[#777777] uppercase">Q3 / 2026</span>
+            <span className="font-mono text-[10px] text-[var(--muted)] uppercase">Q3 / 2026</span>
           </div>
 
           {/* Email Copy Card */}
-          <div className="bg-[#121212] border border-[#222222] p-6 hover:border-[#E31B23]/50 transition-colors">
-            <span className="font-mono text-[10px] text-[#666666] tracking-widest uppercase block mb-2">
+          <div className="bg-[var(--surface)] border border-[var(--border)] p-6 hover:border-[#E31B23]/50 transition-colors">
+            <span className="font-mono text-[10px] text-[var(--muted)] tracking-widest uppercase block mb-2">
               {t.contact.directEmailDispatch}
             </span>
             <div className="flex items-center justify-between gap-3">
               <a
                 href={`mailto:${profile.email}`}
-                className="font-mono text-sm md:text-base text-[#F5F5F5] hover:text-[#E31B23] transition-colors truncate font-semibold"
+                className="font-mono text-xs sm:text-sm text-[var(--foreground)] hover:text-[#E31B23] transition-colors truncate font-semibold"
+                data-cursor="link"
               >
                 {profile.email}
               </a>
               <button
+                type="button"
                 onClick={handleCopyEmail}
-                className="p-2 bg-[#1A1A1A] hover:bg-[#262626] text-[#A0A0A0] hover:text-white transition-colors border border-[#333333]"
-                title="Copy email to clipboard"
-                aria-label="Copy email"
+                className="inline-flex items-center gap-1.5 bg-[var(--background)] hover:bg-[#E31B23] text-[var(--foreground)] hover:text-white border border-[var(--border)] hover:border-[#E31B23] px-3 py-1.5 text-[11px] font-mono transition-colors shrink-0"
+                data-cursor="link"
+                title="Copy email address"
               >
                 {copied ? (
-                  <Check className="w-4 h-4 text-emerald-400" />
+                  <>
+                    <Check className="w-3 h-3 text-emerald-400" />
+                    <span>{t.contact.copied}</span>
+                  </>
                 ) : (
-                  <Copy className="w-4 h-4" />
+                  <>
+                    <Copy className="w-3 h-3" />
+                    <span>{t.contact.copy}</span>
+                  </>
                 )}
               </button>
             </div>

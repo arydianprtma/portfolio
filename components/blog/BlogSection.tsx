@@ -88,7 +88,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
                   type="button"
                   onClick={() => handleScroll("left")}
                   disabled={!canScrollLeft}
-                  className="p-2.5 bg-[#121212] hover:bg-[#1C1C1C] text-[#A0A0A0] hover:text-white border border-[#262626] hover:border-[#E31B23] transition-colors disabled:opacity-30 disabled:hover:border-[#262626] disabled:hover:bg-[#121212]"
+                  className="p-2.5 bg-[var(--surface)] hover:bg-[var(--surface-hover)] text-[var(--muted)] hover:text-[var(--foreground)] border border-[var(--border)] hover:border-[#E31B23] transition-colors disabled:opacity-30 disabled:hover:border-[var(--border)] disabled:hover:bg-[var(--surface)]"
                   aria-label="Previous article"
                   data-cursor="link"
                 >
@@ -99,7 +99,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
                   type="button"
                   onClick={() => handleScroll("right")}
                   disabled={!canScrollRight}
-                  className="p-2.5 bg-[#121212] hover:bg-[#1C1C1C] text-[#A0A0A0] hover:text-white border border-[#262626] hover:border-[#E31B23] transition-colors disabled:opacity-30 disabled:hover:border-[#262626] disabled:hover:bg-[#121212]"
+                  className="p-2.5 bg-[var(--surface)] hover:bg-[var(--surface-hover)] text-[var(--muted)] hover:text-[var(--foreground)] border border-[var(--border)] hover:border-[#E31B23] transition-colors disabled:opacity-30 disabled:hover:border-[var(--border)] disabled:hover:bg-[var(--surface)]"
                   aria-label="Next article"
                   data-cursor="link"
                 >
@@ -110,7 +110,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
           </div>
         </div>
 
-        <p className="text-[#888888] font-mono text-xs mb-6 sm:hidden">
+        <p className="text-[var(--muted)] font-mono text-xs mb-6 sm:hidden">
           {t.blog.description}
         </p>
 
@@ -127,13 +127,13 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
           {publishedPosts.map((post, idx) => (
             <article
               key={post.slug}
-              className="snap-center md:snap-start shrink-0 w-[calc(100vw-3rem)] sm:w-[360px] md:w-[380px] lg:w-[400px] bg-[#0E0E0E] border border-[#1C1C1C] hover:border-[#E31B23]/50 transition-all duration-300 flex flex-col justify-between overflow-hidden group"
+              className="snap-center md:snap-start shrink-0 w-[calc(100vw-3rem)] sm:w-[360px] md:w-[380px] lg:w-[400px] bg-[var(--surface)] border border-[var(--border)] hover:border-[#E31B23]/50 transition-all duration-300 flex flex-col justify-between overflow-hidden group"
             >
               <div>
                 {/* Cover Image */}
                 <Link
                   href={`/blog/${post.slug}`}
-                  className="block relative aspect-[16/10] overflow-hidden bg-[#141414] border-b border-[#1C1C1C]"
+                  className="block relative aspect-[16/10] overflow-hidden bg-[var(--background)] border-b border-[var(--border)]"
                   data-cursor="view"
                   data-cursor-text="READ"
                 >
@@ -144,13 +144,13 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[#444444]">
+                    <div className="w-full h-full flex items-center justify-center text-[var(--muted)]">
                       <BookOpen className="w-10 h-10" />
                     </div>
                   )}
 
                   {/* Index Pill */}
-                  <div className="absolute top-3 left-3 bg-[#0A0A0A]/90 border border-[#222222] px-2 py-0.5 font-mono text-[10px] text-[#E31B23] font-bold">
+                  <div className="absolute top-3 left-3 bg-[var(--background)]/90 border border-[var(--border)] px-2 py-0.5 font-mono text-[10px] text-[#E31B23] font-bold">
                     0{idx + 1}
                   </div>
                 </Link>
@@ -158,7 +158,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
                 {/* Content Details */}
                 <div className="p-5 sm:p-6">
                   {/* Meta: Read time & Date */}
-                  <div className="flex items-center gap-3 font-mono text-[11px] text-[#666666] mb-3">
+                  <div className="flex items-center gap-3 font-mono text-[11px] text-[var(--muted)] mb-3">
                     <span className="flex items-center gap-1">
                       <Clock className="w-3 h-3 text-[#E31B23]" />
                       <span>{post.readingTime}</span>
@@ -182,13 +182,13 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
                     className="block group/title"
                     data-cursor="link"
                   >
-                    <h3 className="font-display text-lg sm:text-xl font-bold uppercase tracking-tight text-[#F5F5F5] group-hover/title:text-[#E31B23] transition-colors duration-300 line-clamp-2 mb-3">
+                    <h3 className="font-display text-lg sm:text-xl font-bold uppercase tracking-tight text-[var(--foreground)] group-hover/title:text-[#E31B23] transition-colors duration-300 line-clamp-2 mb-3">
                       {language === "id" && post.titleId ? post.titleId : post.title}
                     </h3>
                   </Link>
 
                   {/* Summary */}
-                  <p className="text-[#888888] text-xs leading-relaxed line-clamp-3 mb-6 font-sans">
+                  <p className="text-[var(--muted)] text-xs leading-relaxed line-clamp-3 mb-6 font-sans">
                     {language === "id" && post.summaryId ? post.summaryId : post.summary}
                   </p>
 
@@ -197,7 +197,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
                     {post.tags.slice(0, 3).map((tag) => (
                       <span
                         key={tag}
-                        className="bg-[#141414] text-[#A0A0A0] border border-[#222222] px-2 py-0.5 tracking-wider"
+                        className="bg-[var(--background)] text-[var(--foreground)] border border-[var(--border)] px-2 py-0.5 tracking-wider"
                       >
                         #{tag}
                       </span>
@@ -207,10 +207,10 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
               </div>
 
               {/* Bottom CTA */}
-              <div className="p-5 sm:p-6 pt-0 border-t border-[#141414] mt-4">
+              <div className="p-5 sm:p-6 pt-0 border-t border-[var(--border)] mt-4">
                 <Link
                   href={`/blog/${post.slug}`}
-                  className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#E31B23] group-hover:text-white font-semibold pt-4 transition-colors"
+                  className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#E31B23] group-hover:text-[var(--foreground)] font-semibold pt-4 transition-colors"
                   data-cursor="link"
                 >
                   <span>{t.blog.readArticle}</span>
@@ -223,16 +223,16 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
 
         {/* Minimal Progress Indicator Track */}
         {publishedPosts.length > 1 && (
-          <div className="mt-6 flex items-center justify-between font-mono text-xs text-[#666666]">
+          <div className="mt-6 flex items-center justify-between font-mono text-xs text-[var(--muted)]">
             <div className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-[#E31B23]" />
-              <span className="text-[11px] text-[#888888] uppercase tracking-wider">
+              <span className="text-[11px] text-[var(--muted)] uppercase tracking-wider">
                 {publishedPosts.length} ARTICLES PUBLISHED
               </span>
             </div>
 
             {/* Scroll Progress Bar */}
-            <div className="w-28 sm:w-48 h-1 bg-[#1A1A1A] overflow-hidden">
+            <div className="w-28 sm:w-48 h-1 bg-[var(--border)] overflow-hidden">
               <div
                 className="h-full bg-[#E31B23] transition-all duration-150"
                 style={{ width: `${Math.max(20, scrollProgress)}%` }}

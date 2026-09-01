@@ -13,8 +13,8 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="border-t border-[#1A1A1A] py-10 px-6 md:px-12 max-w-7xl mx-auto">
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-6 font-mono text-xs text-[#666666]">
+    <footer className="border-t border-[var(--border)] py-10 px-6 md:px-12 max-w-7xl mx-auto">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-6 font-mono text-xs text-[var(--muted)]">
         <div className="flex items-center gap-3">
           <Logo size="sm" showSubtext={false} />
           <span>© {new Date().getFullYear()}</span>
@@ -23,13 +23,13 @@ export const Footer: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-6">
-          <span className="text-[11px] text-[#444444] hidden md:inline-block">
+          <span className="text-[11px] text-[var(--muted)] hidden md:inline-block">
             {t.footer.designedEngineered}
           </span>
 
           <button
             onClick={scrollToTop}
-            className="flex items-center gap-1.5 text-[#888888] hover:text-[#E31B23] transition-colors p-1 group"
+            className="flex items-center gap-1.5 text-[var(--muted)] hover:text-[#E31B23] transition-colors p-1 group"
             aria-label="Back to top"
           >
             <span className="uppercase text-[11px] tracking-wider">{t.footer.backToTop}</span>

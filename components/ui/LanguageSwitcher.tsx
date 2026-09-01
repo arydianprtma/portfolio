@@ -23,7 +23,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
         className={`transition-colors uppercase font-bold tracking-wider py-1 px-1.5 ${
           language === "en"
             ? "text-[#E31B23]"
-            : "text-[#666666] hover:text-[#F5F5F5]"
+            : "text-[var(--muted)] hover:text-[var(--foreground)]"
         }`}
         aria-label="Switch to English"
         data-cursor="link"
@@ -31,7 +31,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
         EN
       </button>
 
-      <span className="text-[#333333] text-[10px]">/</span>
+      <span className="text-[var(--border)] text-[10px]">/</span>
 
       <button
         type="button"
@@ -39,7 +39,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
         className={`transition-colors uppercase font-bold tracking-wider py-1 px-1.5 ${
           language === "id"
             ? "text-[#E31B23]"
-            : "text-[#666666] hover:text-[#F5F5F5]"
+            : "text-[var(--muted)] hover:text-[var(--foreground)]"
         }`}
         aria-label="Ganti ke Bahasa Indonesia"
         data-cursor="link"

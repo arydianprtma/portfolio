@@ -104,6 +104,8 @@ export interface Translations {
     githubProfile: string;
     linkedinProfile: string;
     twitterProfile: string;
+    copy: string;
+    copied: string;
   };
 
   // Command Palette
@@ -230,6 +232,8 @@ export const translations: Record<Language, Translations> = {
       githubProfile: "GITHUB PROFILE",
       linkedinProfile: "LINKEDIN PROFILE",
       twitterProfile: "TWITTER / X",
+      copy: "COPY",
+      copied: "COPIED!",
     },
     palette: {
       searchPlaceholder: "Search commands, projects, articles, cv...",
@@ -351,6 +355,8 @@ export const translations: Record<Language, Translations> = {
       githubProfile: "PROFIL GITHUB",
       linkedinProfile: "PROFIL LINKEDIN",
       twitterProfile: "TWITTER / X",
+      copy: "SALIN",
+      copied: "TERSALIN!",
     },
     palette: {
       searchPlaceholder: "Cari perintah, proyek, artikel, cv...",

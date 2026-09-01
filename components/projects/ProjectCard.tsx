@@ -51,7 +51,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
   return (
     <div
       ref={cardRef}
-      className="relative py-16 md:py-28 border-b border-[#1A1A1A] last:border-b-0"
+      className="relative py-16 md:py-28 border-b border-[var(--border)] last:border-b-0"
     >
       {/* Background Decorative Outline Number with Smooth Scroll Parallax */}
       <div
@@ -96,10 +96,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
           }`}
         >
           {/* Metadata Row */}
-          <div className="flex items-center gap-3 font-mono text-xs text-[#777777] mb-3">
+          <div className="flex items-center gap-3 font-mono text-xs text-[var(--muted)] mb-3">
             <span className="text-[#E31B23] font-bold">{project.number}</span>
             <span>/</span>
-            <span className="text-[#A0A0A0] uppercase tracking-wider">{project.category}</span>
+            <span className="text-[var(--foreground)] uppercase tracking-wider font-medium">{project.category}</span>
             <span>/</span>
             <span>{project.year}</span>
           </div>
@@ -110,16 +110,16 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
             className="group/title block"
             data-cursor="link"
           >
-            <h3 className="font-display text-3xl md:text-5xl font-black uppercase tracking-tight text-[#F5F5F5] group-hover/title:text-[#E31B23] transition-colors duration-500">
+            <h3 className="font-display text-3xl md:text-5xl font-black uppercase tracking-tight text-[var(--foreground)] group-hover/title:text-[#E31B23] transition-colors duration-500">
               {project.title}
             </h3>
-            <p className="font-mono text-xs md:text-sm text-[#888888] uppercase tracking-wider mt-1 mb-4">
+            <p className="font-mono text-xs md:text-sm text-[var(--muted)] uppercase tracking-wider mt-1 mb-4">
               {language === "id" && project.subtitleId ? project.subtitleId : project.subtitle}
             </p>
           </Link>
 
           {/* Description */}
-          <p className="text-[#999999] text-sm md:text-base leading-relaxed mb-6 text-justify">
+          <p className="text-[var(--muted)] text-sm md:text-base leading-relaxed mb-6 text-justify [text-align-last:left] break-words">
             {language === "id" && project.descriptionId ? project.descriptionId : project.description}
           </p>
 
@@ -128,7 +128,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
             {project.technologies.map((tech) => (
               <span
                 key={tech}
-                className="font-mono text-[11px] bg-[#141414] text-[#A0A0A0] border border-[#222222] px-2.5 py-1 tracking-wider"
+                className="font-mono text-[11px] bg-[var(--surface)] text-[var(--foreground)] border border-[var(--border)] px-2.5 py-1 tracking-wider"
               >
                 {tech}
               </span>
@@ -139,7 +139,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
           <div className="flex items-center gap-4 pt-2">
             <Link
               href={`/work/${project.slug}`}
-              className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#F5F5F5] hover:text-[#E31B23] transition-colors duration-300 font-semibold group/btn"
+              className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[var(--foreground)] hover:text-[#E31B23] transition-colors duration-300 font-semibold group/btn"
               data-cursor="link"
             >
               <span>{t.projects.viewProject}</span>

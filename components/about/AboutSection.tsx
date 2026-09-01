@@ -117,7 +117,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
     <section
       id="about"
       ref={sectionRef}
-      className="py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto border-t border-[#1A1A1A] relative overflow-hidden scroll-mt-10"
+      className="py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto border-t border-[var(--border)] relative overflow-hidden scroll-mt-10"
     >
       <SectionLabel label={t.about.sectionLabel} number="01." />
 
@@ -151,7 +151,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
         {/* Top Role Subtitle */}
         <div
           ref={roleSubRef}
-          className="font-mono text-xs md:text-sm text-[#888888] tracking-[0.25em] lowercase mb-4 md:mb-6 text-center"
+          className="font-mono text-xs md:text-sm text-[var(--muted)] tracking-[0.25em] lowercase mb-4 md:mb-6 text-center"
         >
           {t.about.whoAmI.toLowerCase()} — {profile.role ? profile.role.toLowerCase() : "website developer"}
         </div>
@@ -162,7 +162,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
           <div className="overflow-hidden w-full flex justify-center">
             <div
               ref={nameSolidRef}
-              className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl text-[#F5F5F5] drop-shadow-sm text-center"
+              className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl text-[var(--foreground)] drop-shadow-sm text-center"
             >
               {firstName}
             </div>
@@ -172,10 +172,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
           <div className="overflow-hidden w-full flex justify-center">
             <div
               ref={nameOutlineRef}
-              className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl text-transparent hover:[-webkit-text-stroke:2px_#E31B23] transition-all duration-500 mt-1 md:mt-2 text-center"
-              style={{
-                WebkitTextStroke: "1.5px rgba(220, 220, 220, 0.45)",
-              }}
+              className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl text-transparent hover:[-webkit-text-stroke:2px_#E31B23] transition-all duration-500 mt-1 md:mt-2 text-center text-outline-stroke"
             >
               {lastName}
             </div>
@@ -184,17 +181,17 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
       </div>
 
       {/* Grid Content Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mt-8 pt-12 border-t border-[#1C1C1C]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mt-8 pt-12 border-t border-[var(--border)]">
         {/* Left Identity Details */}
         <div ref={leftColRef} className="lg:col-span-5 space-y-6">
-          <h3 className="font-display text-2xl sm:text-3xl font-bold uppercase tracking-tight text-[#F5F5F5] leading-tight">
+          <h3 className="font-display text-2xl sm:text-3xl font-bold uppercase tracking-tight text-[var(--foreground)] leading-tight">
             ENGINEERING PURPOSEFUL DIGITAL EXPERIENCES.
           </h3>
 
-          <div className="space-y-3 font-mono text-xs text-[#888888]">
+          <div className="space-y-3 font-mono text-xs text-[var(--muted)]">
             <div className="flex items-center gap-2">
               <User className="w-3.5 h-3.5 text-[#E31B23]" />
-              <span className="text-[#F5F5F5] font-medium">{profile.name}</span>
+              <span className="text-[var(--foreground)] font-medium">{profile.name}</span>
               <span>— {language === "id" && profile.roleId ? profile.roleId : profile.role}</span>
             </div>
 
@@ -205,7 +202,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
 
             <div className="flex items-center gap-2">
               <Terminal className="w-3.5 h-3.5 text-[#E31B23]" />
-              <span className="text-emerald-400 font-mono text-[11px]">
+              <span className="text-emerald-500 font-mono text-[11px] font-medium">
                 {language === "id" && profile.statusId ? profile.statusId : profile.status}
               </span>
             </div>
@@ -219,12 +216,12 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
                   rel="noopener noreferrer"
                   download
                   onClick={trackCvDownload}
-                  className="inline-flex items-center gap-2 bg-[#161616] hover:bg-[#E31B23] text-[#F5F5F5] hover:text-white border border-[#2B2B2B] hover:border-[#E31B23] px-5 py-3 font-mono text-xs uppercase tracking-wider font-semibold transition-colors group shadow-sm"
+                  className="inline-flex items-center gap-2 bg-[var(--surface)] hover:bg-[#E31B23] text-[var(--foreground)] hover:text-white border border-[var(--border)] hover:border-[#E31B23] px-5 py-3 font-mono text-xs uppercase tracking-wider font-semibold transition-colors group shadow-sm"
                   data-cursor="link"
                 >
                   <FileText className="w-4 h-4 text-[#E31B23] group-hover:text-white transition-colors" />
                   <span>{t.about.downloadResume}</span>
-                  <Download className="w-3.5 h-3.5 ml-1 text-[#777777] group-hover:text-white transition-colors" />
+                  <Download className="w-3.5 h-3.5 ml-1 text-[var(--muted)] group-hover:text-white transition-colors" />
                 </a>
               </div>
             )}
@@ -232,7 +229,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
         </div>
 
         {/* Right Bio Paragraphs & Core Philosophies */}
-        <div ref={rightColRef} className="lg:col-span-7 space-y-6 text-[#A0A0A0] text-base md:text-lg leading-relaxed font-light text-justify">
+        <div ref={rightColRef} className="lg:col-span-7 space-y-6 text-[var(--muted)] text-base md:text-lg leading-relaxed font-light text-justify [text-align-last:left] break-words">
           {language === "id" && profile.bioId && profile.bioId.length > 0 ? (
             profile.bioId.map((paragraph, idx) => (
               <p key={idx}>{paragraph}</p>
@@ -248,18 +245,18 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
             </>
           )}
 
-          <div className="pt-6 border-t border-[#1F1F1F] grid grid-cols-1 sm:grid-cols-3 gap-6 font-mono text-xs">
+          <div className="pt-6 border-t border-[var(--border)] grid grid-cols-1 sm:grid-cols-3 gap-6 font-mono text-xs">
             <div>
               <span className="text-[#E31B23] block mb-1 font-semibold">{t.about.philosophy1Title}</span>
-              <p className="text-[#777777]">{t.about.philosophy1Desc}</p>
+              <p className="text-[var(--muted)]">{t.about.philosophy1Desc}</p>
             </div>
             <div>
               <span className="text-[#E31B23] block mb-1 font-semibold">{t.about.philosophy2Title}</span>
-              <p className="text-[#777777]">{t.about.philosophy2Desc}</p>
+              <p className="text-[var(--muted)]">{t.about.philosophy2Desc}</p>
             </div>
             <div>
               <span className="text-[#E31B23] block mb-1 font-semibold">{t.about.philosophy3Title}</span>
-              <p className="text-[#777777]">{t.about.philosophy3Desc}</p>
+              <p className="text-[var(--muted)]">{t.about.philosophy3Desc}</p>
             </div>
           </div>
         </div>

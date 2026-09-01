@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Menu, X, ArrowUpRight, Search } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useLanguage } from "@/context/LanguageContext";
 
 export const Navbar: React.FC = () => {
@@ -68,7 +69,7 @@ export const Navbar: React.FC = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-[#0A0A0A]/90 backdrop-blur-md border-b border-[#1C1C1C] py-3.5"
+          ? "bg-[var(--background)]/90 backdrop-blur-md border-b border-[var(--border)] py-3.5"
           : "bg-transparent py-5 md:py-7 border-b border-transparent"
       }`}
     >
@@ -93,8 +94,8 @@ export const Navbar: React.FC = () => {
                 href={link.href}
                 className={`group relative font-mono text-[11px] xl:text-xs uppercase tracking-widest transition-colors py-1 ${
                   isActive
-                    ? "text-[#F5F5F5] font-semibold"
-                    : "text-[#777777] hover:text-[#F5F5F5]"
+                    ? "text-[var(--foreground)] font-semibold"
+                    : "text-[var(--muted)] hover:text-[var(--foreground)]"
                 }`}
                 data-cursor="link"
               >
@@ -118,23 +119,26 @@ export const Navbar: React.FC = () => {
           })}
         </nav>
 
-        {/* Right Controls: Compact Language + Search + CTA */}
-        <div className="hidden sm:flex items-center gap-3.5 shrink-0">
+        {/* Right Controls: Compact Language + Theme Switcher + Search + CTA */}
+        <div className="hidden sm:flex items-center gap-2.5 shrink-0">
           {/* Minimalist Language Switcher */}
           <LanguageSwitcher />
 
-          <span className="h-3 w-[1px] bg-[#222222]" />
+          {/* Theme Toggle (Dark / Light) */}
+          <ThemeToggle />
+
+          <span className="h-3 w-[1px] bg-[var(--border)]" />
 
           {/* Compact Command Palette Search Trigger */}
           <button
             onClick={handleOpenSearch}
-            className="inline-flex items-center gap-1.5 font-mono text-[11px] text-[#777777] hover:text-[#F5F5F5] p-1.5 hover:bg-[#141414] border border-transparent hover:border-[#222222] transition-colors group"
+            className="inline-flex items-center gap-1.5 font-mono text-[11px] text-[var(--muted)] hover:text-[var(--foreground)] p-1.5 hover:bg-[var(--surface)] border border-transparent hover:border-[var(--border)] transition-colors group"
             title="Search (Ctrl + K)"
             aria-label="Search"
             data-cursor="link"
           >
             <Search className="w-3.5 h-3.5 text-[#E31B23] group-hover:scale-110 transition-transform" />
-            <kbd className="text-[9px] bg-[#161616] text-[#666666] border border-[#262626] px-1 py-0.2">
+            <kbd className="text-[9px] bg-[var(--surface)] text-[var(--muted)] border border-[var(--border)] px-1 py-0.2">
               ⌘K
             </kbd>
           </button>
@@ -142,7 +146,7 @@ export const Navbar: React.FC = () => {
           {/* Direct Contact Button */}
           <a
             href="mailto:arydianprtma@gmail.com"
-            className="inline-flex items-center gap-1.5 font-mono text-[11px] xl:text-xs uppercase tracking-wider text-[#F5F5F5] hover:text-[#E31B23] transition-colors border border-[#262626] hover:border-[#E31B23] px-3.5 py-1.5 bg-[#121212]"
+            className="inline-flex items-center gap-1.5 font-mono text-[11px] xl:text-xs uppercase tracking-wider text-[var(--foreground)] hover:text-[#E31B23] transition-colors border border-[var(--border)] hover:border-[#E31B23] px-3.5 py-1.5 bg-[var(--surface)]"
             data-cursor="link"
           >
             <span>{t.nav.letsTalk}</span>
@@ -150,12 +154,13 @@ export const Navbar: React.FC = () => {
           </a>
         </div>
 
-        {/* Mobile Right Controls: Language + Hamburger */}
-        <div className="flex lg:hidden items-center gap-2">
+        {/* Mobile Right Controls: Language + Theme + Hamburger */}
+        <div className="flex lg:hidden items-center gap-1.5">
           <LanguageSwitcher />
+          <ThemeToggle />
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-1.5 text-[#F5F5F5] hover:text-[#E31B23] transition-colors focus:outline-none"
+            className="p-1.5 text-[var(--foreground)] hover:text-[#E31B23] transition-colors focus:outline-none"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -171,7 +176,7 @@ export const Navbar: React.FC = () => {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="lg:hidden bg-[#0D0D0D] border-b border-[#222222] px-6 py-6 overflow-hidden"
+            className="lg:hidden bg-[var(--surface)] border-b border-[var(--border)] px-6 py-6 overflow-hidden"
           >
             <div className="flex flex-col gap-3 font-mono text-sm">
               <button
@@ -179,13 +184,13 @@ export const Navbar: React.FC = () => {
                   setMobileMenuOpen(false);
                   handleOpenSearch();
                 }}
-                className="flex items-center justify-between p-3 bg-[#141414] border border-[#262626] text-xs text-[#888888] mb-2"
+                className="flex items-center justify-between p-3 bg-[var(--background)] border border-[var(--border)] text-xs text-[var(--muted)] mb-2"
               >
                 <span className="flex items-center gap-2">
                   <Search className="w-4 h-4 text-[#E31B23]" />
                   <span>{t.palette.searchPlaceholder}</span>
                 </span>
-                <kbd className="text-[10px] bg-[#222222] text-[#888888] px-1.5 py-0.5 border border-[#333333]">
+                <kbd className="text-[10px] bg-[var(--surface)] text-[var(--muted)] px-1.5 py-0.5 border border-[var(--border)]">
                   ⌘K
                 </kbd>
               </button>

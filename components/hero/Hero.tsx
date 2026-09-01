@@ -106,17 +106,17 @@ export const Hero: React.FC<HeroProps> = ({ resumeUrl }) => {
       {/* Top Metadata Bar */}
       <div
         ref={metadataRef}
-        className="flex flex-wrap items-center justify-between gap-4 font-mono text-[11px] md:text-xs text-[#777777] border-b border-[#1A1A1A] pb-4"
+        className="flex flex-wrap items-center justify-between gap-4 font-mono text-[11px] md:text-xs text-[var(--muted)] border-b border-[var(--border)] pb-4"
       >
         <div className="flex items-center gap-2">
           <Terminal className="w-3.5 h-3.5 text-[#E31B23]" />
-          <span className="text-[#A0A0A0]">PORTFOLIO / EDITION 2026</span>
+          <span className="text-[var(--foreground)] font-medium">PORTFOLIO / EDITION 2026</span>
         </div>
 
         <div className="flex items-center gap-6">
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[#A0A0A0]">{t.hero.availableForHire}</span>
+            <span className="text-[var(--foreground)] font-medium">{t.hero.availableForHire}</span>
           </span>
         </div>
       </div>
@@ -136,14 +136,14 @@ export const Hero: React.FC<HeroProps> = ({ resumeUrl }) => {
 
         {/* Big Headline Layer */}
         <div className="relative">
-          <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black uppercase tracking-tighter leading-[0.88] text-[#F5F5F5]">
+          <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black uppercase tracking-tighter leading-[0.88] text-[var(--foreground)]">
             <div className="overflow-hidden">
               <div ref={title1Ref}>I BUILD</div>
             </div>
             <div className="overflow-hidden">
               <div
                 ref={title2Ref}
-                className="text-transparent bg-clip-text bg-gradient-to-r from-[#F5F5F5] via-[#E5E5E5] to-[#777777]"
+                className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--foreground)] via-[var(--foreground)] to-[var(--muted)]"
               >
                 DIGITAL THINGS.
               </div>
@@ -165,7 +165,7 @@ export const Hero: React.FC<HeroProps> = ({ resumeUrl }) => {
           ref={descRef}
           className="mt-10 md:mt-14 grid grid-cols-1 lg:grid-cols-12 gap-8 items-end"
         >
-          <p className="lg:col-span-6 text-[#999999] text-base md:text-lg leading-relaxed font-light">
+          <p className="lg:col-span-6 text-[var(--muted)] text-base md:text-lg leading-relaxed font-light">
             {t.hero.description}
           </p>
 

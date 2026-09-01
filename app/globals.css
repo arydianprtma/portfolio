@@ -2,6 +2,18 @@
 
 @layer base {
   :root {
+    --background: #fafafa;
+    --foreground: #111111;
+    --muted: #666666;
+    --accent: #e31b23;
+    --accent-glow: rgba(227, 27, 35, 0.15);
+    --border: #e5e5e5;
+    --border-light: #d4d4d4;
+    --surface: #f4f4f4;
+    --surface-hover: #eaeaea;
+  }
+
+  .dark {
     --background: #0a0a0a;
     --foreground: #f5f5f5;
     --muted: #777777;
@@ -21,6 +33,7 @@
     scroll-behavior: smooth;
     background-color: var(--background);
     color: var(--foreground);
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   body {
@@ -28,6 +41,7 @@
     color: var(--foreground);
     font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   ::selection {
@@ -52,9 +66,17 @@
   transition: -webkit-text-stroke 0.3s ease, color 0.3s ease;
 }
 
+html:not(.dark) .text-outline-stroke {
+  -webkit-text-stroke: 1px rgba(17, 17, 17, 0.3);
+}
+
 .text-outline-stroke-thick {
   -webkit-text-stroke: 2px rgba(245, 245, 245, 0.4);
   color: transparent;
+}
+
+html:not(.dark) .text-outline-stroke-thick {
+  -webkit-text-stroke: 2px rgba(17, 17, 17, 0.35);
 }
 
 .text-outline-red {
@@ -75,6 +97,12 @@
     linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
 }
 
+html:not(.dark) .bg-grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
@@ -82,11 +110,11 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: var(--background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #262626;
+  background: var(--border-light);
   border-radius: 3px;
 }
 

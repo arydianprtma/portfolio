@@ -37,7 +37,7 @@ export const Logo: React.FC<LogoProps> = ({
           viewBox="0 0 36 36"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-full text-[#F5F5F5] group-hover:text-white transition-colors"
+          className="w-full h-full text-[var(--foreground)] group-hover:text-[#E31B23] transition-colors"
         >
           {/* Background diamond / square frame */}
           <rect
@@ -79,7 +79,7 @@ export const Logo: React.FC<LogoProps> = ({
 
       {/* Brand Typography */}
       <div className="flex items-center gap-1.5 font-display font-black tracking-tight">
-        <span className={`${textSizes[size]} text-[#F5F5F5] group-hover:text-white transition-colors tracking-tighter`}>
+        <span className={`${textSizes[size]} text-[var(--foreground)] group-hover:text-[#E31B23] transition-colors tracking-tighter`}>
           ARDP
         </span>
 

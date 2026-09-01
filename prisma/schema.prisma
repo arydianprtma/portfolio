@@ -35,6 +35,21 @@ model Project {
   updatedAt    DateTime @updatedAt
 }
 
+model Post {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  summary     String   @db.Text
+  content     String   @db.Text
+  coverImage  String?  @db.Text
+  tags        String   @db.Text // Stored as JSON string array
+  readingTime String   @default("4 min read")
+  published   Boolean  @default(true)
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model Profile {
   id         String   @id @default("profile_default")
   name       String

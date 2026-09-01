@@ -55,8 +55,9 @@ async function main() {
   // 2. Seed Admin Credentials
   if (store.admin) {
     await prisma.admin.upsert({
-      where: { email: store.admin.email || "admin@developer.dev" },
+      where: { id: "admin_default" },
       update: {
+        email: store.admin.email || "admin@developer.dev",
         password: store.admin.password,
         twoFactorSecret: store.admin.twoFactorSecret || null,
         twoFactorEnabled: store.admin.twoFactorEnabled ?? false,
@@ -138,7 +139,108 @@ async function main() {
     console.log(`✓ ${store.projects.length} Projects migrated`);
   }
 
-  // 5. Seed Skills
+  // 5. Seed Initial Posts / Articles
+  const initialPosts = [
+    {
+      slug: "building-high-performance-interactive-web-apps",
+      title: "Building High-Performance & Immersive Web Applications",
+      summary:
+        "An architectural deep-dive into orchestrating 60+ FPS web interactions with GSAP ScrollTrigger, Next.js Turbopack, and low overhead server components.",
+      readingTime: "5 min read",
+      tags: JSON.stringify(["Next.js", "Performance", "GSAP", "Architecture"]),
+      coverImage:
+        "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1600&auto=format&fit=crop",
+      content: `In the modern web ecosystem, creating visually stunning experiences must never come at the expense of load speed, battery efficiency, and accessibility.
+
+## 01. The Performance Paradox in Web Motion
+
+Many digital agencies fall into the trap of loading heavy 3D frameworks and unoptimized animation runtimes that stutter on mobile devices and drain CPU cycles.
+
+> High performance is not a post-launch optimization—it is an architectural discipline embedded in every line of code from day one.
+
+When crafting immersive web portfolios and enterprise client dashboards, we prioritize **pure GPU-accelerated compositing** and minimal DOM thrashing.
+
+### Key Architectural Principles:
+1. **Transform and Opacity Only**: Always restrict ScrollTrigger tweens to \`transform\` (\`x\`, \`y\`, \`scale\`) and \`opacity\` to avoid triggering continuous browser layout reflows.
+2. **Server-Rendered Baseline**: Ensure all content, metadata, and OpenGraph tags are prerendered on the server so search engines and users get instantaneous First Contentful Paint (FCP).
+3. **Hardware Acceleration**: Use CSS \`will-change\` sparingly and let modern rendering engines handle GPU layers automatically.
+
+\`\`\`ts
+// Optimized GSAP ScrollTrigger context cleanup
+useEffect(() => {
+  const ctx = gsap.context(() => {
+    gsap.to(elementRef.current, {
+      yPercent: -20,
+      ease: "none",
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 1.5,
+      },
+    });
+  }, containerRef);
+
+  return () => ctx.revert(); // Prevent memory leaks
+}, []);
+\`\`\`
+
+## 02. Summary & The Future of Interactive Web
+
+By combining Next.js 16's fast server streaming with meticulous GSAP timeline orchestration, developers can deliver experiences that feel as responsive and tactile as native desktop applications.`,
+      published: true,
+      publishedAt: new Date("2026-08-30"),
+    },
+    {
+      slug: "mastering-dark-mode-editorial-design-systems",
+      title: "Crafting Cyber-Minimalist Design Systems for the Modern Web",
+      summary:
+        "Why high-contrast editorial dark themes, monospaced data telemetry, and tactical micro-animations create unforgettable digital brand identities.",
+      readingTime: "4 min read",
+      tags: JSON.stringify(["UI/UX", "Design Systems", "Typography", "CSS"]),
+      coverImage:
+        "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1600&auto=format&fit=crop",
+      content: `Visual hierarchy is the cornerstone of great software engineering portfolios. When an engineering recruiter or enterprise client lands on your portfolio, they form an impression in less than 300 milliseconds.
+
+## 01. High-Contrast Monochromatic Foundations
+
+A cyber-minimalist design system relies on a restrained color palette:
+- **Background**: Absolute obsidian dark (\`#0A0A0A\`) with secondary dark elevation (\`#101010\` and \`#141414\`).
+- **Foreground**: Crisp optical white (\`#F5F5F5\`) and calibrated muted grays (\`#888888\`, \`#A0A0A0\`).
+- **Accent Beacon**: Precise Crimson Red (\`#E31B23\`) for focal points, magnetic buttons, and telemetry indicators.
+
+> Constraint breeds aesthetic clarity. By limiting colors to high-contrast tones, typography and content take center stage.
+
+## 02. Monospaced Data Telemetry
+
+Using JetBrains Mono and Space Grotesk side-by-side establishes a tactile balance between high-end editorial magazines and mission-critical terminal dashboards.
+
+\`\`\`css
+/* Custom subtle stroke text outline */
+.text-outline-stroke {
+  -webkit-text-stroke: 1.5px rgba(245, 245, 245, 0.35);
+  color: transparent;
+}
+\`\`\`
+
+## 03. Conclusion
+
+When design systems harmonize with clean code architecture, the result is a website that stands out, respects user attention, and elevates developer credibility.`,
+      published: true,
+      publishedAt: new Date("2026-08-31"),
+    },
+  ];
+
+  for (const post of initialPosts) {
+    await prisma.post.upsert({
+      where: { slug: post.slug },
+      update: post,
+      create: post,
+    });
+  }
+  console.log(`✓ ${initialPosts.length} Initial Articles seeded`);
+
+  // 6. Seed Skills
   if (store.skills && store.skills.length > 0) {
     await prisma.skillCategory.deleteMany({});
     for (let i = 0; i < store.skills.length; i++) {
@@ -154,7 +256,7 @@ async function main() {
     console.log(`✓ ${store.skills.length} Skill categories migrated`);
   }
 
-  // 6. Seed Experiments
+  // 7. Seed Experiments
   if (store.experiments && store.experiments.length > 0) {
     for (const exp of store.experiments) {
       await prisma.experiment.upsert({

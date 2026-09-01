@@ -13,6 +13,7 @@ import {
   LogOut,
   Menu,
   X,
+  BookOpen,
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 
@@ -40,6 +41,7 @@ export const AdminSidebar: React.FC = () => {
     { label: "DASHBOARD", href: "/admin", icon: LayoutDashboard },
     { label: "PROJECTS", href: "/admin/projects", icon: FolderGit2 },
     { label: "NEW PROJECT", href: "/admin/projects/new", icon: PlusCircle },
+    { label: "ARTICLES", href: "/admin/posts", icon: BookOpen },
     { label: "PROFILE & SKILLS", href: "/admin/profile", icon: UserCircle },
     { label: "SETTINGS", href: "/admin/settings", icon: Settings },
   ];
@@ -105,6 +107,10 @@ export const AdminSidebar: React.FC = () => {
                 isActive =
                   pathname === "/admin/projects" ||
                   (pathname.startsWith("/admin/projects/") && pathname !== "/admin/projects/new");
+              } else if (item.href === "/admin/posts") {
+                isActive =
+                  pathname === "/admin/posts" ||
+                  (pathname.startsWith("/admin/posts/") && pathname !== "/admin/posts/new");
               } else {
                 isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
               }

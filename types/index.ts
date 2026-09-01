@@ -19,6 +19,21 @@ export interface Project {
   challenges?: string[];
 }
 
+export interface Post {
+  id?: string;
+  slug: string;
+  title: string;
+  summary: string;
+  content: string;
+  coverImage?: string;
+  tags: string[];
+  readingTime?: string;
+  published?: boolean;
+  publishedAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface SkillCategory {
   title: string;
   skills: string[];
@@ -68,6 +83,7 @@ export interface AnalyticsData {
 
 export interface StoreData {
   projects: Project[];
+  posts?: Post[];
   profile: Profile;
   skills: SkillCategory[];
   experiments: Experiment[];

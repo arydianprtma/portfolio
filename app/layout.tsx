@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { PageTracker } from "@/components/analytics/PageTracker";
+import { CommandPalette } from "@/components/navigation/CommandPalette";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -107,6 +108,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-[#0A0A0A] text-[#F5F5F5] selection:bg-[#E31B23] selection:text-white antialiased">
         <CustomCursor />
+        <CommandPalette />
         <PageTracker />
         {children}
       </body>

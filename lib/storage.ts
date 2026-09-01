@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import {
   Project,
+  Post,
   Profile,
   SkillCategory,
   Experiment,
@@ -43,6 +44,24 @@ function mapPrismaProject(p: any): Project {
   };
 }
 
+// Convert Prisma Post record to App Post type
+function mapPrismaPost(p: any): Post {
+  return {
+    id: p.id,
+    slug: p.slug,
+    title: p.title,
+    summary: p.summary,
+    content: p.content,
+    coverImage: p.coverImage || undefined,
+    tags: parseJson<string[]>(p.tags, []),
+    readingTime: p.readingTime || "4 min read",
+    published: p.published ?? true,
+    publishedAt: p.publishedAt ? new Date(p.publishedAt).toISOString() : new Date().toISOString(),
+    createdAt: p.createdAt ? new Date(p.createdAt).toISOString() : undefined,
+    updatedAt: p.updatedAt ? new Date(p.updatedAt).toISOString() : undefined,
+  };
+}
+
 // Convert Prisma Profile record to App Profile type
 function mapPrismaProfile(p: any): Profile {
   if (!p) {
@@ -75,10 +94,11 @@ function mapPrismaProfile(p: any): Profile {
 
 export async function getStore(): Promise<StoreData> {
   try {
-    const [dbProfile, dbProjects, dbSkills, dbExperiments, dbAdmin, dbAnalytics] =
+    const [dbProfile, dbProjects, dbPosts, dbSkills, dbExperiments, dbAdmin, dbAnalytics] =
       await Promise.all([
         prisma.profile.findFirst(),
         prisma.project.findMany({ orderBy: { number: "asc" } }),
+        prisma.post.findMany({ orderBy: { publishedAt: "desc" } }),
         prisma.skillCategory.findMany({ orderBy: { order: "asc" } }),
         prisma.experiment.findMany(),
         prisma.admin.findFirst(),
@@ -88,6 +108,7 @@ export async function getStore(): Promise<StoreData> {
     return {
       profile: mapPrismaProfile(dbProfile),
       projects: dbProjects.map(mapPrismaProject),
+      posts: dbPosts.map(mapPrismaPost),
       skills: dbSkills.map((s) => ({
         title: s.title,
         skills: parseJson<string[]>(s.skills, []),
@@ -129,6 +150,7 @@ export async function getStore(): Promise<StoreData> {
     console.error("Error reading from Prisma database:", error);
     return {
       projects: [],
+      posts: [],
       profile: {
         name: "BOS",
         moniker: "BOS",
@@ -265,6 +287,9 @@ export async function incrementCvDownload(): Promise<number> {
   }
 }
 
+// -------------------------------------------------------------
+// PROJECTS QUERIES
+// -------------------------------------------------------------
 export async function getProjects(onlyPublished = false): Promise<Project[]> {
   try {
     const where = onlyPublished ? { published: true } : {};
@@ -348,6 +373,88 @@ export async function deleteProject(slug: string): Promise<boolean> {
   }
 }
 
+// -------------------------------------------------------------
+// POSTS / ARTICLES QUERIES
+// -------------------------------------------------------------
+export async function getPosts(onlyPublished = false): Promise<Post[]> {
+  try {
+    const where = onlyPublished ? { published: true } : {};
+    const posts = await prisma.post.findMany({
+      where,
+      orderBy: { publishedAt: "desc" },
+    });
+    return posts.map(mapPrismaPost);
+  } catch (err) {
+    console.error("Error fetching posts:", err);
+    return [];
+  }
+}
+
+export async function getPostBySlug(slug: string): Promise<Post | undefined> {
+  try {
+    const post = await prisma.post.findUnique({
+      where: { slug },
+    });
+    return post ? mapPrismaPost(post) : undefined;
+  } catch (err) {
+    console.error("Error fetching post by slug:", err);
+    return undefined;
+  }
+}
+
+export async function savePost(
+  postData: Partial<Post> & { title: string; content: string }
+): Promise<Post> {
+  const slug =
+    postData.slug ||
+    postData.title
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
+  // Calculate estimated reading time
+  const words = (postData.content || "").split(/\s+/).length;
+  const minutes = Math.max(1, Math.ceil(words / 200));
+  const readingTime = postData.readingTime || `${minutes} min read`;
+
+  const data = {
+    slug,
+    title: postData.title,
+    summary: postData.summary || postData.content.slice(0, 160) + "...",
+    content: postData.content,
+    coverImage: postData.coverImage || null,
+    tags: JSON.stringify(postData.tags || ["Engineering", "Web Dev"]),
+    readingTime,
+    published: postData.published ?? true,
+    publishedAt: postData.publishedAt ? new Date(postData.publishedAt) : new Date(),
+  };
+
+  const post = await prisma.post.upsert({
+    where: { slug },
+    update: data,
+    create: data,
+  });
+
+  return mapPrismaPost(post);
+}
+
+export async function deletePost(slug: string): Promise<boolean> {
+  try {
+    await prisma.post.delete({
+      where: { slug },
+    });
+    return true;
+  } catch (err) {
+    console.error("Error deleting post:", err);
+    return false;
+  }
+}
+
+// -------------------------------------------------------------
+// PROFILE & SKILLS QUERIES
+// -------------------------------------------------------------
 export async function getProfile(): Promise<Profile> {
   try {
     const profile = await prisma.profile.findFirst();

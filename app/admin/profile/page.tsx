@@ -15,6 +15,7 @@ import {
   Sparkles,
   ExternalLink,
   ShieldCheck,
+  Globe,
 } from "lucide-react";
 import { GithubIcon, LinkedinIcon, TwitterIcon } from "@/components/ui/Icons";
 import { CvUploader } from "@/components/admin/CvUploader";
@@ -26,6 +27,9 @@ export default function AdminProfilePage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+
+  // Multi-Language Editor Tab
+  const [langTab, setLangTab] = useState<"en" | "id">("en");
 
   const [newSkillInput, setNewSkillInput] = useState<{ [categoryIndex: number]: string }>({});
 
@@ -47,21 +51,40 @@ export default function AdminProfilePage() {
     fetchData();
   }, []);
 
+  // English Bio handlers
   const handleBioChange = (index: number, val: string) => {
     if (!profile) return;
-    const updated = [...profile.bio];
+    const updated = [...(profile.bio || [])];
     updated[index] = val;
     setProfile({ ...profile, bio: updated });
   };
 
   const handleAddBioParagraph = () => {
     if (!profile) return;
-    setProfile({ ...profile, bio: [...profile.bio, ""] });
+    setProfile({ ...profile, bio: [...(profile.bio || []), ""] });
   };
 
   const handleRemoveBioParagraph = (index: number) => {
     if (!profile) return;
-    setProfile({ ...profile, bio: profile.bio.filter((_, i) => i !== index) });
+    setProfile({ ...profile, bio: (profile.bio || []).filter((_, i) => i !== index) });
+  };
+
+  // Indonesian Bio handlers
+  const handleBioIdChange = (index: number, val: string) => {
+    if (!profile) return;
+    const updated = [...(profile.bioId || [])];
+    updated[index] = val;
+    setProfile({ ...profile, bioId: updated });
+  };
+
+  const handleAddBioIdParagraph = () => {
+    if (!profile) return;
+    setProfile({ ...profile, bioId: [...(profile.bioId || []), ""] });
+  };
+
+  const handleRemoveBioIdParagraph = (index: number) => {
+    if (!profile) return;
+    setProfile({ ...profile, bioId: (profile.bioId || []).filter((_, i) => i !== index) });
   };
 
   // Skill management
@@ -108,10 +131,11 @@ export default function AdminProfilePage() {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to update profile");
+
       setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
+      setTimeout(() => setSuccess(false), 3500);
     } catch (err: any) {
-      setError(err.message || "Failed to update");
+      setError(err.message || "Failed to save profile");
     } finally {
       setSaving(false);
     }
@@ -119,14 +143,20 @@ export default function AdminProfilePage() {
 
   if (loading) {
     return (
-      <div className="py-20 flex flex-col items-center justify-center gap-3 text-[#777777] font-mono text-xs">
+      <div className="py-24 flex flex-col items-center justify-center gap-3 text-[#777777] font-mono text-xs">
         <Loader2 className="w-6 h-6 animate-spin text-[#E31B23]" />
-        <span>Loading developer profile...</span>
+        <span>Loading developer profile from Supabase...</span>
       </div>
     );
   }
 
-  if (!profile) return null;
+  if (!profile) {
+    return (
+      <div className="p-6 bg-red-950/40 border border-red-800 text-red-300 font-mono text-xs">
+        Failed to load profile. Please refresh.
+      </div>
+    );
+  }
 
   const totalSkillsCount = skills.reduce((acc, cat) => acc + cat.skills.length, 0);
 
@@ -174,9 +204,37 @@ export default function AdminProfilePage() {
         <form onSubmit={handleSubmit} className="xl:col-span-8 space-y-8">
           {/* Section 1: Developer Identity */}
           <div className="bg-[#101010] border border-[#1F1F1F] p-6 md:p-8 space-y-6">
-            <h2 className="text-[#E31B23] text-sm uppercase tracking-widest font-semibold border-b border-[#1A1A1A] pb-3">
-              01. Developer Identity
-            </h2>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1A1A1A] pb-3">
+              <h2 className="text-[#E31B23] text-sm uppercase tracking-widest font-semibold">
+                01. Developer Identity
+              </h2>
+
+              {/* Language Selector Tab */}
+              <div className="flex items-center gap-1 bg-[#141414] border border-[#2B2B2B] p-0.5 text-[11px]">
+                <button
+                  type="button"
+                  onClick={() => setLangTab("en")}
+                  className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors ${
+                    langTab === "en"
+                      ? "bg-[#E31B23] text-white"
+                      : "text-[#777777] hover:text-[#F5F5F5]"
+                  }`}
+                >
+                  🇬🇧 English (EN)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLangTab("id")}
+                  className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors ${
+                    langTab === "id"
+                      ? "bg-[#E31B23] text-white"
+                      : "text-[#777777] hover:text-[#F5F5F5]"
+                  }`}
+                >
+                  🇮🇩 Indonesia (ID)
+                </button>
+              </div>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
@@ -190,15 +248,30 @@ export default function AdminProfilePage() {
                 />
               </div>
 
+              {/* Role Title in EN vs ID */}
               <div className="space-y-2">
-                <label className="text-[#A0A0A0] uppercase tracking-wider block">Primary Role / Title</label>
-                <input
-                  type="text"
-                  required
-                  value={profile.role || ""}
-                  onChange={(e) => setProfile({ ...profile, role: e.target.value })}
-                  className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none"
-                />
+                <label className="text-[#A0A0A0] uppercase tracking-wider block flex items-center justify-between">
+                  <span>Primary Role / Title ({langTab.toUpperCase()})</span>
+                  <span className="text-[#E31B23] text-[10px]">{langTab === "en" ? "EN" : "ID"}</span>
+                </label>
+                {langTab === "en" ? (
+                  <input
+                    type="text"
+                    required
+                    value={profile.role || ""}
+                    onChange={(e) => setProfile({ ...profile, role: e.target.value })}
+                    placeholder="e.g. Website Developer"
+                    className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none"
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    value={profile.roleId || ""}
+                    onChange={(e) => setProfile({ ...profile, roleId: e.target.value })}
+                    placeholder="Contoh: Pengembang Web"
+                    className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none"
+                  />
+                )}
               </div>
             </div>
 
@@ -225,24 +298,40 @@ export default function AdminProfilePage() {
               </div>
             </div>
 
+            {/* Availability Status in EN vs ID */}
             <div className="space-y-2">
-              <label className="text-[#A0A0A0] uppercase tracking-wider block">Availability Status Text</label>
-              <input
-                type="text"
-                value={profile.status || ""}
-                onChange={(e) => setProfile({ ...profile, status: e.target.value })}
-                placeholder="Available for select opportunities & collaboration"
-                className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none"
-              />
+              <label className="text-[#A0A0A0] uppercase tracking-wider block flex items-center justify-between">
+                <span>Availability Status Text ({langTab.toUpperCase()})</span>
+                <span className="text-[#E31B23] text-[10px]">{langTab === "en" ? "EN" : "ID"}</span>
+              </label>
+              {langTab === "en" ? (
+                <input
+                  type="text"
+                  value={profile.status || ""}
+                  onChange={(e) => setProfile({ ...profile, status: e.target.value })}
+                  placeholder="Available for select opportunities & collaboration"
+                  className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none"
+                />
+              ) : (
+                <input
+                  type="text"
+                  value={profile.statusId || ""}
+                  onChange={(e) => setProfile({ ...profile, statusId: e.target.value })}
+                  placeholder="Tersedia untuk proyek kolaborasi & kontrak baru"
+                  className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none"
+                />
+              )}
             </div>
 
-            {/* Bio Paragraphs */}
+            {/* Bio Paragraphs for EN or ID */}
             <div className="space-y-3 pt-4 border-t border-[#1A1A1A]">
               <div className="flex items-center justify-between">
-                <label className="text-[#A0A0A0] uppercase tracking-wider block">Bio Paragraphs</label>
+                <label className="text-[#A0A0A0] uppercase tracking-wider block">
+                  Bio Paragraphs ({langTab === "en" ? "English" : "Bahasa Indonesia"})
+                </label>
                 <button
                   type="button"
-                  onClick={handleAddBioParagraph}
+                  onClick={langTab === "en" ? handleAddBioParagraph : handleAddBioIdParagraph}
                   className="text-[#E31B23] hover:underline inline-flex items-center gap-1 text-[11px]"
                 >
                   <Plus className="w-3.5 h-3.5" />
@@ -250,23 +339,59 @@ export default function AdminProfilePage() {
                 </button>
               </div>
 
-              {profile.bio.map((para, idx) => (
-                <div key={idx} className="flex gap-2">
-                  <textarea
-                    rows={3}
-                    value={para || ""}
-                    onChange={(e) => handleBioChange(idx, e.target.value)}
-                    className="flex-1 bg-[#141414] border border-[#262626] focus:border-[#E31B23] p-3 text-[#F5F5F5] outline-none resize-y"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveBioParagraph(idx)}
-                    className="text-[#666666] hover:text-red-400 p-2"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
+              {langTab === "en" ? (
+                (profile.bio || []).map((para, idx) => (
+                  <div key={idx} className="flex gap-2">
+                    <textarea
+                      rows={3}
+                      value={para || ""}
+                      onChange={(e) => handleBioChange(idx, e.target.value)}
+                      placeholder={`English Bio paragraph ${idx + 1}...`}
+                      className="flex-1 bg-[#141414] border border-[#262626] focus:border-[#E31B23] p-3 text-[#F5F5F5] outline-none resize-y"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveBioParagraph(idx)}
+                      className="text-[#666666] hover:text-red-400 p-2"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))
+              ) : (
+                (profile.bioId || []).length === 0 ? (
+                  <div className="p-4 bg-[#141414] border border-[#222222] text-[#777777] text-center space-y-2">
+                    <p>Belum ada bio bahasa Indonesia khusus.</p>
+                    <button
+                      type="button"
+                      onClick={handleAddBioIdParagraph}
+                      className="text-[#E31B23] font-bold text-xs uppercase hover:underline inline-flex items-center gap-1"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Tambah Paragraf Bahasa Indonesia</span>
+                    </button>
+                  </div>
+                ) : (
+                  (profile.bioId || []).map((para, idx) => (
+                    <div key={idx} className="flex gap-2">
+                      <textarea
+                        rows={3}
+                        value={para || ""}
+                        onChange={(e) => handleBioIdChange(idx, e.target.value)}
+                        placeholder={`Paragraf bio bahasa Indonesia ${idx + 1}...`}
+                        className="flex-1 bg-[#141414] border border-[#262626] focus:border-[#E31B23] p-3 text-[#F5F5F5] outline-none resize-y"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveBioIdParagraph(idx)}
+                        className="text-[#666666] hover:text-red-400 p-2"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))
+                )
+              )}
             </div>
 
             {/* Curriculum Vitae (PDF) Upload */}
@@ -333,48 +458,70 @@ export default function AdminProfilePage() {
             </div>
           </div>
 
-          {/* Section 3: Technical Skills Management */}
+          {/* Section 3: Skill Categories & Tags */}
           <div className="bg-[#101010] border border-[#1F1F1F] p-6 md:p-8 space-y-6">
             <div className="flex items-center justify-between border-b border-[#1A1A1A] pb-3">
               <h2 className="text-[#E31B23] text-sm uppercase tracking-widest font-semibold">
-                03. Categorized Skills
+                03. Technical Capabilities ({skills.length} Categories, {totalSkillsCount} Skills)
               </h2>
               <button
                 type="button"
                 onClick={handleAddCategory}
-                className="text-xs bg-[#1C1C1C] hover:bg-[#262626] text-[#F5F5F5] px-3 py-1.5 border border-[#2E2E2E] inline-flex items-center gap-1"
+                className="text-[#E31B23] hover:underline inline-flex items-center gap-1 text-[11px]"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Add Category</span>
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-6">
               {skills.map((category, catIdx) => (
-                <div key={catIdx} className="bg-[#141414] border border-[#222222] p-5 space-y-4">
-                  <div className="flex items-center justify-between gap-2">
+                <div
+                  key={catIdx}
+                  className="bg-[#141414] border border-[#222222] p-5 space-y-4 relative group"
+                >
+                  <div className="flex items-center justify-between gap-4 border-b border-[#1F1F1F] pb-3">
                     <input
                       type="text"
-                      value={category.title || ""}
+                      value={category.title}
                       onChange={(e) => {
                         const updated = [...skills];
                         updated[catIdx].title = e.target.value;
                         setSkills(updated);
                       }}
-                      className="bg-transparent font-bold text-[#F5F5F5] uppercase outline-none border-b border-transparent focus:border-[#E31B23] pb-0.5"
+                      className="font-bold text-sm text-[#F5F5F5] bg-transparent border-none outline-none focus:text-[#E31B23]"
                     />
                     <button
                       type="button"
                       onClick={() => handleRemoveCategory(catIdx)}
-                      className="text-[#666666] hover:text-red-400 p-1"
-                      title="Remove Category"
+                      className="text-[#666666] hover:text-red-400 transition-colors"
+                      title="Delete category"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
 
-                  {/* Add skill into category */}
-                  <div className="flex gap-1.5">
+                  {/* Skill Chips */}
+                  <div className="flex flex-wrap gap-2">
+                    {category.skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="inline-flex items-center gap-1.5 bg-[#181818] border border-[#2B2B2B] text-[#A0A0A0] px-2.5 py-1 text-[11px]"
+                      >
+                        <span>{skill}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveSkill(catIdx, skill)}
+                          className="hover:text-red-400 text-[#666666]"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Add Skill Input */}
+                  <div className="flex gap-2 pt-2">
                     <input
                       type="text"
                       value={newSkillInput[catIdx] || ""}
@@ -387,35 +534,16 @@ export default function AdminProfilePage() {
                           handleAddSkillToCategory(catIdx);
                         }
                       }}
-                      placeholder="New skill (Enter)"
-                      className="flex-1 bg-[#1A1A1A] border border-[#2B2B2B] focus:border-[#E31B23] px-2.5 py-1 text-[11px] text-[#F5F5F5] outline-none"
+                      placeholder="Type skill & press Add (e.g. Next.js, PostgreSQL)"
+                      className="flex-1 bg-[#101010] border border-[#262626] focus:border-[#E31B23] px-3 py-1.5 text-[#F5F5F5] outline-none text-xs"
                     />
                     <button
                       type="button"
                       onClick={() => handleAddSkillToCategory(catIdx)}
-                      className="bg-[#262626] hover:bg-[#E31B23] text-white px-2.5 py-1 text-[10px] uppercase font-semibold"
+                      className="bg-[#202020] hover:bg-[#E31B23] text-white px-3 py-1.5 transition-colors uppercase font-semibold text-[10px]"
                     >
                       Add
                     </button>
-                  </div>
-
-                  {/* Skills chips */}
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    {category.skills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="inline-flex items-center gap-1 bg-[#1A1A1A] border border-[#2B2B2B] text-[#C0C0C0] text-[11px] px-2 py-0.5"
-                      >
-                        <span>{skill}</span>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveSkill(catIdx, skill)}
-                          className="text-[#666666] hover:text-[#E31B23]"
-                        >
-                          ×
-                        </button>
-                      </span>
-                    ))}
                   </div>
                 </div>
               ))}
@@ -423,103 +551,94 @@ export default function AdminProfilePage() {
           </div>
         </form>
 
-        {/* Right Column: Live Profile Preview & Tips Widget (4 cols) */}
+        {/* Right Column: Live Identity Preview Card (4 cols) */}
         <div className="xl:col-span-4 space-y-6 sticky top-6">
-          {/* Live Preview Card */}
-          <div className="bg-[#101010] border border-[#1F1F1F] p-6 space-y-5">
-            <div className="flex items-center justify-between pb-3 border-b border-[#1A1A1A]">
-              <span className="text-[#E31B23] font-semibold text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+          <div className="bg-[#101010] border border-[#1F1F1F] p-6 space-y-6">
+            <div className="flex items-center justify-between border-b border-[#1A1A1A] pb-3">
+              <span className="text-[#E31B23] font-bold text-xs uppercase tracking-widest flex items-center gap-2">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>LIVE PREVIEW CARD</span>
+                <span>LIVE PREVIEW ({langTab.toUpperCase()})</span>
               </span>
-              <span className="text-[10px] text-[#555555]">HOMEPAGE ABOUT</span>
+              <span className="text-[10px] text-[#666666]">HERO & ABOUT</span>
             </div>
 
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#181818] border border-[#2B2B2B] flex items-center justify-center font-display font-bold text-sm text-[#F5F5F5]">
-                  {profile.name?.slice(0, 2).toUpperCase() || "BO"}
-                </div>
-                <div>
-                  <h3 className="font-bold text-[#F5F5F5] text-sm uppercase">
-                    {profile.name || "YOUR NAME"}
-                  </h3>
-                  <p className="text-[11px] text-[#E31B23]">
-                    {profile.role || "SOFTWARE DEVELOPER"}
-                  </p>
-                </div>
+            {/* Profile Avatar / Badge */}
+            <div className="flex items-center gap-4 bg-[#141414] p-4 border border-[#222222]">
+              <div className="w-12 h-12 bg-[#1A1A1A] border border-[#2B2B2B] flex items-center justify-center text-[#E31B23] font-bold font-display text-lg">
+                {profile.name ? profile.name.charAt(0) : "A"}
               </div>
-
-              <div className="p-3 bg-[#141414] border border-[#1F1F1F] space-y-2 text-[11px] text-[#888888]">
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-3.5 h-3.5 text-[#E31B23]" />
-                  <span>{profile.location || "Indonesia"}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Terminal className="w-3.5 h-3.5 text-[#E31B23]" />
-                  <span className="text-emerald-400 font-mono text-[10px]">
-                    {profile.status || "Available for projects"}
-                  </span>
-                </div>
+              <div className="min-w-0">
+                <h3 className="text-sm font-bold text-[#F5F5F5] truncate">{profile.name}</h3>
+                <p className="text-[11px] text-[#777777] truncate">
+                  {langTab === "en" ? (profile.role || "Developer") : (profile.roleId || profile.role || "Pengembang Web")}
+                </p>
               </div>
+            </div>
 
-              <p className="text-[#999999] text-[11px] leading-relaxed line-clamp-4 italic border-l-2 border-l-[#333333] pl-3 py-1">
-                {profile.bio[0] || "Bio paragraph preview..."}
-              </p>
+            {/* Telemetry Preview */}
+            <div className="space-y-2.5 text-xs text-[#888888]">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-3.5 h-3.5 text-[#E31B23]" />
+                <span>{profile.location || "Indonesia"}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Terminal className="w-3.5 h-3.5 text-[#E31B23]" />
+                <span className="text-emerald-400 text-[11px]">
+                  {langTab === "en" ? (profile.status || "Available") : (profile.statusId || profile.status || "Tersedia")}
+                </span>
+              </div>
+            </div>
 
-              {/* Socials quick preview */}
-              <div className="flex items-center gap-2 pt-2 border-t border-[#1A1A1A]">
-                {profile.socials.github && (
-                  <span className="p-1.5 bg-[#181818] border border-[#262626] text-[#A0A0A0]" title="GitHub">
-                    <GithubIcon className="w-3.5 h-3.5" />
-                  </span>
-                )}
-                {profile.socials.linkedin && (
-                  <span className="p-1.5 bg-[#181818] border border-[#262626] text-[#A0A0A0]" title="LinkedIn">
-                    <LinkedinIcon className="w-3.5 h-3.5" />
-                  </span>
-                )}
-                {profile.socials.twitter && (
-                  <span className="p-1.5 bg-[#181818] border border-[#262626] text-[#A0A0A0]" title="Twitter">
-                    <TwitterIcon className="w-3.5 h-3.5" />
-                  </span>
+            {/* Bio Paragraph Preview */}
+            <div className="space-y-2">
+              <span className="text-[10px] text-[#666666] uppercase tracking-wider block">
+                BIO PREVIEW ({langTab.toUpperCase()}):
+              </span>
+              <div className="bg-[#141414] border border-[#222222] p-4 text-xs text-[#A0A0A0] leading-relaxed max-h-48 overflow-y-auto space-y-2 font-sans">
+                {langTab === "en" ? (
+                  (profile.bio || []).map((p, i) => <p key={i}>{p}</p>)
+                ) : (
+                  (profile.bioId && profile.bioId.length > 0) ? (
+                    profile.bioId.map((p, i) => <p key={i}>{p}</p>)
+                  ) : (
+                    <p className="italic text-[#666666]">Belum ada bio bahasa Indonesia. Akan menggunakan bio bahasa Inggris sebagai fallback.</p>
+                  )
                 )}
               </div>
             </div>
-          </div>
 
-          {/* Quick Stats & System Status Widget */}
-          <div className="bg-[#101010] border border-[#1F1F1F] p-6 space-y-4 text-xs">
-            <div className="flex items-center gap-2 text-[#F5F5F5] font-semibold uppercase tracking-wider pb-3 border-b border-[#1A1A1A]">
-              <ShieldCheck className="w-4 h-4 text-[#E31B23]" />
-              <span>CMS STATUS SUMMARY</span>
-            </div>
-
-            <div className="space-y-2.5 text-[#888888]">
-              <div className="flex justify-between">
-                <span>Skill Categories:</span>
-                <span className="text-[#F5F5F5] font-bold">{skills.length}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Total Verified Skills:</span>
-                <span className="text-[#F5F5F5] font-bold">{totalSkillsCount}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Bio Paragraphs:</span>
-                <span className="text-[#F5F5F5] font-bold">{profile.bio.length}</span>
-              </div>
-            </div>
-
-            <div className="pt-3 border-t border-[#1A1A1A]">
-              <a
-                href="/#about"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 bg-[#181818] hover:bg-[#222222] border border-[#2A2A2A] text-[#F5F5F5] py-2.5 uppercase tracking-wider text-[11px] transition-colors"
-              >
-                <span>Preview Public About Section</span>
-                <ExternalLink className="w-3 h-3 text-[#E31B23]" />
-              </a>
+            {/* Social Summary */}
+            <div className="pt-2 flex items-center gap-3">
+              {profile.socials.github && (
+                <a
+                  href={profile.socials.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 bg-[#161616] border border-[#262626] text-[#888888] hover:text-[#F5F5F5] hover:border-[#E31B23] transition-colors"
+                >
+                  <GithubIcon className="w-3.5 h-3.5" />
+                </a>
+              )}
+              {profile.socials.linkedin && (
+                <a
+                  href={profile.socials.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 bg-[#161616] border border-[#262626] text-[#888888] hover:text-[#F5F5F5] hover:border-[#E31B23] transition-colors"
+                >
+                  <LinkedinIcon className="w-3.5 h-3.5" />
+                </a>
+              )}
+              {profile.socials.twitter && (
+                <a
+                  href={profile.socials.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 bg-[#161616] border border-[#262626] text-[#888888] hover:text-[#F5F5F5] hover:border-[#E31B23] transition-colors"
+                >
+                  <TwitterIcon className="w-3.5 h-3.5" />
+                </a>
+              )}
             </div>
           </div>
         </div>

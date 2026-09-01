@@ -3,8 +3,11 @@ export interface Project {
   number: string;
   title: string;
   subtitle: string;
+  subtitleId?: string;
   description: string;
+  descriptionId?: string;
   overview?: string;
+  overviewId?: string;
   category: string;
   year: number;
   technologies: string[];
@@ -15,6 +18,7 @@ export interface Project {
   github?: string;
   demo?: string;
   role?: string;
+  roleId?: string;
   features?: string[];
   challenges?: string[];
 }
@@ -23,8 +27,11 @@ export interface Post {
   id?: string;
   slug: string;
   title: string;
+  titleId?: string;
   summary: string;
+  summaryId?: string;
   content: string;
+  contentId?: string;
   coverImage?: string;
   tags: string[];
   readingTime?: string;
@@ -65,10 +72,14 @@ export interface Profile {
   name: string;
   moniker: string;
   role: string;
+  roleId?: string;
   tagline: string;
+  taglineId?: string;
   bio: string[];
+  bioId?: string[];
   location: string;
   status: string;
+  statusId?: string;
   email: string;
   resumeUrl?: string;
   socials: {

@@ -17,7 +17,7 @@ interface ProjectCardProps {
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const isEven = index % 2 === 1;
   const cardRef = useRef<HTMLDivElement>(null);
   const numberRef = useRef<HTMLDivElement>(null);
@@ -114,13 +114,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
               {project.title}
             </h3>
             <p className="font-mono text-xs md:text-sm text-[#888888] uppercase tracking-wider mt-1 mb-4">
-              {project.subtitle}
+              {language === "id" && project.subtitleId ? project.subtitleId : project.subtitle}
             </p>
           </Link>
 
           {/* Description */}
           <p className="text-[#999999] text-sm md:text-base leading-relaxed mb-6 text-justify">
-            {project.description}
+            {language === "id" && project.descriptionId ? project.descriptionId : project.description}
           </p>
 
           {/* Tech Stack Chips */}

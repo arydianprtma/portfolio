@@ -195,7 +195,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
             <div className="flex items-center gap-2">
               <User className="w-3.5 h-3.5 text-[#E31B23]" />
               <span className="text-[#F5F5F5] font-medium">{profile.name}</span>
-              <span>— {profile.role}</span>
+              <span>— {language === "id" && profile.roleId ? profile.roleId : profile.role}</span>
             </div>
 
             <div className="flex items-center gap-2">
@@ -205,7 +205,9 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
 
             <div className="flex items-center gap-2">
               <Terminal className="w-3.5 h-3.5 text-[#E31B23]" />
-              <span className="text-emerald-400 font-mono text-[11px]">{profile.status}</span>
+              <span className="text-emerald-400 font-mono text-[11px]">
+                {language === "id" && profile.statusId ? profile.statusId : profile.status}
+              </span>
             </div>
 
             {/* Download CV Action Button */}
@@ -231,7 +233,11 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
 
         {/* Right Bio Paragraphs & Core Philosophies */}
         <div ref={rightColRef} className="lg:col-span-7 space-y-6 text-[#A0A0A0] text-base md:text-lg leading-relaxed font-light text-justify">
-          {profile.bio && profile.bio.length > 0 ? (
+          {language === "id" && profile.bioId && profile.bioId.length > 0 ? (
+            profile.bioId.map((paragraph, idx) => (
+              <p key={idx}>{paragraph}</p>
+            ))
+          ) : profile.bio && profile.bio.length > 0 ? (
             profile.bio.map((paragraph, idx) => (
               <p key={idx}>{paragraph}</p>
             ))

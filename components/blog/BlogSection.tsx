@@ -20,7 +20,7 @@ interface BlogSectionProps {
 }
 
 export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const publishedPosts = posts.filter((p) => p.published !== false);
 
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -183,13 +183,13 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
                     data-cursor="link"
                   >
                     <h3 className="font-display text-lg sm:text-xl font-bold uppercase tracking-tight text-[#F5F5F5] group-hover/title:text-[#E31B23] transition-colors duration-300 line-clamp-2 mb-3">
-                      {post.title}
+                      {language === "id" && post.titleId ? post.titleId : post.title}
                     </h3>
                   </Link>
 
                   {/* Summary */}
                   <p className="text-[#888888] text-xs leading-relaxed line-clamp-3 mb-6 font-sans">
-                    {post.summary}
+                    {language === "id" && post.summaryId ? post.summaryId : post.summary}
                   </p>
 
                   {/* Tags */}

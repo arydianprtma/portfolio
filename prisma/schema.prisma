@@ -12,35 +12,42 @@ datasource db {
 }
 
 model Project {
-  id           String   @id @default(cuid())
-  slug         String   @unique
-  number       String
-  title        String
-  subtitle     String
-  description  String
-  overview     String?  @db.Text
-  category     String
-  year         Int
-  technologies String   @db.Text // Stored as JSON string
-  thumbnail    String   @db.Text
-  images       String?  @db.Text // Stored as JSON string
-  featured     Boolean  @default(false)
-  published    Boolean  @default(true)
-  github       String?  @db.Text
-  demo         String?  @db.Text
-  role         String?
-  features     String?  @db.Text // Stored as JSON string
-  challenges   String?  @db.Text // Stored as JSON string
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  number        String
+  title         String
+  subtitle      String
+  subtitleId    String?  @db.Text
+  description   String   @db.Text
+  descriptionId String?  @db.Text
+  overview      String?  @db.Text
+  overviewId    String?  @db.Text
+  category      String
+  year          Int
+  technologies  String   @db.Text // Stored as JSON string
+  thumbnail     String   @db.Text
+  images        String?  @db.Text // Stored as JSON string
+  featured      Boolean  @default(false)
+  published     Boolean  @default(true)
+  github        String?  @db.Text
+  demo          String?  @db.Text
+  role          String?
+  roleId        String?
+  features      String?  @db.Text // Stored as JSON string
+  challenges    String?  @db.Text // Stored as JSON string
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Post {
   id          String   @id @default(cuid())
   slug        String   @unique
   title       String
+  titleId     String?
   summary     String   @db.Text
+  summaryId   String?  @db.Text
   content     String   @db.Text
+  contentId   String?  @db.Text
   coverImage  String?  @db.Text
   tags        String   @db.Text // Stored as JSON string array
   readingTime String   @default("4 min read")
@@ -66,10 +73,14 @@ model Profile {
   name       String
   moniker    String
   role       String
+  roleId     String?
   tagline    String
+  taglineId  String?
   bio        String   @db.Text // Stored as JSON string array
+  bioId      String?  @db.Text // Stored as JSON string array
   location   String
   status     String
+  statusId   String?
   email      String
   resumeUrl  String?  @db.Text
   socials    String   @db.Text // Stored as JSON string object

@@ -21,16 +21,25 @@ async function main() {
 
   // 1. Seed Profile
   if (store.profile) {
+    const idBio = [
+      "Saya adalah seorang Website Developer yang berfokus pada rekayasa aplikasi web berkinerja tinggi serta merancang pengalaman digital yang imersif dan interaktif. Saya memprioritaskan kecepatan akses, stabilitas sistem, dan arsitektur kode yang bersih pada setiap solusi yang saya bangun.",
+      "Dengan memadukan teknologi web modern dan presisi animasi antarmuka, saya merancang produk digital yang responsif dan teroptimasi penuh guna menghadirkan pengalaman visual yang mulus bagi setiap pengguna."
+    ];
+
     await prisma.profile.upsert({
       where: { id: "profile_default" },
       update: {
         name: store.profile.name,
         moniker: store.profile.moniker,
         role: store.profile.role,
+        roleId: "Website Developer",
         tagline: store.profile.tagline,
+        taglineId: "Pengalaman digital interaktif berkinerja tinggi.",
         bio: JSON.stringify(store.profile.bio || []),
+        bioId: JSON.stringify(idBio),
         location: store.profile.location,
         status: store.profile.status,
+        statusId: "Tersedia untuk peluang kerja sama & proyek baru",
         email: store.profile.email,
         resumeUrl: store.profile.resumeUrl || null,
         socials: JSON.stringify(store.profile.socials || {}),
@@ -40,16 +49,20 @@ async function main() {
         name: store.profile.name,
         moniker: store.profile.moniker,
         role: store.profile.role,
+        roleId: "Website Developer",
         tagline: store.profile.tagline,
+        taglineId: "Pengalaman digital interaktif berkinerja tinggi.",
         bio: JSON.stringify(store.profile.bio || []),
+        bioId: JSON.stringify(idBio),
         location: store.profile.location,
         status: store.profile.status,
+        statusId: "Tersedia untuk peluang kerja sama & proyek baru",
         email: store.profile.email,
         resumeUrl: store.profile.resumeUrl || null,
         socials: JSON.stringify(store.profile.socials || {}),
       },
     });
-    console.log("✓ Profile migrated");
+    console.log("✓ Profile migrated with dual language bio");
   }
 
   // 2. Seed Admin Credentials

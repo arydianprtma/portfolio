@@ -231,8 +231,16 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
 
         {/* Right Bio Paragraphs & Core Philosophies */}
         <div ref={rightColRef} className="lg:col-span-7 space-y-6 text-[#A0A0A0] text-base md:text-lg leading-relaxed font-light text-justify">
-          <p>{t.about.bio1}</p>
-          <p>{t.about.bio2}</p>
+          {profile.bio && profile.bio.length > 0 ? (
+            profile.bio.map((paragraph, idx) => (
+              <p key={idx}>{paragraph}</p>
+            ))
+          ) : (
+            <>
+              <p>{t.about.bio1}</p>
+              <p>{t.about.bio2}</p>
+            </>
+          )}
 
           <div className="pt-6 border-t border-[#1F1F1F] grid grid-cols-1 sm:grid-cols-3 gap-6 font-mono text-xs">
             <div>

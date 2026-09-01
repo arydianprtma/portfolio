@@ -14,6 +14,7 @@ import {
   Menu,
   X,
   BookOpen,
+  Mail,
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 
@@ -39,6 +40,7 @@ export const AdminSidebar: React.FC = () => {
 
   const navItems = [
     { label: "DASHBOARD", href: "/admin", icon: LayoutDashboard },
+    { label: "INBOX", href: "/admin/messages", icon: Mail },
     { label: "PROJECTS", href: "/admin/projects", icon: FolderGit2 },
     { label: "NEW PROJECT", href: "/admin/projects/new", icon: PlusCircle },
     { label: "ARTICLES", href: "/admin/posts", icon: BookOpen },
@@ -101,6 +103,8 @@ export const AdminSidebar: React.FC = () => {
               let isActive = false;
               if (item.href === "/admin") {
                 isActive = pathname === "/admin";
+              } else if (item.href === "/admin/messages") {
+                isActive = pathname === "/admin/messages" || pathname.startsWith("/admin/messages/");
               } else if (item.href === "/admin/projects/new") {
                 isActive = pathname === "/admin/projects/new";
               } else if (item.href === "/admin/projects") {

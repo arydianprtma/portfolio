@@ -34,6 +34,17 @@ export interface Post {
   updatedAt?: string;
 }
 
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  subject?: string;
+  budget?: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+}
+
 export interface SkillCategory {
   title: string;
   skills: string[];
@@ -84,6 +95,7 @@ export interface AnalyticsData {
 export interface StoreData {
   projects: Project[];
   posts?: Post[];
+  messages?: ContactMessage[];
   profile: Profile;
   skills: SkillCategory[];
   experiments: Experiment[];

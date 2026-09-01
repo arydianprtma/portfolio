@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import {
   Project,
   Post,
+  ContactMessage,
   Profile,
   SkillCategory,
   Experiment,
@@ -62,18 +63,32 @@ function mapPrismaPost(p: any): Post {
   };
 }
 
+// Convert Prisma ContactMessage record to App ContactMessage type
+function mapPrismaMessage(m: any): ContactMessage {
+  return {
+    id: m.id,
+    name: m.name,
+    email: m.email,
+    subject: m.subject || undefined,
+    budget: m.budget || undefined,
+    message: m.message,
+    read: m.read ?? false,
+    createdAt: m.createdAt ? new Date(m.createdAt).toISOString() : new Date().toISOString(),
+  };
+}
+
 // Convert Prisma Profile record to App Profile type
 function mapPrismaProfile(p: any): Profile {
   if (!p) {
     return {
-      name: "BOS",
-      moniker: "BOS",
-      role: "Software Developer",
-      tagline: "I build digital things.",
+      name: "ARY DIAN PRATAMA",
+      moniker: "ARY DIAN",
+      role: "Website Developer",
+      tagline: "High-performance immersive digital experiences.",
       bio: [],
       location: "Indonesia",
       status: "Available for work",
-      email: "contact@developer.dev",
+      email: "arydianprtma@gmail.com",
       socials: { github: "", linkedin: "" },
     };
   }
@@ -94,11 +109,12 @@ function mapPrismaProfile(p: any): Profile {
 
 export async function getStore(): Promise<StoreData> {
   try {
-    const [dbProfile, dbProjects, dbPosts, dbSkills, dbExperiments, dbAdmin, dbAnalytics] =
+    const [dbProfile, dbProjects, dbPosts, dbMessages, dbSkills, dbExperiments, dbAdmin, dbAnalytics] =
       await Promise.all([
         prisma.profile?.findFirst ? prisma.profile.findFirst() : Promise.resolve(null),
         prisma.project?.findMany ? prisma.project.findMany({ orderBy: { number: "asc" } }) : Promise.resolve([]),
         prisma.post?.findMany ? prisma.post.findMany({ orderBy: { publishedAt: "desc" } }) : Promise.resolve([]),
+        prisma.contactMessage?.findMany ? prisma.contactMessage.findMany({ orderBy: { createdAt: "desc" } }) : Promise.resolve([]),
         prisma.skillCategory?.findMany ? prisma.skillCategory.findMany({ orderBy: { order: "asc" } }) : Promise.resolve([]),
         prisma.experiment?.findMany ? prisma.experiment.findMany() : Promise.resolve([]),
         prisma.admin?.findFirst ? prisma.admin.findFirst() : Promise.resolve(null),
@@ -109,6 +125,7 @@ export async function getStore(): Promise<StoreData> {
       profile: mapPrismaProfile(dbProfile),
       projects: dbProjects.map(mapPrismaProject),
       posts: dbPosts.map(mapPrismaPost),
+      messages: dbMessages.map(mapPrismaMessage),
       skills: dbSkills.map((s) => ({
         title: s.title,
         skills: parseJson<string[]>(s.skills, []),
@@ -151,15 +168,16 @@ export async function getStore(): Promise<StoreData> {
     return {
       projects: [],
       posts: [],
+      messages: [],
       profile: {
-        name: "BOS",
-        moniker: "BOS",
-        role: "Software Developer",
-        tagline: "I build digital things.",
+        name: "ARY DIAN PRATAMA",
+        moniker: "ARY DIAN",
+        role: "Website Developer",
+        tagline: "High-performance immersive digital experiences.",
         bio: [],
         location: "Indonesia",
         status: "Available for work",
-        email: "contact@developer.dev",
+        email: "arydianprtma@gmail.com",
         socials: { github: "", linkedin: "" },
       },
       skills: [],
@@ -449,6 +467,90 @@ export async function deletePost(slug: string): Promise<boolean> {
   } catch (err) {
     console.error("Error deleting post:", err);
     return false;
+  }
+}
+
+// -------------------------------------------------------------
+// CONTACT INQUIRIES / INBOX QUERIES
+// -------------------------------------------------------------
+export async function getMessages(): Promise<ContactMessage[]> {
+  try {
+    const messages = await prisma.contactMessage.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    return messages.map(mapPrismaMessage);
+  } catch (err) {
+    console.error("Error fetching contact messages:", err);
+    return [];
+  }
+}
+
+export async function getMessageById(id: string): Promise<ContactMessage | undefined> {
+  try {
+    const msg = await prisma.contactMessage.findUnique({
+      where: { id },
+    });
+    return msg ? mapPrismaMessage(msg) : undefined;
+  } catch (err) {
+    console.error("Error fetching message by id:", err);
+    return undefined;
+  }
+}
+
+export async function saveContactMessage(data: {
+  name: string;
+  email: string;
+  subject?: string;
+  budget?: string;
+  message: string;
+}): Promise<ContactMessage> {
+  const record = await prisma.contactMessage.create({
+    data: {
+      name: data.name,
+      email: data.email,
+      subject: data.subject || null,
+      budget: data.budget || null,
+      message: data.message,
+      read: false,
+    },
+  });
+
+  return mapPrismaMessage(record);
+}
+
+export async function markMessageAsRead(id: string, read = true): Promise<boolean> {
+  try {
+    await prisma.contactMessage.update({
+      where: { id },
+      data: { read },
+    });
+    return true;
+  } catch (err) {
+    console.error("Error marking message as read:", err);
+    return false;
+  }
+}
+
+export async function deleteMessage(id: string): Promise<boolean> {
+  try {
+    await prisma.contactMessage.delete({
+      where: { id },
+    });
+    return true;
+  } catch (err) {
+    console.error("Error deleting message:", err);
+    return false;
+  }
+}
+
+export async function getUnreadMessagesCount(): Promise<number> {
+  try {
+    return await prisma.contactMessage.count({
+      where: { read: false },
+    });
+  } catch (err) {
+    console.error("Error counting unread messages:", err);
+    return 0;
   }
 }
 

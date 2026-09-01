@@ -96,26 +96,28 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
           }`}
         >
           {/* Metadata Row */}
-          <div className="flex items-center gap-3 font-mono text-xs text-[var(--muted)] mb-3">
+          <div className="flex flex-wrap items-center gap-2 font-mono text-xs text-[var(--muted)] mb-3">
             <span className="text-[#E31B23] font-bold">{project.number}</span>
-            <span>/</span>
+            <span className="text-[var(--border)]">/</span>
             <span className="text-[var(--foreground)] uppercase tracking-wider font-medium">{project.category}</span>
-            <span>/</span>
+            <span className="text-[var(--border)]">/</span>
             <span>{project.year}</span>
           </div>
 
           {/* Project Title */}
           <Link
             href={`/work/${project.slug}`}
-            className="group/title block"
+            className="group/title block mb-4"
             data-cursor="link"
           >
-            <h3 className="font-display text-3xl md:text-5xl font-black uppercase tracking-tight text-[var(--foreground)] group-hover/title:text-[#E31B23] transition-colors duration-500">
+            <h3 className="font-display text-2xl sm:text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-[var(--foreground)] leading-[1.15] group-hover/title:text-[#E31B23] transition-colors duration-300">
               {project.title}
             </h3>
-            <p className="font-mono text-xs md:text-sm text-[var(--muted)] uppercase tracking-wider mt-1 mb-4">
-              {language === "id" && project.subtitleId ? project.subtitleId : project.subtitle}
-            </p>
+            {(language === "id" && project.subtitleId ? project.subtitleId : project.subtitle) && (
+              <p className="font-mono text-xs text-[var(--muted)] uppercase tracking-wider mt-2.5 leading-relaxed">
+                {language === "id" && project.subtitleId ? project.subtitleId : project.subtitle}
+              </p>
+            )}
           </Link>
 
           {/* Description */}

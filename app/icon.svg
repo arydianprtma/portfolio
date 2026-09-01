@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" fill="none">
+  <!-- Obsidian Background -->
+  <rect width="36" height="36" rx="8" fill="#0A0A0A"/>
+  
+  <!-- Outer Cyber Border -->
+  <rect x="1.5" y="1.5" width="33" height="33" rx="6.5" stroke="#222222" stroke-width="1.2"/>
+  
+  <!-- Precision 'A' Apex & Foundation -->
+  <path d="M 18 7 L 9 27 L 13.5 27 L 18 16.5 L 22.5 27 L 27 27 Z" fill="#F5F5F5"/>
+  
+  <!-- 'R' & 'P' Loop Interlock Accent in Crimson Red -->
+  <path d="M 18 11.5 C 23.5 11.5 25.5 15 25.5 18.5 C 25.5 22 22 24 18 24" stroke="#E31B23" stroke-width="2.2" stroke-linecap="round"/>
+  
+  <!-- Inner Red Core Point -->
+  <circle cx="18" cy="18" r="2.2" fill="#E31B23"/>
+</svg>

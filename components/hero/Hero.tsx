@@ -5,12 +5,14 @@ import gsap from "gsap";
 import { ArrowDown, Code2, Terminal, Cpu, Download } from "lucide-react";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { trackCvDownload } from "@/components/analytics/PageTracker";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface HeroProps {
   resumeUrl?: string;
 }
 
 export const Hero: React.FC<HeroProps> = ({ resumeUrl }) => {
+  const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
   const metadataRef = useRef<HTMLDivElement>(null);
   const lineRef = useRef<HTMLSpanElement>(null);
@@ -114,7 +116,7 @@ export const Hero: React.FC<HeroProps> = ({ resumeUrl }) => {
         <div className="flex items-center gap-6">
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[#A0A0A0]">AVAILABLE FOR PROJECTS</span>
+            <span className="text-[#A0A0A0]">{t.hero.availableForHire}</span>
           </span>
         </div>
       </div>
@@ -128,7 +130,7 @@ export const Hero: React.FC<HeroProps> = ({ resumeUrl }) => {
         >
           <span ref={lineRef} className="h-[2px] w-8 bg-[#E31B23]" />
           <span className="font-mono text-xs md:text-sm tracking-[0.25em] text-[#E31B23] font-semibold">
-            SOFTWARE DEVELOPER & SYSTEMS BUILDER
+            {t.hero.softwareDeveloper} & {t.hero.creativeEngineer}
           </span>
         </div>
 
@@ -154,7 +156,7 @@ export const Hero: React.FC<HeroProps> = ({ resumeUrl }) => {
             className="hidden lg:block absolute -bottom-10 right-4 font-display text-9xl font-black uppercase tracking-tighter text-outline-stroke opacity-15 pointer-events-none select-none -z-10"
             aria-hidden="true"
           >
-            BOS_2026
+            ARDP_2026
           </div>
         </div>
 
@@ -164,12 +166,12 @@ export const Hero: React.FC<HeroProps> = ({ resumeUrl }) => {
           className="mt-10 md:mt-14 grid grid-cols-1 lg:grid-cols-12 gap-8 items-end"
         >
           <p className="lg:col-span-6 text-[#999999] text-base md:text-lg leading-relaxed font-light">
-            Architecting robust web applications, specialized system software, custom native modding frameworks, and high-performance interactive experiences.
+            {t.hero.description}
           </p>
 
           <div className="lg:col-span-6 flex flex-wrap items-center lg:justify-end gap-3">
             <MagneticButton href="#work" variant="primary" data-cursor="link">
-              EXPLORE WORKS
+              {t.hero.exploreWorks}
             </MagneticButton>
 
             {resumeUrl ? (
@@ -183,7 +185,7 @@ export const Hero: React.FC<HeroProps> = ({ resumeUrl }) => {
                 className="group"
               >
                 <Download className="w-3.5 h-3.5 text-[#E31B23] group-hover:text-white transition-colors" />
-                <span>DOWNLOAD CV</span>
+                <span>{t.hero.downloadCv}</span>
               </MagneticButton>
             ) : (
               <MagneticButton
@@ -193,12 +195,12 @@ export const Hero: React.FC<HeroProps> = ({ resumeUrl }) => {
                 className="group"
               >
                 <Download className="w-3.5 h-3.5 text-[#E31B23] group-hover:text-white transition-colors" />
-                <span>DOWNLOAD CV</span>
+                <span>{t.hero.downloadCv}</span>
               </MagneticButton>
             )}
 
             <MagneticButton href="#contact" variant="outline" data-cursor="link">
-              CONTACT ME
+              {t.nav.contact}
             </MagneticButton>
           </div>
         </div>
@@ -216,7 +218,7 @@ export const Hero: React.FC<HeroProps> = ({ resumeUrl }) => {
           </div>
           <div className="flex items-center gap-2">
             <Cpu className="w-3.5 h-3.5 text-[#E31B23]" />
-            <span>SYSTEMS / MODS</span>
+            <span>INTERACTIVE / WEB</span>
           </div>
         </div>
 
@@ -225,7 +227,7 @@ export const Hero: React.FC<HeroProps> = ({ resumeUrl }) => {
           className="group flex items-center gap-2 text-[#777777] hover:text-[#F5F5F5] transition-colors"
           data-cursor="link"
         >
-          <span className="text-[10px] tracking-widest uppercase">SCROLL TO DISCOVER</span>
+          <span className="text-[10px] tracking-widest uppercase">{t.hero.scrollDown}</span>
           <ArrowDown className="w-3.5 h-3.5 text-[#E31B23] animate-bounce" />
         </a>
       </div>

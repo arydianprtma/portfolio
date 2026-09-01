@@ -7,6 +7,7 @@ import { Profile } from "@/types";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { Terminal, User, MapPin, Download, FileText } from "lucide-react";
 import { trackCvDownload } from "@/components/analytics/PageTracker";
+import { useLanguage } from "@/context/LanguageContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -17,6 +18,7 @@ interface AboutSectionProps {
 }
 
 export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
+  const { t, language } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
   const svgPath1Ref = useRef<SVGPathElement>(null);
   const svgPath2Ref = useRef<SVGPathElement>(null);
@@ -27,7 +29,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
   const rightColRef = useRef<HTMLDivElement>(null);
 
   // Split name into solid top line and outline bottom line
-  const nameParts = (profile.name || "BOS DEV").trim().split(" ");
+  const nameParts = (profile.name || "ARY DIAN PRATAMA").trim().split(" ");
   let firstName = "";
   let lastName = "";
 
@@ -115,9 +117,9 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
     <section
       id="about"
       ref={sectionRef}
-      className="py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto border-t border-[#1A1A1A] relative overflow-hidden"
+      className="py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto border-t border-[#1A1A1A] relative overflow-hidden scroll-mt-10"
     >
-      <SectionLabel label="ABOUT ME" number="01." />
+      <SectionLabel label={t.about.sectionLabel} number="01." />
 
       {/* Giant Editorial Name Display (Solid Top + Outlined Bottom with Red Curve Accent - Fully Symmetrical) */}
       <div className="relative py-12 md:py-24 my-6 flex flex-col items-center justify-center text-center select-none w-full">
@@ -151,7 +153,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
           ref={roleSubRef}
           className="font-mono text-xs md:text-sm text-[#888888] tracking-[0.25em] lowercase mb-4 md:mb-6 text-center"
         >
-          i am {profile.role ? profile.role.toLowerCase() : "software developer"}
+          {t.about.whoAmI.toLowerCase()} — {profile.role ? profile.role.toLowerCase() : "website developer"}
         </div>
 
         {/* Two-Line Typography: Solid + Outline (Centered & Symmetrical) */}
@@ -219,7 +221,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
                   data-cursor="link"
                 >
                   <FileText className="w-4 h-4 text-[#E31B23] group-hover:text-white transition-colors" />
-                  <span>DOWNLOAD CV / RESUME</span>
+                  <span>{t.about.downloadResume}</span>
                   <Download className="w-3.5 h-3.5 ml-1 text-[#777777] group-hover:text-white transition-colors" />
                 </a>
               </div>
@@ -229,22 +231,21 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
 
         {/* Right Bio Paragraphs & Core Philosophies */}
         <div ref={rightColRef} className="lg:col-span-7 space-y-6 text-[#A0A0A0] text-base md:text-lg leading-relaxed font-light text-justify">
-          {profile.bio.map((paragraph, idx) => (
-            <p key={idx}>{paragraph}</p>
-          ))}
+          <p>{t.about.bio1}</p>
+          <p>{t.about.bio2}</p>
 
           <div className="pt-6 border-t border-[#1F1F1F] grid grid-cols-1 sm:grid-cols-3 gap-6 font-mono text-xs">
             <div>
-              <span className="text-[#E31B23] block mb-1 font-semibold">01 / ARCHITECTURE</span>
-              <p className="text-[#777777]">Clean modular abstractions with low overhead.</p>
+              <span className="text-[#E31B23] block mb-1 font-semibold">{t.about.philosophy1Title}</span>
+              <p className="text-[#777777]">{t.about.philosophy1Desc}</p>
             </div>
             <div>
-              <span className="text-[#E31B23] block mb-1 font-semibold">02 / INTERACTION</span>
-              <p className="text-[#777777]">Purposeful motion without compromising speed.</p>
+              <span className="text-[#E31B23] block mb-1 font-semibold">{t.about.philosophy2Title}</span>
+              <p className="text-[#777777]">{t.about.philosophy2Desc}</p>
             </div>
             <div>
-              <span className="text-[#E31B23] block mb-1 font-semibold">03 / PRECISION</span>
-              <p className="text-[#777777]">High attention to UI details and native telemetry.</p>
+              <span className="text-[#E31B23] block mb-1 font-semibold">{t.about.philosophy3Title}</span>
+              <p className="text-[#777777]">{t.about.philosophy3Desc}</p>
             </div>
           </div>
         </div>

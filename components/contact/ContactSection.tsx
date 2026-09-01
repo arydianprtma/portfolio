@@ -17,12 +17,14 @@ import {
 } from "lucide-react";
 import { trackCvDownload } from "@/components/analytics/PageTracker";
 import { GithubIcon, LinkedinIcon, TwitterIcon } from "@/components/ui/Icons";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface ContactSectionProps {
   profile: Profile;
 }
 
 export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
+  const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
 
   // Form states
@@ -89,22 +91,22 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
       {/* Decorative Red Blur Accent */}
       <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-[#E31B23]/10 rounded-full blur-[100px] pointer-events-none -z-10" />
 
-      <SectionLabel label="CONTACT & INQUIRIES" number="06." />
+      <SectionLabel label={t.contact.sectionLabel} number="06." />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mt-6">
         {/* Left Column: Headline & Interactive Inquiry Form (7 cols) */}
         <div className="lg:col-span-7 space-y-8">
           <div>
             <h2 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight text-[#F5F5F5] leading-[0.9]">
-              HAVE A PROJECT
+              {t.contact.headlinePart1}
               <br />
-              IN MIND?
+              {t.contact.headlinePart2}
               <br />
-              <span className="text-[#E31B23]">LET&apos;S TALK.</span>
+              <span className="text-[#E31B23]">{t.contact.headlinePart3}</span>
             </h2>
 
             <p className="mt-6 text-[#888888] text-base md:text-lg font-light leading-relaxed">
-              I am currently open to consulting, contract work, high-impact development roles, or custom systems engineering projects.
+              {t.contact.description}
             </p>
           </div>
 
@@ -113,17 +115,17 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
             <div className="flex items-center justify-between border-b border-[#1C1C1C] pb-3">
               <span className="text-[#E31B23] font-bold uppercase tracking-widest flex items-center gap-2">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>SEND DIRECT INQUIRY</span>
+                <span>{t.contact.directInquiry}</span>
               </span>
-              <span className="text-[10px] text-[#666666]">100% ENCRYPTED & LOGGED</span>
+              <span className="text-[10px] text-[#666666]">{t.contact.encryptedNotice}</span>
             </div>
 
             {success && (
               <div className="p-4 bg-emerald-950/50 border border-emerald-800 text-emerald-300 flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-bold block">Thank you! Your message has been sent.</span>
-                  <span className="text-[11px] text-emerald-400/80">I will review your inquiry and respond to your email as soon as possible.</span>
+                  <span className="font-bold block">{t.contact.successTitle}</span>
+                  <span className="text-[11px] text-emerald-400/80">{t.contact.successDesc}</span>
                 </div>
               </div>
             )}
@@ -139,7 +141,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-[#A0A0A0] uppercase tracking-wider block text-[11px]">
-                    YOUR NAME *
+                    {t.contact.yourName}
                   </label>
                   <input
                     type="text"
@@ -153,7 +155,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
 
                 <div className="space-y-1.5">
                   <label className="text-[#A0A0A0] uppercase tracking-wider block text-[11px]">
-                    EMAIL ADDRESS *
+                    {t.contact.emailAddress}
                   </label>
                   <input
                     type="email"
@@ -169,7 +171,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-[#A0A0A0] uppercase tracking-wider block text-[11px]">
-                    PROJECT TOPIC / SERVICE
+                    {t.contact.topicService}
                   </label>
                   <input
                     type="text"
@@ -182,7 +184,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
 
                 <div className="space-y-1.5">
                   <label className="text-[#A0A0A0] uppercase tracking-wider block text-[11px]">
-                    ESTIMATED BUDGET / SCOPE
+                    {t.contact.budgetScope}
                   </label>
                   <input
                     type="text"
@@ -196,14 +198,14 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
 
               <div className="space-y-1.5">
                 <label className="text-[#A0A0A0] uppercase tracking-wider block text-[11px]">
-                  YOUR MESSAGE *
+                  {t.contact.yourMessage}
                 </label>
                 <textarea
                   rows={4}
                   required
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="Tell me about your project goals, timeline, or requirements..."
+                  placeholder={t.contact.messagePlaceholder}
                   className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] p-3.5 text-[#F5F5F5] outline-none resize-none leading-relaxed text-xs"
                 />
               </div>
@@ -219,7 +221,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
                 ) : (
                   <Send className="w-4 h-4" />
                 )}
-                <span>{loading ? "TRANSMITTING INQUIRY..." : "SEND INQUIRY"}</span>
+                <span>{loading ? t.contact.transmitting : t.contact.sendInquiry}</span>
               </button>
             </form>
           </div>
@@ -232,7 +234,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
             <div className="flex items-center gap-3">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
               <span className="font-mono text-xs text-[#F5F5F5] uppercase tracking-wider font-semibold">
-                AVAILABLE FOR HIRE
+                {t.contact.availableForHireBadge}
               </span>
             </div>
             <span className="font-mono text-[10px] text-[#777777] uppercase">Q3 / 2026</span>
@@ -241,7 +243,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
           {/* Email Copy Card */}
           <div className="bg-[#121212] border border-[#222222] p-6 hover:border-[#E31B23]/50 transition-colors">
             <span className="font-mono text-[10px] text-[#666666] tracking-widest uppercase block mb-2">
-              DIRECT EMAIL DISPATCH
+              {t.contact.directEmailDispatch}
             </span>
             <div className="flex items-center justify-between gap-3">
               <a
@@ -278,7 +280,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
             >
               <div className="flex items-center gap-3">
                 <FileText className="w-4 h-4 text-[#E31B23]" />
-                <span className="font-semibold uppercase tracking-wider">DOWNLOAD CURRICULUM VITAE</span>
+                <span className="font-semibold uppercase tracking-wider">{t.contact.downloadCvBadge}</span>
               </div>
               <Download className="w-4 h-4 text-[#777777] group-hover:text-[#E31B23] transition-colors" />
             </a>
@@ -294,7 +296,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
             >
               <div className="flex items-center gap-3">
                 <GithubIcon className="w-4 h-4 text-[#777777] group-hover:text-[#E31B23] transition-colors" />
-                <span className="tracking-wider">GITHUB PROFILE</span>
+                <span className="tracking-wider">{t.contact.githubProfile}</span>
               </div>
               <ArrowUpRight className="w-3.5 h-3.5 text-[#555555] group-hover:text-[#E31B23] transition-colors" />
             </a>
@@ -307,7 +309,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
             >
               <div className="flex items-center gap-3">
                 <LinkedinIcon className="w-4 h-4 text-[#777777] group-hover:text-[#E31B23] transition-colors" />
-                <span className="tracking-wider">LINKEDIN PROFILE</span>
+                <span className="tracking-wider">{t.contact.linkedinProfile}</span>
               </div>
               <ArrowUpRight className="w-3.5 h-3.5 text-[#555555] group-hover:text-[#E31B23] transition-colors" />
             </a>
@@ -321,7 +323,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
               >
                 <div className="flex items-center gap-3">
                   <TwitterIcon className="w-4 h-4 text-[#777777] group-hover:text-[#E31B23] transition-colors" />
-                  <span className="tracking-wider">TWITTER / X</span>
+                  <span className="tracking-wider">{t.contact.twitterProfile}</span>
                 </div>
                 <ArrowUpRight className="w-3.5 h-3.5 text-[#555555] group-hover:text-[#E31B23] transition-colors" />
               </a>

@@ -4,6 +4,7 @@ import React from "react";
 import { Experiment } from "@/types";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { GithubIcon } from "@/components/ui/Icons";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface ExperimentsSectionProps {
   experiments: Experiment[];
@@ -12,9 +13,11 @@ interface ExperimentsSectionProps {
 export const ExperimentsSection: React.FC<ExperimentsSectionProps> = ({
   experiments,
 }) => {
+  const { t } = useLanguage();
+
   return (
-    <section id="experiments" className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto border-t border-[#1A1A1A]">
-      <SectionLabel label="LAB & EXPERIMENTS" number="04." />
+    <section id="experiments" className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto border-t border-[#1A1A1A] scroll-mt-10">
+      <SectionLabel label={t.experiments.sectionLabel} number="05." />
 
       <div className="flex flex-col border-t border-[#1F1F1F]">
         {experiments.map((exp, idx) => (

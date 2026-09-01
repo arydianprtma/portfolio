@@ -5,19 +5,22 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X, ArrowUpRight, Search } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { useLanguage } from "@/context/LanguageContext";
 
 export const Navbar: React.FC = () => {
+  const { t } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { label: "ABOUT", href: "/#about", id: "about" },
-    { label: "WORK", href: "/#work", id: "work" },
-    { label: "SKILLS", href: "/#skills", id: "skills" },
-    { label: "BLOG", href: "/#blog", id: "blog" },
-    { label: "EXPERIMENTS", href: "/#experiments", id: "experiments" },
-    { label: "CONTACT", href: "/#contact", id: "contact" },
+    { label: t.nav.about, href: "/#about", id: "about" },
+    { label: t.nav.work, href: "/#work", id: "work" },
+    { label: t.nav.skills, href: "/#skills", id: "skills" },
+    { label: t.nav.blog, href: "/#blog", id: "blog" },
+    { label: t.nav.experiments, href: "/#experiments", id: "experiments" },
+    { label: t.nav.contact, href: "/#contact", id: "contact" },
   ];
 
   useEffect(() => {
@@ -86,7 +89,7 @@ export const Navbar: React.FC = () => {
 
             return (
               <Link
-                key={link.label}
+                key={link.id}
                 href={link.href}
                 className={`group relative font-mono text-xs uppercase tracking-widest transition-colors py-1 ${
                   isActive
@@ -115,8 +118,12 @@ export const Navbar: React.FC = () => {
           })}
         </nav>
 
-        {/* Quick Search & CTA Right */}
+        {/* Quick Search, Language Switcher & CTA Right */}
         <div className="hidden sm:flex items-center gap-3">
+          {/* Language Switcher */}
+          <LanguageSwitcher />
+
+          {/* Command Palette Search Trigger */}
           <button
             onClick={handleOpenSearch}
             className="inline-flex items-center gap-2 font-mono text-xs text-[#888888] hover:text-[#F5F5F5] bg-[#121212] hover:bg-[#181818] border border-[#262626] hover:border-[#E31B23]/50 px-3 py-1.5 transition-colors group"
@@ -124,7 +131,7 @@ export const Navbar: React.FC = () => {
             data-cursor="link"
           >
             <Search className="w-3.5 h-3.5 text-[#E31B23] group-hover:scale-110 transition-transform" />
-            <span className="text-[11px] hidden md:inline">SEARCH</span>
+            <span className="text-[11px] hidden md:inline">{t.nav.search}</span>
             <kbd className="text-[9px] bg-[#1C1C1C] text-[#777777] border border-[#2B2B2B] px-1 py-0.5 ml-0.5">
               ⌘K
             </kbd>
@@ -135,19 +142,22 @@ export const Navbar: React.FC = () => {
             className="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-[#F5F5F5] hover:text-[#E31B23] transition-colors border border-[#262626] hover:border-[#E31B23] px-3.5 py-1.5 bg-[#121212]"
             data-cursor="link"
           >
-            <span>LET&apos;S TALK</span>
+            <span>{t.nav.letsTalk}</span>
             <ArrowUpRight className="w-3.5 h-3.5 text-[#E31B23]" />
           </a>
         </div>
 
-        {/* Mobile Hamburger Button */}
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden p-2 text-[#F5F5F5] hover:text-[#E31B23] transition-colors focus:outline-none"
-          aria-label="Toggle menu"
-        >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        {/* Mobile Right Controls: Language + Hamburger */}
+        <div className="flex lg:hidden items-center gap-2">
+          <LanguageSwitcher showIcon={false} />
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 text-[#F5F5F5] hover:text-[#E31B23] transition-colors focus:outline-none"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Drawer Menu */}
@@ -170,7 +180,7 @@ export const Navbar: React.FC = () => {
               >
                 <span className="flex items-center gap-2">
                   <Search className="w-4 h-4 text-[#E31B23]" />
-                  <span>Search commands & projects...</span>
+                  <span>{t.palette.searchPlaceholder}</span>
                 </span>
                 <kbd className="text-[10px] bg-[#222222] text-[#888888] px-1.5 py-0.5 border border-[#333333]">
                   ⌘K
@@ -182,7 +192,7 @@ export const Navbar: React.FC = () => {
 
                 return (
                   <Link
-                    key={link.label}
+                    key={link.id}
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center justify-between py-2.5 px-2 border-b border-[#1A1A1A] transition-all ${
@@ -205,7 +215,7 @@ export const Navbar: React.FC = () => {
                   onClick={() => setMobileMenuOpen(false)}
                   className="w-full inline-flex items-center justify-center gap-2 bg-[#E31B23] text-white py-3 text-xs tracking-wider uppercase font-semibold"
                 >
-                  GET IN TOUCH
+                  {t.nav.letsTalk}
                   <ArrowUpRight className="w-4 h-4" />
                 </a>
               </div>

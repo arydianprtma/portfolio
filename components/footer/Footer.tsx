@@ -3,8 +3,11 @@
 import React from "react";
 import { ArrowUp } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import { useLanguage } from "@/context/LanguageContext";
 
 export const Footer: React.FC = () => {
+  const { t } = useLanguage();
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -16,12 +19,12 @@ export const Footer: React.FC = () => {
           <Logo size="sm" showSubtext={false} />
           <span>© {new Date().getFullYear()}</span>
           <span>—</span>
-          <span>ALL RIGHTS RESERVED</span>
+          <span>{t.footer.allRightsReserved}</span>
         </div>
 
         <div className="flex items-center gap-6">
           <span className="text-[11px] text-[#444444] hidden md:inline-block">
-            BUILT WITH NEXT.JS 16 & GSAP / MOTION
+            {t.footer.designedEngineered}
           </span>
 
           <button
@@ -29,7 +32,7 @@ export const Footer: React.FC = () => {
             className="flex items-center gap-1.5 text-[#888888] hover:text-[#E31B23] transition-colors p-1 group"
             aria-label="Back to top"
           >
-            <span className="uppercase text-[11px] tracking-wider">TOP</span>
+            <span className="uppercase text-[11px] tracking-wider">{t.footer.backToTop}</span>
             <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
           </button>
         </div>

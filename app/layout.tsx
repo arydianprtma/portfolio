@@ -97,6 +97,8 @@ const jsonLd = {
   ],
 };
 
+import { LanguageProvider } from "@/context/LanguageContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -114,10 +116,12 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-[#0A0A0A] text-[#F5F5F5] selection:bg-[#E31B23] selection:text-white antialiased">
-        <CustomCursor />
-        <CommandPalette />
-        <PageTracker />
-        {children}
+        <LanguageProvider>
+          <CustomCursor />
+          <CommandPalette />
+          <PageTracker />
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );

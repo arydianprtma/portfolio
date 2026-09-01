@@ -3,15 +3,18 @@
 import React from "react";
 import { SkillCategory } from "@/types";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface SkillsSectionProps {
   categories: SkillCategory[];
 }
 
 export const SkillsSection: React.FC<SkillsSectionProps> = ({ categories }) => {
+  const { t } = useLanguage();
+
   return (
-    <section id="skills" className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto border-t border-[#1A1A1A]">
-      <SectionLabel label="TECHNICAL CAPABILITIES" number="03." />
+    <section id="skills" className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto border-t border-[#1A1A1A] scroll-mt-10">
+      <SectionLabel label={t.skills.sectionLabel} number="03." />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {categories.map((category, idx) => (

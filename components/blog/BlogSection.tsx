@@ -5,12 +5,14 @@ import Link from "next/link";
 import { ArrowUpRight, BookOpen, Clock, Calendar } from "lucide-react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { Post } from "@/types";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface BlogSectionProps {
   posts: Post[];
 }
 
 export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
+  const { t } = useLanguage();
   const publishedPosts = posts.filter((p) => p.published !== false);
 
   if (publishedPosts.length === 0) {
@@ -23,13 +25,13 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
-            <SectionLabel label="04 / TECH INSIGHTS & ARTICLES" />
+            <SectionLabel label={t.blog.sectionLabel} />
             <h2 className="font-display text-4xl md:text-6xl font-black uppercase tracking-tight text-[#F5F5F5]">
-              WRITING & ARCHITECTURE
+              {t.blog.headline}
             </h2>
           </div>
           <p className="text-[#888888] font-mono text-xs max-w-sm">
-            Technical deep-dives, performance benchmarks, and software engineering methodologies.
+            {t.blog.description}
           </p>
         </div>
 
@@ -124,7 +126,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
                   className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#E31B23] group-hover:text-white font-semibold pt-4 transition-colors"
                   data-cursor="link"
                 >
-                  <span>READ ARTICLE</span>
+                  <span>{t.blog.readArticle}</span>
                   <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </Link>
               </div>

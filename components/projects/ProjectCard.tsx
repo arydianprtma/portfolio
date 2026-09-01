@@ -9,6 +9,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { GithubIcon } from "@/components/ui/Icons";
 import { Project } from "@/types";
 import { ProjectImageSlices } from "./ProjectImageSlices";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface ProjectCardProps {
   project: Project;
@@ -16,6 +17,7 @@ interface ProjectCardProps {
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
+  const { t } = useLanguage();
   const isEven = index % 2 === 1;
   const cardRef = useRef<HTMLDivElement>(null);
   const numberRef = useRef<HTMLDivElement>(null);
@@ -140,7 +142,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
               className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#F5F5F5] hover:text-[#E31B23] transition-colors duration-300 font-semibold group/btn"
               data-cursor="link"
             >
-              <span>VIEW PROJECT</span>
+              <span>{t.projects.viewProject}</span>
               <ArrowUpRight className="w-4 h-4 text-[#E31B23] group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-300" />
             </Link>
 

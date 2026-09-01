@@ -15,6 +15,7 @@ import {
 import { getPostBySlug, getPosts, getProfile } from "@/lib/storage";
 import { Navbar } from "@/components/navigation/Navbar";
 import { Footer } from "@/components/footer/Footer";
+import { ArticleContent } from "@/components/blog/ArticleContent";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -157,59 +158,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
           )}
 
-          {/* Main Article Body */}
-          <div className="space-y-6 text-[#C0C0C0] text-base md:text-lg leading-relaxed font-light text-justify">
-            {post.content.split("\n\n").map((block, idx) => {
-              if (block.startsWith("## ")) {
-                return (
-                  <h2
-                    key={idx}
-                    className="font-display text-2xl md:text-3xl font-bold uppercase tracking-tight text-[#F5F5F5] pt-8 pb-2 border-b border-[#1A1A1A]"
-                  >
-                    {block.replace("## ", "")}
-                  </h2>
-                );
-              }
-
-              if (block.startsWith("### ")) {
-                return (
-                  <h3
-                    key={idx}
-                    className="font-display text-xl md:text-2xl font-bold text-[#E31B23] pt-4"
-                  >
-                    {block.replace("### ", "")}
-                  </h3>
-                );
-              }
-
-              if (block.startsWith("```")) {
-                const code = block.replace(/```[a-z]*\n?/g, "").trim();
-                return (
-                  <div
-                    key={idx}
-                    className="bg-[#101010] border border-[#222222] p-5 font-mono text-xs md:text-sm text-[#00E5FF] overflow-x-auto my-6"
-                  >
-                    <pre>
-                      <code>{code}</code>
-                    </pre>
-                  </div>
-                );
-              }
-
-              if (block.startsWith("> ")) {
-                return (
-                  <blockquote
-                    key={idx}
-                    className="border-l-2 border-[#E31B23] pl-4 py-1 italic text-[#E0E0E0] bg-[#121212]/50 my-6"
-                  >
-                    {block.replace("> ", "")}
-                  </blockquote>
-                );
-              }
-
-              return <p key={idx}>{block}</p>;
-            })}
-          </div>
+          {/* Main Article Body with clean codeblock rendering and left alignment */}
+          <ArticleContent content={post.content} />
 
           {/* Author Bio Box */}
           <div className="mt-16 pt-10 border-t border-[#1F1F1F] bg-[#0E0E0E] border border-[#1C1C1C] p-8 flex flex-col sm:flex-row items-center gap-6">

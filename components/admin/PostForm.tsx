@@ -20,6 +20,7 @@ import {
   Tag,
   Sparkles,
 } from "lucide-react";
+import { ArticleContent } from "@/components/blog/ArticleContent";
 
 interface PostFormProps {
   initialData?: Post;
@@ -443,11 +444,11 @@ export const PostForm: React.FC<PostFormProps> = ({
                 )}
               </div>
             ) : (
-              <div className="bg-[#141414] border border-[#262626] p-6 text-[#E0E0E0] min-h-[300px] prose prose-invert max-w-none font-sans text-sm">
+              <div className="bg-[#141414] border border-[#262626] p-6 text-[#E0E0E0] min-h-[300px]">
                 {currentContent ? (
-                  <div className="whitespace-pre-wrap">{currentContent}</div>
+                  <ArticleContent content={currentContent} />
                 ) : (
-                  <p className="text-[#666666] italic">No content to preview.</p>
+                  <p className="text-[#666666] italic font-mono text-xs">No content to preview.</p>
                 )}
               </div>
             )}

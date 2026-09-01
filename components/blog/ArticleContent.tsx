@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Check, Copy, Terminal } from "lucide-react";
+import { Check, Copy, Terminal, ExternalLink } from "lucide-react";
 
 interface ArticleContentProps {
   content: string;
@@ -9,35 +9,76 @@ interface ArticleContentProps {
 
 // Helper to format inline markdown elements (bold, italic, inline code, links)
 function formatInlineText(text: string): React.ReactNode {
-  // Split text by inline code `...`
+  // 1. Split text by inline code `...`
   const codeParts = text.split(/(`[^`]+`)/g);
 
   return codeParts.map((codePart, i) => {
-    if (codePart.startsWith("`") && codePart.endsWith("`") && codePart.length > 2) {
+    if (codePart.startsWith("`") && codePart.endsWith("`") && codePart.length >= 2) {
       const inlineCode = codePart.slice(1, -1);
       return (
         <code
           key={i}
-          className="bg-[#181818] text-[#00E5FF] border border-[#2A2A2A] px-1.5 py-0.5 rounded text-[0.85em] font-mono mx-0.5"
+          className="bg-[#181818] text-[#00E5FF] border border-[#2A2A2A] px-1.5 py-0.5 rounded text-[0.85em] font-mono mx-0.5 break-all inline-block align-middle"
         >
           {inlineCode}
         </code>
       );
     }
 
-    // Process bold **...**
-    const boldParts = codePart.split(/(\*\*[^*]+\*\*)/g);
+    // 2. Process markdown links [label](url)
+    const linkParts = codePart.split(/(\[[^\]]+\]\([^)]+\))/g);
+
     return (
       <React.Fragment key={i}>
-        {boldParts.map((boldPart, j) => {
-          if (boldPart.startsWith("**") && boldPart.endsWith("**") && boldPart.length > 4) {
+        {linkParts.map((linkPart, lIdx) => {
+          const linkMatch = linkPart.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+          if (linkMatch) {
             return (
-              <strong key={j} className="font-bold text-[#F5F5F5]">
-                {boldPart.slice(2, -2)}
-              </strong>
+              <a
+                key={lIdx}
+                href={linkMatch[2]}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#E31B23] hover:underline inline-flex items-center gap-0.5 font-medium"
+              >
+                <span>{linkMatch[1]}</span>
+                <ExternalLink className="w-3 h-3 inline" />
+              </a>
             );
           }
-          return boldPart;
+
+          // 3. Process bold **...**
+          const boldParts = linkPart.split(/(\*\*[^*]+\*\*)/g);
+          return (
+            <React.Fragment key={lIdx}>
+              {boldParts.map((boldPart, j) => {
+                if (boldPart.startsWith("**") && boldPart.endsWith("**") && boldPart.length >= 4) {
+                  return (
+                    <strong key={j} className="font-bold text-[#F5F5F5]">
+                      {boldPart.slice(2, -2)}
+                    </strong>
+                  );
+                }
+
+                // 4. Process italic *...*
+                const italicParts = boldPart.split(/(\*[^*]+\*)/g);
+                return (
+                  <React.Fragment key={j}>
+                    {italicParts.map((itPart, k) => {
+                      if (itPart.startsWith("*") && itPart.endsWith("*") && itPart.length >= 2) {
+                        return (
+                          <em key={k} className="italic text-[#E0E0E0]">
+                            {itPart.slice(1, -1)}
+                          </em>
+                        );
+                      }
+                      return itPart;
+                    })}
+                  </React.Fragment>
+                );
+              })}
+            </React.Fragment>
+          );
         })}
       </React.Fragment>
     );
@@ -126,7 +167,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ content }) => {
   }
 
   return (
-    <div className="space-y-6 text-[#C0C0C0] text-base md:text-lg leading-relaxed font-light text-left">
+    <div className="space-y-6 text-[#C0C0C0] text-base md:text-lg leading-relaxed font-light text-left overflow-hidden">
       {blocks.map((block, idx) => {
         if (block.type === "code") {
           return <CodeBlock key={idx} code={block.content} language={block.lang} />;
@@ -141,45 +182,54 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ content }) => {
         return (
           <React.Fragment key={idx}>
             {paragraphs.map((p, pIdx) => {
+              // Horizontal Divider
+              if (p === "---" || p === "***" || p === "___") {
+                return <hr key={pIdx} className="border-[#222222] my-8" />;
+              }
+
+              // Section Heading Level 2
               if (p.startsWith("## ")) {
                 return (
                   <h2
                     key={pIdx}
-                    className="font-display text-2xl md:text-3xl font-bold uppercase tracking-tight text-[#F5F5F5] pt-8 pb-2 border-b border-[#1A1A1A] text-left"
+                    className="font-display text-2xl md:text-3xl font-bold uppercase tracking-tight text-[#F5F5F5] pt-8 pb-2 border-b border-[#1A1A1A] text-left break-words"
                   >
                     {p.replace("## ", "")}
                   </h2>
                 );
               }
 
+              // Section Heading Level 3
               if (p.startsWith("### ")) {
                 return (
                   <h3
                     key={pIdx}
-                    className="font-display text-xl md:text-2xl font-bold text-[#E31B23] pt-4 text-left"
+                    className="font-display text-xl md:text-2xl font-bold text-[#E31B23] pt-4 text-left break-words"
                   >
                     {p.replace("### ", "")}
                   </h3>
                 );
               }
 
+              // Blockquotes
               if (p.startsWith("> ")) {
                 return (
                   <blockquote
                     key={pIdx}
-                    className="border-l-2 border-[#E31B23] pl-4 py-2 italic text-[#E0E0E0] bg-[#121212]/50 my-6 text-left"
+                    className="border-l-2 border-[#E31B23] pl-4 py-2 italic text-[#E0E0E0] bg-[#121212]/50 my-6 text-justify [text-align-last:left] break-words"
                   >
                     {formatInlineText(p.replace("> ", ""))}
                   </blockquote>
                 );
               }
 
+              // Unordered List (- or *)
               if (p.startsWith("- ") || p.startsWith("* ")) {
                 const items = p.split("\n").filter((line) => line.trim().startsWith("- ") || line.trim().startsWith("* "));
                 return (
-                  <ul key={pIdx} className="space-y-2 my-4 pl-5 list-disc text-left marker:text-[#E31B23]">
+                  <ul key={pIdx} className="space-y-2.5 my-4 pl-5 list-disc text-left marker:text-[#E31B23]">
                     {items.map((item, itemIdx) => (
-                      <li key={itemIdx}>
+                      <li key={itemIdx} className="text-justify [text-align-last:left] break-words text-[#B5B5B5]">
                         {formatInlineText(item.replace(/^[-*]\s+/, ""))}
                       </li>
                     ))}
@@ -187,8 +237,26 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ content }) => {
                 );
               }
 
+              // Numbered List (1. , 2. )
+              if (/^\d+\.\s/.test(p)) {
+                const items = p.split("\n").filter((line) => /^\d+\.\s/.test(line.trim()));
+                return (
+                  <ol key={pIdx} className="space-y-2.5 my-4 pl-5 list-decimal text-left marker:text-[#E31B23] font-mono text-sm">
+                    {items.map((item, itemIdx) => (
+                      <li key={itemIdx} className="text-justify [text-align-last:left] break-words text-[#B5B5B5] font-sans text-base md:text-lg">
+                        {formatInlineText(item.replace(/^\d+\.\s+/, ""))}
+                      </li>
+                    ))}
+                  </ol>
+                );
+              }
+
+              // Standard Paragraph with Safe Justified Typography and Last-Line Left-Align
               return (
-                <p key={pIdx} className="text-justify text-[#B5B5B5] leading-relaxed">
+                <p
+                  key={pIdx}
+                  className="text-justify [text-align-last:left] [overflow-wrap:break-word] break-words text-[#B5B5B5] leading-relaxed"
+                >
                   {formatInlineText(p)}
                 </p>
               );

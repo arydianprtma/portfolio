@@ -54,8 +54,24 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       "startViewTransition" in document &&
       !window.matchMedia("(prefers-reduced-motion: reduce)").matches
     ) {
-      const x = event ? event.clientX : window.innerWidth;
-      const y = event ? event.clientY : 0;
+      let x = window.innerWidth - 48;
+      let y = window.innerHeight - 48;
+
+      if (event?.currentTarget) {
+        const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+        x = rect.left + rect.width / 2;
+        y = rect.top + rect.height / 2;
+      } else if (
+        event &&
+        typeof event.clientX === "number" &&
+        event.clientX > 0 &&
+        typeof event.clientY === "number" &&
+        event.clientY > 0
+      ) {
+        x = event.clientX;
+        y = event.clientY;
+      }
+
       const endRadius = Math.hypot(
         Math.max(x, window.innerWidth - x),
         Math.max(y, window.innerHeight - y)

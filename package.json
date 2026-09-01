@@ -37,5 +37,9 @@
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
+  },
+  "optionalDependencies": {
+    "@next/swc-linux-x64-gnu": "^16.3.4",
+    "lightningcss-linux-x64-gnu": "^1.33.0"
   }
 }

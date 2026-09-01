@@ -16,6 +16,7 @@ import {
   ExternalLink,
   ShieldCheck,
   Globe,
+  Wand2,
 } from "lucide-react";
 import { GithubIcon, LinkedinIcon, TwitterIcon } from "@/components/ui/Icons";
 import { CvUploader } from "@/components/admin/CvUploader";
@@ -25,6 +26,7 @@ export default function AdminProfilePage() {
   const [skills, setSkills] = useState<SkillCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [translating, setTranslating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
@@ -50,6 +52,75 @@ export default function AdminProfilePage() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  // AI 1-Click Translation via Gemini 1.5 Flash
+  const handleAiTranslate = async () => {
+    if (!profile) return;
+    setTranslating(true);
+    setError(null);
+
+    try {
+      if (langTab === "en") {
+        // Translate EN -> ID
+        const res = await fetch("/api/admin/ai/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fields: {
+              role: profile.role || "",
+              status: profile.status || "",
+              bio: profile.bio || [],
+            },
+            sourceLang: "en",
+            targetLang: "id",
+            context: "Software engineer developer bio and profile details",
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to translate");
+
+        setProfile({
+          ...profile,
+          roleId: data.translated.role || profile.roleId,
+          statusId: data.translated.status || profile.statusId,
+          bioId: data.translated.bio || profile.bioId,
+        });
+        setLangTab("id");
+      } else {
+        // Translate ID -> EN
+        const res = await fetch("/api/admin/ai/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fields: {
+              role: profile.roleId || "",
+              status: profile.statusId || "",
+              bio: profile.bioId || [],
+            },
+            sourceLang: "id",
+            targetLang: "en",
+            context: "Software engineer developer bio and profile details",
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to translate");
+
+        setProfile({
+          ...profile,
+          role: data.translated.role || profile.role,
+          status: data.translated.status || profile.status,
+          bio: data.translated.bio || profile.bio,
+        });
+        setLangTab("en");
+      }
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setTranslating(false);
+    }
+  };
 
   // English Bio handlers
   const handleBioChange = (index: number, val: string) => {
@@ -198,7 +269,7 @@ export default function AdminProfilePage() {
         </div>
       )}
 
-      {/* 2-Column Responsive Layout Utilizing Right Space */}
+      {/* 2-Column Responsive Layout */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
         {/* Left Column: Editor Forms (8 cols) */}
         <form onSubmit={handleSubmit} className="xl:col-span-8 space-y-8">
@@ -209,30 +280,48 @@ export default function AdminProfilePage() {
                 01. Developer Identity
               </h2>
 
-              {/* Language Selector Tab */}
-              <div className="flex items-center gap-1 bg-[#141414] border border-[#2B2B2B] p-0.5 text-[11px]">
+              <div className="flex flex-wrap items-center gap-2">
+                {/* AI 1-Click Auto Translate Button */}
                 <button
                   type="button"
-                  onClick={() => setLangTab("en")}
-                  className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors ${
-                    langTab === "en"
-                      ? "bg-[#E31B23] text-white"
-                      : "text-[#777777] hover:text-[#F5F5F5]"
-                  }`}
+                  onClick={handleAiTranslate}
+                  disabled={translating}
+                  className="inline-flex items-center gap-1.5 bg-[#181818] hover:bg-[#222222] text-[#E31B23] hover:text-white border border-[#E31B23]/40 hover:border-[#E31B23] px-3 py-1 text-[10px] font-bold uppercase tracking-wider transition-all disabled:opacity-50"
+                  title="Auto-translate all fields with Google Gemini 1.5 Flash"
                 >
-                  🇬🇧 English (EN)
+                  {translating ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Sparkles className="w-3.5 h-3.5" />
+                  )}
+                  <span>{translating ? "Translating..." : langTab === "en" ? "AI Translate (EN ➔ ID)" : "AI Translate (ID ➔ EN)"}</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setLangTab("id")}
-                  className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors ${
-                    langTab === "id"
-                      ? "bg-[#E31B23] text-white"
-                      : "text-[#777777] hover:text-[#F5F5F5]"
-                  }`}
-                >
-                  🇮🇩 Indonesia (ID)
-                </button>
+
+                {/* Language Selector Tab */}
+                <div className="flex items-center gap-1 bg-[#141414] border border-[#2B2B2B] p-0.5 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => setLangTab("en")}
+                    className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors ${
+                      langTab === "en"
+                        ? "bg-[#E31B23] text-white"
+                        : "text-[#777777] hover:text-[#F5F5F5]"
+                    }`}
+                  >
+                    🇬🇧 EN
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLangTab("id")}
+                    className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors ${
+                      langTab === "id"
+                        ? "bg-[#E31B23] text-white"
+                        : "text-[#777777] hover:text-[#F5F5F5]"
+                    }`}
+                  >
+                    🇮🇩 ID
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -360,15 +449,16 @@ export default function AdminProfilePage() {
                 ))
               ) : (
                 (profile.bioId || []).length === 0 ? (
-                  <div className="p-4 bg-[#141414] border border-[#222222] text-[#777777] text-center space-y-2">
+                  <div className="p-4 bg-[#141414] border border-[#222222] text-[#777777] text-center space-y-3">
                     <p>Belum ada bio bahasa Indonesia khusus.</p>
                     <button
                       type="button"
-                      onClick={handleAddBioIdParagraph}
-                      className="text-[#E31B23] font-bold text-xs uppercase hover:underline inline-flex items-center gap-1"
+                      onClick={handleAiTranslate}
+                      disabled={translating}
+                      className="bg-[#E31B23] text-white px-4 py-2 font-bold text-xs uppercase inline-flex items-center gap-1.5"
                     >
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>Tambah Paragraf Bahasa Indonesia</span>
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Terjemahkan Otomatis dengan Gemini AI</span>
                     </button>
                   </div>
                 ) : (

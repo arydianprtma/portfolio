@@ -59,8 +59,75 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 
   const [techInput, setTechInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [translating, setTranslating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+
+  // AI 1-Click Translation via Gemini 1.5 Flash
+  const handleAiTranslate = async () => {
+    setTranslating(true);
+    setError(null);
+
+    try {
+      if (langTab === "en") {
+        const res = await fetch("/api/admin/ai/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fields: {
+              subtitle: formData.subtitle || "",
+              description: formData.description || "",
+              overview: formData.overview || "",
+            },
+            sourceLang: "en",
+            targetLang: "id",
+            context: `Software engineering portfolio project case study titled "${formData.title}"`,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to translate project");
+
+        setFormData((prev) => ({
+          ...prev,
+          subtitleId: data.translated.subtitle || prev.subtitleId,
+          descriptionId: data.translated.description || prev.descriptionId,
+          overviewId: data.translated.overview || prev.overviewId,
+        }));
+        setLangTab("id");
+      } else {
+        const res = await fetch("/api/admin/ai/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fields: {
+              subtitle: formData.subtitleId || "",
+              description: formData.descriptionId || "",
+              overview: formData.overviewId || "",
+            },
+            sourceLang: "id",
+            targetLang: "en",
+            context: `Software engineering portfolio project case study titled "${formData.title}"`,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to translate project");
+
+        setFormData((prev) => ({
+          ...prev,
+          subtitle: data.translated.subtitle || prev.subtitle,
+          description: data.translated.description || prev.description,
+          overview: data.translated.overview || prev.overview,
+        }));
+        setLangTab("en");
+      }
+    } catch (err: any) {
+      setError(err.message || "AI Translation failed");
+    } finally {
+      setTranslating(false);
+    }
+  };
 
   // Auto-generate slug when title changes (if not editing or slug not customized)
   const handleTitleChange = (val: string) => {
@@ -252,30 +319,48 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                 01. Basic Information
               </h2>
 
-              {/* Language Selector Tab */}
-              <div className="flex items-center gap-1 bg-[#141414] border border-[#2B2B2B] p-0.5 text-[11px]">
+              <div className="flex flex-wrap items-center gap-2">
+                {/* AI 1-Click Auto Translate Button */}
                 <button
                   type="button"
-                  onClick={() => setLangTab("en")}
-                  className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors ${
-                    langTab === "en"
-                      ? "bg-[#E31B23] text-white"
-                      : "text-[#777777] hover:text-[#F5F5F5]"
-                  }`}
+                  onClick={handleAiTranslate}
+                  disabled={translating}
+                  className="inline-flex items-center gap-1.5 bg-[#181818] hover:bg-[#222222] text-[#E31B23] hover:text-white border border-[#E31B23]/40 hover:border-[#E31B23] px-3 py-1 text-[10px] font-bold uppercase tracking-wider transition-all disabled:opacity-50"
+                  title="Auto-translate all project fields with Google Gemini 1.5 Flash"
                 >
-                  🇬🇧 English (EN)
+                  {translating ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Sparkles className="w-3.5 h-3.5" />
+                  )}
+                  <span>{translating ? "Translating..." : langTab === "en" ? "AI Translate (EN ➔ ID)" : "AI Translate (ID ➔ EN)"}</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setLangTab("id")}
-                  className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors ${
-                    langTab === "id"
-                      ? "bg-[#E31B23] text-white"
-                      : "text-[#777777] hover:text-[#F5F5F5]"
-                  }`}
-                >
-                  🇮🇩 Indonesia (ID)
-                </button>
+
+                {/* Language Selector Tab */}
+                <div className="flex items-center gap-1 bg-[#141414] border border-[#2B2B2B] p-0.5 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => setLangTab("en")}
+                    className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors ${
+                      langTab === "en"
+                        ? "bg-[#E31B23] text-white"
+                        : "text-[#777777] hover:text-[#F5F5F5]"
+                    }`}
+                  >
+                    🇬🇧 EN
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLangTab("id")}
+                    className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors ${
+                      langTab === "id"
+                        ? "bg-[#E31B23] text-white"
+                        : "text-[#777777] hover:text-[#F5F5F5]"
+                    }`}
+                  >
+                    🇮🇩 ID
+                  </button>
+                </div>
               </div>
             </div>
 

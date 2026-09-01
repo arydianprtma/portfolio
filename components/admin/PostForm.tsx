@@ -53,8 +53,75 @@ export const PostForm: React.FC<PostFormProps> = ({
   const [tagInput, setTagInput] = useState("");
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
   const [loading, setLoading] = useState(false);
+  const [translating, setTranslating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+
+  // AI 1-Click Translation via Gemini 1.5 Flash
+  const handleAiTranslate = async () => {
+    setTranslating(true);
+    setError(null);
+
+    try {
+      if (langTab === "en") {
+        const res = await fetch("/api/admin/ai/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fields: {
+              title: formData.title || "",
+              summary: formData.summary || "",
+              content: formData.content || "",
+            },
+            sourceLang: "en",
+            targetLang: "id",
+            context: `Technical software engineering blog post titled "${formData.title}"`,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to translate article");
+
+        setFormData((prev) => ({
+          ...prev,
+          titleId: data.translated.title || prev.titleId,
+          summaryId: data.translated.summary || prev.summaryId,
+          contentId: data.translated.content || prev.contentId,
+        }));
+        setLangTab("id");
+      } else {
+        const res = await fetch("/api/admin/ai/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fields: {
+              title: formData.titleId || "",
+              summary: formData.summaryId || "",
+              content: formData.contentId || "",
+            },
+            sourceLang: "id",
+            targetLang: "en",
+            context: `Technical software engineering blog post titled "${formData.titleId || formData.title}"`,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to translate article");
+
+        setFormData((prev) => ({
+          ...prev,
+          title: data.translated.title || prev.title,
+          summary: data.translated.summary || prev.summary,
+          content: data.translated.content || prev.content,
+        }));
+        setLangTab("en");
+      }
+    } catch (err: any) {
+      setError(err.message || "AI Translation failed");
+    } finally {
+      setTranslating(false);
+    }
+  };
 
   const handleTitleChange = (val: string) => {
     setFormData((prev) => ({
@@ -192,30 +259,48 @@ export const PostForm: React.FC<PostFormProps> = ({
                 <span>01. Article Details</span>
               </h2>
 
-              {/* Language Selector Tab */}
-              <div className="flex items-center gap-1 bg-[#141414] border border-[#2B2B2B] p-0.5 text-[11px]">
+              <div className="flex flex-wrap items-center gap-2">
+                {/* AI 1-Click Auto Translate Button */}
                 <button
                   type="button"
-                  onClick={() => setLangTab("en")}
-                  className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors ${
-                    langTab === "en"
-                      ? "bg-[#E31B23] text-white"
-                      : "text-[#777777] hover:text-[#F5F5F5]"
-                  }`}
+                  onClick={handleAiTranslate}
+                  disabled={translating}
+                  className="inline-flex items-center gap-1.5 bg-[#181818] hover:bg-[#222222] text-[#E31B23] hover:text-white border border-[#E31B23]/40 hover:border-[#E31B23] px-3 py-1 text-[10px] font-bold uppercase tracking-wider transition-all disabled:opacity-50"
+                  title="Auto-translate all article fields (including Markdown) with Google Gemini 1.5 Flash"
                 >
-                  🇬🇧 English (EN)
+                  {translating ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Sparkles className="w-3.5 h-3.5" />
+                  )}
+                  <span>{translating ? "Translating..." : langTab === "en" ? "AI Translate (EN ➔ ID)" : "AI Translate (ID ➔ EN)"}</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setLangTab("id")}
-                  className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors ${
-                    langTab === "id"
-                      ? "bg-[#E31B23] text-white"
-                      : "text-[#777777] hover:text-[#F5F5F5]"
-                  }`}
-                >
-                  🇮🇩 Indonesia (ID)
-                </button>
+
+                {/* Language Selector Tab */}
+                <div className="flex items-center gap-1 bg-[#141414] border border-[#2B2B2B] p-0.5 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => setLangTab("en")}
+                    className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors ${
+                      langTab === "en"
+                        ? "bg-[#E31B23] text-white"
+                        : "text-[#777777] hover:text-[#F5F5F5]"
+                    }`}
+                  >
+                    🇬🇧 EN
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLangTab("id")}
+                    className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors ${
+                      langTab === "id"
+                        ? "bg-[#E31B23] text-white"
+                        : "text-[#777777] hover:text-[#F5F5F5]"
+                    }`}
+                  >
+                    🇮🇩 ID
+                  </button>
+                </div>
               </div>
             </div>
 

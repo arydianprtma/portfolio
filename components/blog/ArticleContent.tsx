@@ -188,7 +188,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ content }) => {
               }
 
               return (
-                <p key={pIdx} className="text-left text-[#B5B5B5] leading-relaxed">
+                <p key={pIdx} className="text-justify text-[#B5B5B5] leading-relaxed">
                   {formatInlineText(p)}
                 </p>
               );

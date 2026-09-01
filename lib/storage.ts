@@ -96,13 +96,13 @@ export async function getStore(): Promise<StoreData> {
   try {
     const [dbProfile, dbProjects, dbPosts, dbSkills, dbExperiments, dbAdmin, dbAnalytics] =
       await Promise.all([
-        prisma.profile.findFirst(),
-        prisma.project.findMany({ orderBy: { number: "asc" } }),
-        prisma.post.findMany({ orderBy: { publishedAt: "desc" } }),
-        prisma.skillCategory.findMany({ orderBy: { order: "asc" } }),
-        prisma.experiment.findMany(),
-        prisma.admin.findFirst(),
-        prisma.analytics.findFirst(),
+        prisma.profile?.findFirst ? prisma.profile.findFirst() : Promise.resolve(null),
+        prisma.project?.findMany ? prisma.project.findMany({ orderBy: { number: "asc" } }) : Promise.resolve([]),
+        prisma.post?.findMany ? prisma.post.findMany({ orderBy: { publishedAt: "desc" } }) : Promise.resolve([]),
+        prisma.skillCategory?.findMany ? prisma.skillCategory.findMany({ orderBy: { order: "asc" } }) : Promise.resolve([]),
+        prisma.experiment?.findMany ? prisma.experiment.findMany() : Promise.resolve([]),
+        prisma.admin?.findFirst ? prisma.admin.findFirst() : Promise.resolve(null),
+        prisma.analytics?.findFirst ? prisma.analytics.findFirst() : Promise.resolve(null),
       ]);
 
     return {

@@ -78,6 +78,7 @@ export const CustomCursor: React.FC = () => {
   }
 
   // Define dynamic sizes and styling based on cursor mode
+  // Note: Use rgba(0, 0, 0, 0) instead of "transparent" for valid framer-motion color interpolation
   const getVariants = () => {
     switch (cursorType) {
       case "view":
@@ -109,7 +110,7 @@ export const CustomCursor: React.FC = () => {
         return {
           width: 26,
           height: 26,
-          backgroundColor: "transparent",
+          backgroundColor: "rgba(0, 0, 0, 0)",
           borderColor: "rgba(245, 245, 245, 0.35)",
           scale: 1,
         };

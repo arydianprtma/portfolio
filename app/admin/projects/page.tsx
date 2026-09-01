@@ -4,11 +4,16 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Project } from "@/types";
 import { Plus, Edit2, Trash2, ExternalLink, AlertCircle, Loader2, Sparkles } from "lucide-react";
+import { DeleteConfirmModal } from "@/components/admin/DeleteConfirmModal";
 
 export default function AdminProjectsListPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Modal state
+  const [deleteTarget, setDeleteTarget] = useState<Project | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchProjects = async () => {
     try {
@@ -27,23 +32,38 @@ export default function AdminProjectsListPage() {
     fetchProjects();
   }, []);
 
-  const handleDelete = async (slug: string, title: string) => {
-    if (!confirm(`Are you sure you want to delete "${title}"?`)) return;
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
 
+    setDeleting(true);
     try {
-      const res = await fetch(`/api/admin/projects/${slug}`, {
+      const res = await fetch(`/api/admin/projects/${deleteTarget.slug}`, {
         method: "DELETE",
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Delete failed");
-      setProjects((prev) => prev.filter((p) => p.slug !== slug));
+      setProjects((prev) => prev.filter((p) => p.slug !== deleteTarget.slug));
+      setDeleteTarget(null);
     } catch (err: any) {
       alert(err.message || "Failed to delete project");
+    } finally {
+      setDeleting(false);
     }
   };
 
   return (
-    <div className="space-y-8 font-mono text-xs">
+    <div className="space-y-8 font-mono text-xs pb-16">
+      {/* Custom Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        title="DELETE PROJECT"
+        itemName={deleteTarget ? `${deleteTarget.title} (${deleteTarget.category})` : ""}
+        itemType="project showcase"
+        loading={deleting}
+        onConfirm={handleConfirmDelete}
+        onClose={() => setDeleteTarget(null)}
+      />
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-6 border-b border-[#1F1F1F]">
         <div>
@@ -66,7 +86,7 @@ export default function AdminProjectsListPage() {
 
       {error && (
         <div className="p-4 bg-red-950/40 border border-red-800 text-red-300 flex items-center gap-3">
-          <AlertCircle className="w-4 h-4" />
+          <AlertCircle className="w-5 h-5 shrink-0" />
           <span>{error}</span>
         </div>
       )}
@@ -74,7 +94,7 @@ export default function AdminProjectsListPage() {
       {loading ? (
         <div className="py-20 flex flex-col items-center justify-center gap-3 text-[#777777]">
           <Loader2 className="w-6 h-6 animate-spin text-[#E31B23]" />
-          <span>Loading project records...</span>
+          <span>Loading projects from Supabase...</span>
         </div>
       ) : projects.length === 0 ? (
         <div className="py-20 text-center bg-[#101010] border border-[#1F1F1F] p-8 space-y-4">
@@ -89,7 +109,7 @@ export default function AdminProjectsListPage() {
       ) : (
         <div className="bg-[#101010] border border-[#1F1F1F] overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
+            <table className="w-full text-left min-w-[640px]">
               <thead>
                 <tr className="border-b border-[#1C1C1C] text-[#666666] uppercase tracking-wider bg-[#141414]">
                   <th className="p-4 font-medium">#</th>
@@ -161,7 +181,7 @@ export default function AdminProjectsListPage() {
                         </Link>
 
                         <button
-                          onClick={() => handleDelete(project.slug, project.title)}
+                          onClick={() => setDeleteTarget(project)}
                           className="p-1.5 text-[#777777] hover:text-red-400 hover:bg-red-950/40 transition-colors"
                           title="Delete Project"
                         >

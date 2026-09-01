@@ -17,6 +17,7 @@ import {
   Filter,
   X,
 } from "lucide-react";
+import { DeleteConfirmModal } from "@/components/admin/DeleteConfirmModal";
 
 export default function AdminMessagesPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
@@ -25,6 +26,10 @@ export default function AdminMessagesPage() {
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
   const [filterMode, setFilterMode] = useState<"all" | "unread">("all");
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Modal state
+  const [deleteTarget, setDeleteTarget] = useState<ContactMessage | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchMessages = async () => {
     try {
@@ -65,22 +70,26 @@ export default function AdminMessagesPage() {
     }
   };
 
-  const handleDelete = async (id: string, senderName: string) => {
-    if (!confirm(`Are you sure you want to delete inquiry from "${senderName}"?`)) return;
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
 
+    setDeleting(true);
     try {
-      const res = await fetch(`/api/admin/messages/${id}`, {
+      const res = await fetch(`/api/admin/messages/${deleteTarget.id}`, {
         method: "DELETE",
       });
 
       if (!res.ok) throw new Error("Failed to delete message");
 
-      setMessages((prev) => prev.filter((m) => m.id !== id));
-      if (selectedMessage?.id === id) {
+      setMessages((prev) => prev.filter((m) => m.id !== deleteTarget.id));
+      if (selectedMessage?.id === deleteTarget.id) {
         setSelectedMessage(null);
       }
+      setDeleteTarget(null);
     } catch (err: any) {
-      alert(err.message);
+      alert(err.message || "Failed to delete message");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -121,6 +130,17 @@ export default function AdminMessagesPage() {
 
   return (
     <div className="space-y-8 font-mono text-xs pb-16">
+      {/* Custom Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        title="DELETE CLIENT INQUIRY"
+        itemName={deleteTarget ? `${deleteTarget.name} (${deleteTarget.email})` : ""}
+        itemType="inquiry message"
+        loading={deleting}
+        onConfirm={handleConfirmDelete}
+        onClose={() => setDeleteTarget(null)}
+      />
+
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-6 border-b border-[#1F1F1F]">
         <div>
@@ -268,7 +288,7 @@ export default function AdminMessagesPage() {
                     </button>
 
                     <button
-                      onClick={() => handleDelete(selectedMessage.id, selectedMessage.name)}
+                      onClick={() => setDeleteTarget(selectedMessage)}
                       className="p-2 bg-red-950/30 border border-red-800/60 text-red-400 hover:bg-red-950/80 transition-colors"
                       title="Delete Inquiry"
                     >

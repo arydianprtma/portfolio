@@ -4,11 +4,16 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Post } from "@/types";
 import { Plus, Edit2, Trash2, ExternalLink, AlertCircle, Loader2, BookOpen, Clock } from "lucide-react";
+import { DeleteConfirmModal } from "@/components/admin/DeleteConfirmModal";
 
 export default function AdminPostsListPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Modal state
+  const [deleteTarget, setDeleteTarget] = useState<Post | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchPosts = async () => {
     try {
@@ -27,23 +32,38 @@ export default function AdminPostsListPage() {
     fetchPosts();
   }, []);
 
-  const handleDelete = async (slug: string, title: string) => {
-    if (!confirm(`Are you sure you want to delete article "${title}"?`)) return;
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
 
+    setDeleting(true);
     try {
-      const res = await fetch(`/api/admin/posts/${slug}`, {
+      const res = await fetch(`/api/admin/posts/${deleteTarget.slug}`, {
         method: "DELETE",
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Delete failed");
-      setPosts((prev) => prev.filter((p) => p.slug !== slug));
+      setPosts((prev) => prev.filter((p) => p.slug !== deleteTarget.slug));
+      setDeleteTarget(null);
     } catch (err: any) {
       alert(err.message || "Failed to delete article");
+    } finally {
+      setDeleting(false);
     }
   };
 
   return (
     <div className="space-y-8 font-mono text-xs pb-16">
+      {/* Custom Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        title="DELETE ARTICLE"
+        itemName={deleteTarget ? deleteTarget.title : ""}
+        itemType="tech blog article"
+        loading={deleting}
+        onConfirm={handleConfirmDelete}
+        onClose={() => setDeleteTarget(null)}
+      />
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-6 border-b border-[#1F1F1F]">
         <div>
@@ -90,7 +110,7 @@ export default function AdminPostsListPage() {
       ) : (
         <div className="bg-[#101010] border border-[#1F1F1F] overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
+            <table className="w-full text-left min-w-[640px]">
               <thead>
                 <tr className="border-b border-[#1C1C1C] text-[#666666] uppercase tracking-wider bg-[#141414]">
                   <th className="p-4 font-medium">Cover</th>
@@ -177,7 +197,7 @@ export default function AdminPostsListPage() {
                         </Link>
 
                         <button
-                          onClick={() => handleDelete(post.slug, post.title)}
+                          onClick={() => setDeleteTarget(post)}
                           className="p-1.5 text-[#777777] hover:text-red-400 hover:bg-red-950/40 transition-colors"
                           title="Delete Article"
                         >

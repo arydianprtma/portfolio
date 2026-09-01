@@ -48,8 +48,8 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
 
   const handleScroll = (direction: "left" | "right") => {
     if (!carouselRef.current) return;
-    const cardWidth = carouselRef.current.querySelector("article")?.clientWidth || 380;
-    const scrollAmount = cardWidth + 32; // card width + gap
+    const cardWidth = carouselRef.current.querySelector("article")?.clientWidth || 340;
+    const scrollAmount = cardWidth + 24; // card width + gap
 
     carouselRef.current.scrollBy({
       left: direction === "left" ? -scrollAmount : scrollAmount,
@@ -61,32 +61,29 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
     return null;
   }
 
-  // If 3 or fewer posts, we can display standard responsive grid or carousel if more than 3
-  const isCarousel = publishedPosts.length > 3;
-
   return (
     <section id="blog" className="py-24 md:py-36 relative scroll-mt-20 border-t border-[#1A1A1A] overflow-hidden">
       {/* Decorative Red Blur Accent */}
       <div className="absolute top-1/2 -right-32 w-80 h-80 bg-[#E31B23]/5 rounded-full blur-[120px] pointer-events-none -z-10" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12">
-        {/* Section Header with Carousel Navigation Controls */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-16 gap-6">
+        {/* Section Header with Responsive Controls */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 md:mb-16 gap-6">
           <div>
             <SectionLabel label={t.blog.sectionLabel} number="04." />
-            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-[#F5F5F5]">
+            <h2 className="font-display text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-[#F5F5F5]">
               {t.blog.headline}
             </h2>
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between md:justify-end gap-4">
-            <p className="text-[#888888] font-mono text-xs max-w-sm">
+          <div className="flex items-center justify-between md:justify-end gap-6">
+            <p className="text-[#888888] font-mono text-xs max-w-sm hidden sm:block">
               {t.blog.description}
             </p>
 
-            {/* Carousel Arrow Controls (Visible when more than 2-3 posts) */}
-            {publishedPosts.length > 2 && (
-              <div className="flex items-center gap-2 font-mono text-xs select-none shrink-0 pt-2 sm:pt-0">
+            {/* Carousel Arrow Controls */}
+            {publishedPosts.length > 1 && (
+              <div className="flex items-center gap-2 font-mono text-xs select-none shrink-0">
                 <button
                   type="button"
                   onClick={() => handleScroll("left")}
@@ -113,11 +110,15 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
           </div>
         </div>
 
-        {/* Horizontal Carousel Track */}
+        <p className="text-[#888888] font-mono text-xs mb-6 sm:hidden">
+          {t.blog.description}
+        </p>
+
+        {/* Horizontal Carousel Track Centered for Mobile */}
         <div
           ref={carouselRef}
           onScroll={checkScroll}
-          className="flex gap-6 md:gap-8 overflow-x-auto pb-6 scroll-smooth snap-x snap-mandatory scrollbar-none select-none -mx-6 px-6 md:-mx-12 md:px-12"
+          className="flex gap-5 md:gap-8 overflow-x-auto pb-6 scroll-smooth snap-x snap-mandatory scrollbar-none select-none -mx-6 px-6 md:-mx-12 md:px-12 scroll-px-6 md:scroll-px-12"
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
@@ -126,7 +127,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
           {publishedPosts.map((post, idx) => (
             <article
               key={post.slug}
-              className="snap-start shrink-0 w-[85vw] sm:w-[360px] md:w-[380px] lg:w-[400px] bg-[#0E0E0E] border border-[#1C1C1C] hover:border-[#E31B23]/50 transition-all duration-300 flex flex-col justify-between overflow-hidden group"
+              className="snap-center md:snap-start shrink-0 w-[calc(100vw-3rem)] sm:w-[360px] md:w-[380px] lg:w-[400px] bg-[#0E0E0E] border border-[#1C1C1C] hover:border-[#E31B23]/50 transition-all duration-300 flex flex-col justify-between overflow-hidden group"
             >
               <div>
                 {/* Cover Image */}
@@ -155,7 +156,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
                 </Link>
 
                 {/* Content Details */}
-                <div className="p-6">
+                <div className="p-5 sm:p-6">
                   {/* Meta: Read time & Date */}
                   <div className="flex items-center gap-3 font-mono text-[11px] text-[#666666] mb-3">
                     <span className="flex items-center gap-1">
@@ -181,7 +182,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
                     className="block group/title"
                     data-cursor="link"
                   >
-                    <h3 className="font-display text-xl font-bold uppercase tracking-tight text-[#F5F5F5] group-hover/title:text-[#E31B23] transition-colors duration-300 line-clamp-2 mb-3">
+                    <h3 className="font-display text-lg sm:text-xl font-bold uppercase tracking-tight text-[#F5F5F5] group-hover/title:text-[#E31B23] transition-colors duration-300 line-clamp-2 mb-3">
                       {post.title}
                     </h3>
                   </Link>
@@ -206,7 +207,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
               </div>
 
               {/* Bottom CTA */}
-              <div className="p-6 pt-0 border-t border-[#141414] mt-4">
+              <div className="p-5 sm:p-6 pt-0 border-t border-[#141414] mt-4">
                 <Link
                   href={`/blog/${post.slug}`}
                   className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#E31B23] group-hover:text-white font-semibold pt-4 transition-colors"
@@ -220,8 +221,8 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
           ))}
         </div>
 
-        {/* Minimal Progress Indicator Track (Visible when scrolling needed) */}
-        {publishedPosts.length > 2 && (
+        {/* Minimal Progress Indicator Track */}
+        {publishedPosts.length > 1 && (
           <div className="mt-6 flex items-center justify-between font-mono text-xs text-[#666666]">
             <div className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-[#E31B23]" />
@@ -231,10 +232,10 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
             </div>
 
             {/* Scroll Progress Bar */}
-            <div className="w-32 sm:w-48 h-1 bg-[#1A1A1A] overflow-hidden">
+            <div className="w-28 sm:w-48 h-1 bg-[#1A1A1A] overflow-hidden">
               <div
                 className="h-full bg-[#E31B23] transition-all duration-150"
-                style={{ width: `${Math.max(15, scrollProgress)}%` }}
+                style={{ width: `${Math.max(20, scrollProgress)}%` }}
               />
             </div>
           </div>

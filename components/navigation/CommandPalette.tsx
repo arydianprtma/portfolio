@@ -15,7 +15,6 @@ import {
   BookOpen,
   User,
   Sparkles,
-  Shield,
   X,
 } from "lucide-react";
 import { Project, Post } from "@/types";
@@ -203,17 +202,6 @@ export const CommandPalette: React.FC = () => {
       icon: copied ? Check : Copy,
       description: "arydianprtma@gmail.com",
       perform: handleCopyEmail,
-    },
-    {
-      id: "act-admin",
-      title: "Open Admin Portal",
-      category: "Action",
-      icon: Shield,
-      description: "Secured management dashboard",
-      perform: () => {
-        router.push("/admin");
-        setIsOpen(false);
-      },
     },
   ];
 

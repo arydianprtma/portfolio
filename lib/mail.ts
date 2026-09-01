@@ -40,7 +40,7 @@ export async function sendInquiryNotification(
 
   const recipientEmail =
     process.env.NOTIFICATION_EMAIL ||
-    process.env.ADMIN_EMAIL ||
+    process.env.SMTP_USER ||
     "arydianprtma@gmail.com";
 
   if (!transporter) {

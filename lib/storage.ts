@@ -377,7 +377,7 @@ export async function saveProject(projectData: Partial<Project> & { title: strin
     overview: projectData.overview || "",
     overviewId: projectData.overviewId || null,
     category: projectData.category || "General",
-    year: projectData.year || new Date().getFullYear(),
+    year: Number(projectData.year) || new Date().getFullYear(),
     technologies: JSON.stringify(projectData.technologies || []),
     thumbnail:
       projectData.thumbnail ||

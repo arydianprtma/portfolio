@@ -63,67 +63,48 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  // AI 1-Click Translation via Gemini 1.5 Flash
+  // AI Full-Project Auto-Generator & Dual-Language Syncer
   const handleAiTranslate = async () => {
     setTranslating(true);
     setError(null);
 
     try {
-      if (langTab === "en") {
-        const res = await fetch("/api/admin/ai/translate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            fields: {
-              subtitle: formData.subtitle || "",
-              description: formData.description || "",
-              overview: formData.overview || "",
-            },
-            sourceLang: "en",
-            targetLang: "id",
-            context: `Software engineering portfolio project case study titled "${formData.title}"`,
-          }),
-        });
+      const res = await fetch("/api/admin/ai/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "project",
+          data: {
+            title: formData.title,
+            subtitle: formData.subtitle,
+            subtitleId: formData.subtitleId,
+            description: formData.description,
+            descriptionId: formData.descriptionId,
+            overview: formData.overview,
+            overviewId: formData.overviewId,
+            category: formData.category,
+            technologies: formData.technologies,
+            activeLanguage: langTab,
+          },
+        }),
+      });
 
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Failed to translate project");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to generate AI project details");
 
-        setFormData((prev) => ({
-          ...prev,
-          subtitleId: data.translated.subtitle || prev.subtitleId,
-          descriptionId: data.translated.description || prev.descriptionId,
-          overviewId: data.translated.overview || prev.overviewId,
-        }));
-        setLangTab("id");
-      } else {
-        const res = await fetch("/api/admin/ai/translate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            fields: {
-              subtitle: formData.subtitleId || "",
-              description: formData.descriptionId || "",
-              overview: formData.overviewId || "",
-            },
-            sourceLang: "id",
-            targetLang: "en",
-            context: `Software engineering portfolio project case study titled "${formData.title}"`,
-          }),
-        });
-
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Failed to translate project");
-
-        setFormData((prev) => ({
-          ...prev,
-          subtitle: data.translated.subtitle || prev.subtitle,
-          description: data.translated.description || prev.description,
-          overview: data.translated.overview || prev.overview,
-        }));
-        setLangTab("en");
-      }
+      const r = data.result;
+      setFormData((prev) => ({
+        ...prev,
+        subtitle: r.subtitle || prev.subtitle,
+        subtitleId: r.subtitleId || prev.subtitleId,
+        description: r.description || prev.description,
+        descriptionId: r.descriptionId || prev.descriptionId,
+        overview: r.overview || prev.overview,
+        overviewId: r.overviewId || prev.overviewId,
+        technologies: r.technologies && r.technologies.length > 0 ? r.technologies : prev.technologies,
+      }));
     } catch (err: any) {
-      setError(err.message || "AI Translation failed");
+      setError(err.message || "AI Generation failed");
     } finally {
       setTranslating(false);
     }

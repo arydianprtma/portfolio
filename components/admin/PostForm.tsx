@@ -57,67 +57,54 @@ export const PostForm: React.FC<PostFormProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  // AI 1-Click Translation via Gemini 1.5 Flash
+  // AI Full-Post Auto-Generator & Dual-Language Syncer
   const handleAiTranslate = async () => {
     setTranslating(true);
     setError(null);
 
     try {
-      if (langTab === "en") {
-        const res = await fetch("/api/admin/ai/translate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            fields: {
-              title: formData.title || "",
-              summary: formData.summary || "",
-              content: formData.content || "",
-            },
-            sourceLang: "en",
-            targetLang: "id",
-            context: `Technical software engineering blog post titled "${formData.title}"`,
-          }),
-        });
+      const res = await fetch("/api/admin/ai/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "post",
+          data: {
+            title: formData.title,
+            titleId: formData.titleId,
+            summary: formData.summary,
+            summaryId: formData.summaryId,
+            content: formData.content,
+            contentId: formData.contentId,
+            tags: formData.tags,
+            activeLanguage: langTab,
+          },
+        }),
+      });
 
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Failed to translate article");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to generate AI article details");
 
-        setFormData((prev) => ({
-          ...prev,
-          titleId: data.translated.title || prev.titleId,
-          summaryId: data.translated.summary || prev.summaryId,
-          contentId: data.translated.content || prev.contentId,
-        }));
-        setLangTab("id");
-      } else {
-        const res = await fetch("/api/admin/ai/translate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            fields: {
-              title: formData.titleId || "",
-              summary: formData.summaryId || "",
-              content: formData.contentId || "",
-            },
-            sourceLang: "id",
-            targetLang: "en",
-            context: `Technical software engineering blog post titled "${formData.titleId || formData.title}"`,
-          }),
-        });
+      const r = data.result;
+      const genSlug = (r.title || formData.title || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/[\s_-]+/g, "-");
 
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Failed to translate article");
-
-        setFormData((prev) => ({
-          ...prev,
-          title: data.translated.title || prev.title,
-          summary: data.translated.summary || prev.summary,
-          content: data.translated.content || prev.content,
-        }));
-        setLangTab("en");
-      }
+      setFormData((prev) => ({
+        ...prev,
+        title: r.title || prev.title,
+        titleId: r.titleId || prev.titleId,
+        summary: r.summary || prev.summary,
+        summaryId: r.summaryId || prev.summaryId,
+        content: r.content || prev.content,
+        contentId: r.contentId || prev.contentId,
+        tags: r.tags && r.tags.length > 0 ? r.tags : prev.tags,
+        readingTime: r.readingTime || prev.readingTime,
+        slug: prev.slug || genSlug,
+      }));
     } catch (err: any) {
-      setError(err.message || "AI Translation failed");
+      setError(err.message || "AI Generation failed");
     } finally {
       setTranslating(false);
     }

@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/auth";
-import { translateContent } from "@/lib/gemini";
+import {
+  translateContent,
+  completeAndTranslatePost,
+  completeAndTranslateProject,
+} from "@/lib/gemini";
 
 export async function POST(request: Request) {
   const authed = await isAuthenticated();
@@ -9,8 +13,22 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { fields, sourceLang, targetLang, context } = await request.json();
+    const body = await request.json();
+    const { type = "general", data, fields, sourceLang, targetLang, context } = body;
 
+    // 1. Post/Article Mode: Auto-drafts & translates all fields (Title, Summary, Content Markdown, Tags, ReadingTime)
+    if (type === "post") {
+      const generated = await completeAndTranslatePost(data || {});
+      return NextResponse.json({ success: true, result: generated });
+    }
+
+    // 2. Project Mode: Auto-drafts & translates all fields (Subtitle, Description, Overview, Techs)
+    if (type === "project") {
+      const generated = await completeAndTranslateProject(data || {});
+      return NextResponse.json({ success: true, result: generated });
+    }
+
+    // 3. General Key-Value Translation Mode
     if (!fields || typeof fields !== "object" || Object.keys(fields).length === 0) {
       return NextResponse.json(
         { error: "No fields provided for translation" },

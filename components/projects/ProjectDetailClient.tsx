@@ -8,6 +8,7 @@ import { GithubIcon } from "@/components/ui/Icons";
 import { Project } from "@/types";
 import { useLanguage } from "@/context/LanguageContext";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import { ArticleContent } from "@/components/blog/ArticleContent";
 
 interface ProjectDetailClientProps {
   project: Project;
@@ -121,9 +122,9 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
           <h2 className="font-display text-2xl md:text-3xl font-bold uppercase tracking-tight text-[var(--foreground)]">
             {language === "id" ? "IKHTISAR & TUJUAN" : "OVERVIEW & PURPOSE"}
           </h2>
-          <p className="text-[var(--muted)] text-base md:text-lg leading-relaxed font-light text-justify [text-align-last:left] break-words">
-            {activeOverview}
-          </p>
+          <div className="text-[var(--muted)] text-base md:text-lg leading-relaxed font-light">
+            <ArticleContent content={activeOverview} />
+          </div>
         </div>
 
         <div className="lg:col-span-5 bg-[var(--surface)] border border-[var(--border)] p-8">
@@ -146,50 +147,60 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
       </div>
 
       {/* Features & Architectural Highlights */}
-      {project.features && project.features.length > 0 && (
-        <div className="mb-20">
-          <SectionLabel label={language === "id" ? "FITUR UTAMA & KAPABILITAS" : "KEY FEATURES & CAPABILITIES"} />
+      {(() => {
+        const validFeatures = (project.features || []).filter((f) => f && f.trim().length > 0);
+        if (validFeatures.length === 0) return null;
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {project.features.map((feature, idx) => (
-              <div
-                key={idx}
-                className="bg-[var(--surface)] border border-[var(--border)] p-6 hover:border-[#E31B23]/40 transition-colors"
-              >
-                <div className="font-mono text-xs text-[#E31B23] mb-2 font-semibold">
-                  FEATURE 0{idx + 1}
+        return (
+          <div className="mb-20">
+            <SectionLabel label={language === "id" ? "FITUR UTAMA & KAPABILITAS" : "KEY FEATURES & CAPABILITIES"} />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {validFeatures.map((feature, idx) => (
+                <div
+                  key={idx}
+                  className="bg-[var(--surface)] border border-[var(--border)] p-6 hover:border-[#E31B23]/40 transition-colors"
+                >
+                  <div className="font-mono text-xs text-[#E31B23] mb-2 font-semibold">
+                    FEATURE 0{idx + 1}
+                  </div>
+                  <p className="text-sm md:text-base text-[var(--muted)] leading-relaxed text-justify [text-align-last:left] break-words">
+                    {feature}
+                  </p>
                 </div>
-                <p className="text-sm md:text-base text-[var(--muted)] leading-relaxed text-justify [text-align-last:left] break-words">
-                  {feature}
-                </p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Technical Challenges */}
-      {project.challenges && project.challenges.length > 0 && (
-        <div className="mb-20">
-          <SectionLabel label={language === "id" ? "TANTANGAN TEKNIS & SOLUSI" : "TECHNICAL CHALLENGES & SOLUTIONS"} />
+      {(() => {
+        const validChallenges = (project.challenges || []).filter((c) => c && c.trim().length > 0);
+        if (validChallenges.length === 0) return null;
 
-          <div className="space-y-4">
-            {project.challenges.map((challenge, idx) => (
-              <div
-                key={idx}
-                className="bg-[var(--surface)] border-l-2 border-l-[#E31B23] border border-[var(--border)] p-6"
-              >
-                <div className="font-mono text-xs text-[var(--muted)] mb-2 uppercase tracking-wider">
-                  CHALLENGE 0{idx + 1}
+        return (
+          <div className="mb-20">
+            <SectionLabel label={language === "id" ? "TANTANGAN TEKNIS & SOLUSI" : "TECHNICAL CHALLENGES & SOLUTIONS"} />
+
+            <div className="space-y-4">
+              {validChallenges.map((challenge, idx) => (
+                <div
+                  key={idx}
+                  className="bg-[var(--surface)] border-l-2 border-l-[#E31B23] border border-[var(--border)] p-6"
+                >
+                  <div className="font-mono text-xs text-[var(--muted)] mb-2 uppercase tracking-wider">
+                    CHALLENGE 0{idx + 1}
+                  </div>
+                  <p className="text-sm md:text-base text-[var(--muted)] leading-relaxed text-justify [text-align-last:left] break-words">
+                    {challenge}
+                  </p>
                 </div>
-                <p className="text-sm md:text-base text-[var(--muted)] leading-relaxed text-justify [text-align-last:left] break-words">
-                  {challenge}
-                </p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Additional Gallery Slices */}
       {project.images && project.images.length > 0 && (

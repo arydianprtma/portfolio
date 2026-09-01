@@ -225,10 +225,16 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
         : "/api/admin/projects";
       const method = isEditing ? "PUT" : "POST";
 
+      const cleanData = {
+        ...formData,
+        features: (formData.features || []).filter((f) => f && f.trim().length > 0),
+        challenges: (formData.challenges || []).filter((c) => c && c.trim().length > 0),
+      };
+
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(cleanData),
       });
 
       const data = await res.json();
@@ -625,6 +631,114 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                   <span className="text-[10px] text-[#777777]">Highlighted on homepage showcase</span>
                 </div>
               </label>
+            </div>
+          </div>
+
+          {/* Section 4: Key Features & Capabilities */}
+          <div className="bg-[#101010] border border-[#1F1F1F] p-6 md:p-8 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1A1A1A] pb-3">
+              <div>
+                <h2 className="text-[#E31B23] text-sm uppercase tracking-widest font-semibold">
+                  04. Key Features & Capabilities
+                </h2>
+                <p className="text-[10px] text-[#777777] mt-0.5">
+                  Highlights displayed in the project detail page feature grid
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleAddFeature}
+                className="inline-flex items-center gap-1 bg-[#181818] hover:bg-[#222222] text-[#E31B23] hover:text-white border border-[#E31B23]/40 hover:border-[#E31B23] px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Feature</span>
+              </button>
+            </div>
+
+            {(!formData.features || formData.features.length === 0) && (
+              <div className="text-center py-6 border border-dashed border-[#222222] text-[#666666] text-xs">
+                No features added yet. Click &quot;Add Feature&quot; to add cards to the detail page.
+              </div>
+            )}
+
+            <div className="space-y-3">
+              {formData.features?.map((feature, idx) => (
+                <div key={idx} className="flex gap-2 items-start bg-[#141414] border border-[#262626] p-3">
+                  <span className="text-[#E31B23] font-bold text-xs pt-1 select-none">
+                    0{idx + 1}.
+                  </span>
+                  <textarea
+                    rows={2}
+                    value={feature}
+                    onChange={(e) => handleFeatureChange(idx, e.target.value)}
+                    placeholder={`Describe Feature 0${idx + 1}...`}
+                    className="flex-1 bg-transparent border-0 text-[#F5F5F5] outline-none text-xs resize-y"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveFeature(idx)}
+                    className="text-[#666666] hover:text-red-400 p-1 transition-colors"
+                    title="Remove feature"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Section 5: Technical Challenges & Solutions */}
+          <div className="bg-[#101010] border border-[#1F1F1F] p-6 md:p-8 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1A1A1A] pb-3">
+              <div>
+                <h2 className="text-[#E31B23] text-sm uppercase tracking-widest font-semibold">
+                  05. Technical Challenges & Solutions
+                </h2>
+                <p className="text-[10px] text-[#777777] mt-0.5">
+                  Complex problems solved and architectural engineering choices
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleAddChallenge}
+                className="inline-flex items-center gap-1 bg-[#181818] hover:bg-[#222222] text-[#E31B23] hover:text-white border border-[#E31B23]/40 hover:border-[#E31B23] px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Challenge</span>
+              </button>
+            </div>
+
+            {(!formData.challenges || formData.challenges.length === 0) && (
+              <div className="text-center py-6 border border-dashed border-[#222222] text-[#666666] text-xs">
+                No challenges added yet. Click &quot;Add Challenge&quot; to add solution callouts.
+              </div>
+            )}
+
+            <div className="space-y-3">
+              {formData.challenges?.map((challenge, idx) => (
+                <div key={idx} className="flex gap-2 items-start bg-[#141414] border border-[#262626] p-3">
+                  <span className="text-[#A0A0A0] font-bold text-xs pt-1 select-none">
+                    0{idx + 1}.
+                  </span>
+                  <textarea
+                    rows={2}
+                    value={challenge}
+                    onChange={(e) => handleChallengeChange(idx, e.target.value)}
+                    placeholder={`Describe Technical Challenge 0${idx + 1}...`}
+                    className="flex-1 bg-transparent border-0 text-[#F5F5F5] outline-none text-xs resize-y"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveChallenge(idx)}
+                    className="text-[#666666] hover:text-red-400 p-1 transition-colors"
+                    title="Remove challenge"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         </form>

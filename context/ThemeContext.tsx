@@ -57,7 +57,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       let x = window.innerWidth - 48;
       let y = window.innerHeight - 48;
 
-      if (event?.currentTarget) {
+      const toggleBtn = document.getElementById("theme-toggle-btn");
+      if (toggleBtn) {
+        const rect = toggleBtn.getBoundingClientRect();
+        x = rect.left + rect.width / 2;
+        y = rect.top + rect.height / 2;
+      } else if (event?.currentTarget) {
         const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
         x = rect.left + rect.width / 2;
         y = rect.top + rect.height / 2;

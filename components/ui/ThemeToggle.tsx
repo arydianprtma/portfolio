@@ -21,6 +21,7 @@ export const ThemeToggle: React.FC = () => {
   return (
     <div className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-40 select-none">
       <button
+        id="theme-toggle-btn"
         type="button"
         onClick={(e) => toggleTheme(e)}
         className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[var(--surface)]/90 backdrop-blur-md border border-[var(--border)] hover:border-[#E31B23] hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center group focus:outline-none"

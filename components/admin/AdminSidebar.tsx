@@ -14,6 +14,7 @@ import {
   Menu,
   X,
   BookOpen,
+  FlaskConical,
   Mail,
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
@@ -44,6 +45,7 @@ export const AdminSidebar: React.FC = () => {
     { label: "PROJECTS", href: "/admin/projects", icon: FolderGit2 },
     { label: "NEW PROJECT", href: "/admin/projects/new", icon: PlusCircle },
     { label: "ARTICLES", href: "/admin/posts", icon: BookOpen },
+    { label: "EXPERIMENTS", href: "/admin/experiments", icon: FlaskConical },
     { label: "PROFILE & SKILLS", href: "/admin/profile", icon: UserCircle },
     { label: "SETTINGS", href: "/admin/settings", icon: Settings },
   ];

@@ -666,3 +666,72 @@ export async function updateSkills(categories: SkillCategory[]): Promise<SkillCa
   }
   return categories;
 }
+
+// -------------------------------------------------------------
+// EXPERIMENTS LAB CRUD OPERATIONS
+// -------------------------------------------------------------
+function mapPrismaExperiment(e: any): Experiment {
+  return {
+    id: e.id,
+    title: e.title,
+    category: e.category,
+    description: e.description,
+    year: Number(e.year) || new Date().getFullYear(),
+    technologies: parseJson<string[]>(e.technologies, []),
+    link: e.link || undefined,
+    github: e.github || undefined,
+  };
+}
+
+export async function getExperiments(): Promise<Experiment[]> {
+  try {
+    const experiments = await prisma.experiment.findMany({
+      orderBy: { year: "desc" },
+    });
+    return experiments.map(mapPrismaExperiment);
+  } catch (err) {
+    console.error("Error getting experiments:", err);
+    return [];
+  }
+}
+
+export async function saveExperiment(data: Partial<Experiment> & { title: string }): Promise<Experiment> {
+  const id = data.id || `exp-${Date.now()}`;
+  const record = await prisma.experiment.upsert({
+    where: { id },
+    update: {
+      title: data.title,
+      category: data.category || "Experimental",
+      description: data.description || "",
+      year: Number(data.year) || new Date().getFullYear(),
+      technologies: JSON.stringify(data.technologies || []),
+      link: data.link || null,
+      github: data.github || null,
+    },
+    create: {
+      id,
+      title: data.title,
+      category: data.category || "Experimental",
+      description: data.description || "",
+      year: Number(data.year) || new Date().getFullYear(),
+      technologies: JSON.stringify(data.technologies || []),
+      link: data.link || null,
+      github: data.github || null,
+    },
+  });
+
+  return mapPrismaExperiment(record);
+}
+
+export async function deleteExperiment(id: string): Promise<boolean> {
+  try {
+    await prisma.experiment.delete({
+      where: { id },
+    });
+    return true;
+  } catch (err) {
+    console.error("Error deleting experiment:", err);
+    return false;
+  }
+}
+

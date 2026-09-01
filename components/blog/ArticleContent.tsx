@@ -98,7 +98,7 @@ const CodeBlock: React.FC<{ code: string; language?: string }> = ({ code, langua
   const displayLang = language?.toUpperCase() || "CODE";
 
   return (
-    <div className="my-8 rounded-lg overflow-hidden border border-[#222222] bg-[#0D0D0D] shadow-xl text-left">
+    <div className="my-8 rounded-lg overflow-hidden border border-[#1F1F1F] bg-[#0D0D0D] text-left">
       {/* Code Header Bar */}
       <div className="flex items-center justify-between px-4 py-2.5 bg-[#141414] border-b border-[#1F1F1F] text-xs font-mono">
         <div className="flex items-center gap-2 text-[#777777]">

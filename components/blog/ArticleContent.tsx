@@ -7,81 +7,66 @@ interface ArticleContentProps {
   content: string;
 }
 
-// Helper to format inline markdown elements (bold, italic, inline code, links)
-function formatInlineText(text: string): React.ReactNode {
-  // 1. Split text by inline code `...`
-  const codeParts = text.split(/(`[^`]+`)/g);
+// Robust inline formatter for bold, italic, inline code, and links
+function formatInline(text: string): React.ReactNode[] {
+  if (!text) return [];
 
-  return codeParts.map((codePart, i) => {
-    if (codePart.startsWith("`") && codePart.endsWith("`") && codePart.length >= 2) {
-      const inlineCode = codePart.slice(1, -1);
+  // Match: inline code `...`, bold **...**, italic *...*, markdown link [...](...)
+  const tokenRegex = /(`[^`]+`|\*\*[^*]+?\*\*|\*[^*]+?\*|\[[^\]]+\]\([^)]+\))/g;
+  const parts = text.split(tokenRegex);
+
+  return parts.map((part, index) => {
+    if (!part) return null;
+
+    // 1. Inline Code
+    if (part.startsWith("`") && part.endsWith("`") && part.length >= 2) {
       return (
         <code
-          key={i}
-          className="bg-[#181818] text-[#00E5FF] border border-[#2A2A2A] px-1.5 py-0.5 rounded text-[0.85em] font-mono mx-0.5 break-all inline-block align-middle"
+          key={index}
+          className="bg-[var(--surface)] text-[var(--foreground)] border border-[var(--border)] px-1.5 py-0.5 rounded text-[0.85em] font-mono mx-0.5 break-all inline-block align-middle"
         >
-          {inlineCode}
+          {part.slice(1, -1)}
         </code>
       );
     }
 
-    // 2. Process markdown links [label](url)
-    const linkParts = codePart.split(/(\[[^\]]+\]\([^)]+\))/g);
+    // 2. Bold Text (**...**) -> Clean neutral text, NOT red!
+    if (part.startsWith("**") && part.endsWith("**") && part.length >= 4) {
+      return (
+        <strong key={index} className="font-semibold text-[var(--foreground)]">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
 
-    return (
-      <React.Fragment key={i}>
-        {linkParts.map((linkPart, lIdx) => {
-          const linkMatch = linkPart.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
-          if (linkMatch) {
-            return (
-              <a
-                key={lIdx}
-                href={linkMatch[2]}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#E31B23] hover:underline inline-flex items-center gap-0.5 font-medium"
-              >
-                <span>{linkMatch[1]}</span>
-                <ExternalLink className="w-3 h-3 inline" />
-              </a>
-            );
-          }
+    // 3. Italic Text (*...*)
+    if (part.startsWith("*") && part.endsWith("*") && part.length >= 2) {
+      return (
+        <em key={index} className="italic text-[var(--foreground)]/90">
+          {part.slice(1, -1)}
+        </em>
+      );
+    }
 
-          // 3. Process bold **...**
-          const boldParts = linkPart.split(/(\*\*[^*]+\*\*)/g);
-          return (
-            <React.Fragment key={lIdx}>
-              {boldParts.map((boldPart, j) => {
-                if (boldPart.startsWith("**") && boldPart.endsWith("**") && boldPart.length >= 4) {
-                  return (
-                    <strong key={j} className="font-bold text-[#F5F5F5]">
-                      {boldPart.slice(2, -2)}
-                    </strong>
-                  );
-                }
+    // 4. Link [label](url)
+    const linkMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    if (linkMatch) {
+      return (
+        <a
+          key={index}
+          href={linkMatch[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#E31B23] hover:underline inline-flex items-center gap-0.5 font-medium"
+        >
+          <span>{linkMatch[1]}</span>
+          <ExternalLink className="w-3 h-3 inline" />
+        </a>
+      );
+    }
 
-                // 4. Process italic *...*
-                const italicParts = boldPart.split(/(\*[^*]+\*)/g);
-                return (
-                  <React.Fragment key={j}>
-                    {italicParts.map((itPart, k) => {
-                      if (itPart.startsWith("*") && itPart.endsWith("*") && itPart.length >= 2) {
-                        return (
-                          <em key={k} className="italic text-[#E0E0E0]">
-                            {itPart.slice(1, -1)}
-                          </em>
-                        );
-                      }
-                      return itPart;
-                    })}
-                  </React.Fragment>
-                );
-              })}
-            </React.Fragment>
-          );
-        })}
-      </React.Fragment>
-    );
+    // Plain Text
+    return <React.Fragment key={index}>{part}</React.Fragment>;
   });
 }
 
@@ -98,9 +83,8 @@ const CodeBlock: React.FC<{ code: string; language?: string }> = ({ code, langua
   const displayLang = language?.toUpperCase() || "CODE";
 
   return (
-    <div className="my-8 rounded-lg overflow-hidden border border-[#1F1F1F] bg-[#0D0D0D] text-left">
-      {/* Code Header Bar */}
-      <div className="flex items-center justify-between px-4 py-2.5 bg-[#141414] border-b border-[#1F1F1F] text-xs font-mono">
+    <div className="my-6 rounded overflow-hidden border border-[var(--border)] bg-[#0D0D0D] text-left">
+      <div className="flex items-center justify-between px-4 py-2 bg-[#141414] border-b border-[#1F1F1F] text-xs font-mono">
         <div className="flex items-center gap-2 text-[#777777]">
           <Terminal className="w-3.5 h-3.5 text-[#E31B23]" />
           <span className="font-bold tracking-wider text-[#A0A0A0]">{displayLang}</span>
@@ -125,8 +109,7 @@ const CodeBlock: React.FC<{ code: string; language?: string }> = ({ code, langua
         </button>
       </div>
 
-      {/* Code Body with preserved whitespace and no justify */}
-      <div className="p-5 overflow-x-auto text-xs md:text-sm font-mono text-[#00E5FF] leading-relaxed select-text">
+      <div className="p-4 overflow-x-auto text-xs md:text-sm font-mono text-[#00E5FF] leading-relaxed select-text">
         <pre className="m-0 p-0 text-left whitespace-pre font-mono">
           <code>{code}</code>
         </pre>
@@ -138,20 +121,21 @@ const CodeBlock: React.FC<{ code: string; language?: string }> = ({ code, langua
 export const ArticleContent: React.FC<ArticleContentProps> = ({ content }) => {
   if (!content) return null;
 
-  // Robust Markdown Parser extracting Code Blocks and Text Blocks
-  const regex = /```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g;
-  const blocks: { type: "code" | "text"; content: string; lang?: string }[] = [];
+  // 1. Separate code blocks from normal markdown text
+  const rawText = content.replace(/\r\n/g, "\n");
+  const codeBlockRegex = /```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g;
+  const sections: { type: "code" | "text"; content: string; lang?: string }[] = [];
   let lastIndex = 0;
   let match: RegExpExecArray | null;
 
-  while ((match = regex.exec(content)) !== null) {
+  while ((match = codeBlockRegex.exec(rawText)) !== null) {
     if (match.index > lastIndex) {
-      blocks.push({
+      sections.push({
         type: "text",
-        content: content.slice(lastIndex, match.index),
+        content: rawText.slice(lastIndex, match.index),
       });
     }
-    blocks.push({
+    sections.push({
       type: "code",
       lang: match[1] || "",
       content: match[2].trim(),
@@ -159,110 +143,167 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ content }) => {
     lastIndex = match.index + match[0].length;
   }
 
-  if (lastIndex < content.length) {
-    blocks.push({
+  if (lastIndex < rawText.length) {
+    sections.push({
       type: "text",
-      content: content.slice(lastIndex),
+      content: rawText.slice(lastIndex),
     });
   }
 
   return (
-    <div className="space-y-6 text-[var(--foreground)] text-base md:text-lg leading-relaxed font-light text-left overflow-hidden">
-      {blocks.map((block, idx) => {
-        if (block.type === "code") {
-          return <CodeBlock key={idx} code={block.content} language={block.lang} />;
+    <div className="space-y-4 text-[var(--muted)] text-sm md:text-base leading-relaxed font-normal text-left">
+      {sections.map((section, sIdx) => {
+        if (section.type === "code") {
+          return <CodeBlock key={sIdx} code={section.content} language={section.lang} />;
         }
 
-        // Split text chunk by double line-breaks
-        const paragraphs = block.content
-          .split("\n\n")
-          .map((p) => p.trim())
-          .filter(Boolean);
+        // Process text lines and group properly
+        const lines = section.content.split("\n");
+        const renderedElements: React.ReactNode[] = [];
+        let currentList: { type: "ul" | "ol"; items: string[] } | null = null;
+        let currentParagraph: string[] = [];
 
-        return (
-          <React.Fragment key={idx}>
-            {paragraphs.map((p, pIdx) => {
-              // Horizontal Divider
-              if (p === "---" || p === "***" || p === "___") {
-                return <hr key={pIdx} className="border-[var(--border)] my-8" />;
-              }
-
-              // Section Heading Level 2
-              if (p.startsWith("## ")) {
-                return (
-                  <h2
-                    key={pIdx}
-                    className="font-display text-2xl md:text-3xl font-bold uppercase tracking-tight text-[var(--foreground)] pt-8 pb-2 border-b border-[var(--border)] text-left break-words"
-                  >
-                    {p.replace("## ", "")}
-                  </h2>
-                );
-              }
-
-              // Section Heading Level 3
-              if (p.startsWith("### ")) {
-                return (
-                  <h3
-                    key={pIdx}
-                    className="font-display text-xl md:text-2xl font-bold text-[#E31B23] pt-4 text-left break-words"
-                  >
-                    {p.replace("### ", "")}
-                  </h3>
-                );
-              }
-
-              // Blockquotes
-              if (p.startsWith("> ")) {
-                return (
-                  <blockquote
-                    key={pIdx}
-                    className="border-l-2 border-[#E31B23] pl-4 py-2 italic text-[var(--foreground)] bg-[var(--surface)] my-6 text-justify [text-align-last:left] break-words"
-                  >
-                    {formatInlineText(p.replace("> ", ""))}
-                  </blockquote>
-                );
-              }
-
-              // Unordered List (- or *)
-              if (p.startsWith("- ") || p.startsWith("* ")) {
-                const items = p.split("\n").filter((line) => line.trim().startsWith("- ") || line.trim().startsWith("* "));
-                return (
-                  <ul key={pIdx} className="space-y-2.5 my-4 pl-5 list-disc text-left marker:text-[#E31B23]">
-                    {items.map((item, itemIdx) => (
-                      <li key={itemIdx} className="text-justify [text-align-last:left] break-words text-[var(--muted)]">
-                        {formatInlineText(item.replace(/^[-*]\s+/, ""))}
-                      </li>
-                    ))}
-                  </ul>
-                );
-              }
-
-              // Numbered List (1. , 2. )
-              if (/^\d+\.\s/.test(p)) {
-                const items = p.split("\n").filter((line) => /^\d+\.\s/.test(line.trim()));
-                return (
-                  <ol key={pIdx} className="space-y-2.5 my-4 pl-5 list-decimal text-left marker:text-[#E31B23] font-mono text-sm">
-                    {items.map((item, itemIdx) => (
-                      <li key={itemIdx} className="text-justify [text-align-last:left] break-words text-[var(--muted)] font-sans text-base md:text-lg">
-                        {formatInlineText(item.replace(/^\d+\.\s+/, ""))}
-                      </li>
-                    ))}
-                  </ol>
-                );
-              }
-
-              // Standard Paragraph with Safe Justified Typography and Last-Line Left-Align
-              return (
-                <p
-                  key={pIdx}
-                  className="text-justify [text-align-last:left] [overflow-wrap:break-word] break-words text-[var(--muted)] leading-relaxed"
-                >
-                  {formatInlineText(p)}
+        const flushParagraph = (key: string) => {
+          if (currentParagraph.length > 0) {
+            const pText = currentParagraph.join(" ").trim();
+            if (pText) {
+              renderedElements.push(
+                <p key={key} className="text-[var(--muted)] leading-relaxed my-3 font-sans">
+                  {formatInline(pText)}
                 </p>
               );
-            })}
-          </React.Fragment>
-        );
+            }
+            currentParagraph = [];
+          }
+        };
+
+        const flushList = (key: string) => {
+          if (currentList && currentList.items.length > 0) {
+            if (currentList.type === "ul") {
+              renderedElements.push(
+                <ul key={key} className="space-y-2 my-3 pl-5 list-disc marker:text-[#E31B23]">
+                  {currentList.items.map((item, iIdx) => (
+                    <li key={iIdx} className="text-[var(--muted)] leading-relaxed">
+                      {formatInline(item)}
+                    </li>
+                  ))}
+                </ul>
+              );
+            } else {
+              renderedElements.push(
+                <ol key={key} className="space-y-2 my-3 pl-5 list-decimal marker:text-[#E31B23]">
+                  {currentList.items.map((item, iIdx) => (
+                    <li key={iIdx} className="text-[var(--muted)] leading-relaxed">
+                      {formatInline(item)}
+                    </li>
+                  ))}
+                </ol>
+              );
+            }
+            currentList = null;
+          }
+        };
+
+        lines.forEach((line, lIdx) => {
+          const trimmed = line.trim();
+
+          // Empty line -> flush current paragraph and list
+          if (!trimmed) {
+            flushParagraph(`p-${sIdx}-${lIdx}`);
+            flushList(`list-${sIdx}-${lIdx}`);
+            return;
+          }
+
+          // Horizontal Divider
+          if (trimmed === "---" || trimmed === "***" || trimmed === "___") {
+            flushParagraph(`p-${sIdx}-${lIdx}`);
+            flushList(`list-${sIdx}-${lIdx}`);
+            renderedElements.push(<hr key={`hr-${sIdx}-${lIdx}`} className="border-[var(--border)] my-6" />);
+            return;
+          }
+
+          // Heading 2 (## ...) -> Clean neutral color!
+          if (trimmed.startsWith("## ")) {
+            flushParagraph(`p-${sIdx}-${lIdx}`);
+            flushList(`list-${sIdx}-${lIdx}`);
+            renderedElements.push(
+              <h2
+                key={`h2-${sIdx}-${lIdx}`}
+                className="font-display text-xl md:text-2xl font-bold uppercase tracking-tight text-[var(--foreground)] pt-6 pb-2 border-b border-[var(--border)]"
+              >
+                {trimmed.replace(/^##\s+/, "")}
+              </h2>
+            );
+            return;
+          }
+
+          // Heading 3 (### ...) -> Clean neutral color!
+          if (trimmed.startsWith("### ")) {
+            flushParagraph(`p-${sIdx}-${lIdx}`);
+            flushList(`list-${sIdx}-${lIdx}`);
+            renderedElements.push(
+              <h3
+                key={`h3-${sIdx}-${lIdx}`}
+                className="font-display text-base md:text-lg font-bold text-[var(--foreground)] pt-4 pb-1 uppercase tracking-wide"
+              >
+                {trimmed.replace(/^###\s+/, "")}
+              </h3>
+            );
+            return;
+          }
+
+          // Blockquote (> ...)
+          if (trimmed.startsWith("> ")) {
+            flushParagraph(`p-${sIdx}-${lIdx}`);
+            flushList(`list-${sIdx}-${lIdx}`);
+            renderedElements.push(
+              <blockquote
+                key={`bq-${sIdx}-${lIdx}`}
+                className="border-l-2 border-[#E31B23] pl-4 py-2 italic text-[var(--foreground)] bg-[var(--surface)] my-4"
+              >
+                {formatInline(trimmed.replace(/^>\s+/, ""))}
+              </blockquote>
+            );
+            return;
+          }
+
+          // Bullet List Item (- ... or * ...)
+          if (/^[-*]\s+/.test(trimmed)) {
+            flushParagraph(`p-${sIdx}-${lIdx}`);
+            const itemText = trimmed.replace(/^[-*]\s+/, "");
+            if (!currentList || currentList.type !== "ul") {
+              flushList(`list-${sIdx}-${lIdx}`);
+              currentList = { type: "ul", items: [itemText] };
+            } else {
+              currentList.items.push(itemText);
+            }
+            return;
+          }
+
+          // Numbered List Item (1. ... or 2. ...)
+          if (/^\d+\.\s+/.test(trimmed)) {
+            flushParagraph(`p-${sIdx}-${lIdx}`);
+            const itemText = trimmed.replace(/^\d+\.\s+/, "");
+            if (!currentList || currentList.type !== "ol") {
+              flushList(`list-${sIdx}-${lIdx}`);
+              currentList = { type: "ol", items: [itemText] };
+            } else {
+              currentList.items.push(itemText);
+            }
+            return;
+          }
+
+          // Regular paragraph line
+          if (currentList) {
+            flushList(`list-${sIdx}-${lIdx}`);
+          }
+          currentParagraph.push(trimmed);
+        });
+
+        flushParagraph(`p-${sIdx}-end`);
+        flushList(`list-${sIdx}-end`);
+
+        return <React.Fragment key={sIdx}>{renderedElements}</React.Fragment>;
       })}
     </div>
   );

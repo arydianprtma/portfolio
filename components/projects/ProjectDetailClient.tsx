@@ -117,7 +117,7 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
       </div>
 
       {/* Overview & Tech Stack Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-20">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-20 items-start">
         <div className="lg:col-span-7 space-y-6">
           <h2 className="font-display text-2xl md:text-3xl font-bold uppercase tracking-tight text-[var(--foreground)]">
             {language === "id" ? "IKHTISAR & TUJUAN" : "OVERVIEW & PURPOSE"}
@@ -127,8 +127,8 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
           </div>
         </div>
 
-        <div className="lg:col-span-5 bg-[var(--surface)] border border-[var(--border)] p-8">
-          <h3 className="font-mono text-xs uppercase tracking-widest text-[#E31B23] mb-6 flex items-center gap-2">
+        <div className="lg:col-span-5 bg-[var(--surface)] border border-[var(--border)] p-6 sm:p-8 lg:sticky lg:top-28">
+          <h3 className="font-mono text-xs uppercase tracking-widest text-[#E31B23] mb-5 flex items-center gap-2">
             <Code2 className="w-4 h-4" />
             <span>{language === "id" ? "TEKNOLOGI UTAMA" : "CORE TECHNOLOGIES"}</span>
           </h3>

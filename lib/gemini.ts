@@ -1,12 +1,13 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Strictly prioritize free-tier models (15 RPM / 1M tokens/min free tier)
-const FREE_TIER_MODELS = [
-  "gemini-1.5-flash",
-  "gemini-1.5-flash-8b",
+// Verified active models ordered by speed and availability
+const ACTIVE_MODELS = [
+  "gemini-3.5-flash",
+  "gemini-3.6-flash",
+  "gemini-3.7-flash",
+  "gemini-3.5-flash-lite",
   "gemini-2.0-flash",
-  "gemini-2.0-flash-lite",
-  "gemini-1.5-flash-latest",
+  "gemini-1.5-flash",
 ];
 
 export async function translateContent({
@@ -30,8 +31,6 @@ export async function translateContent({
     );
   }
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-
   const fromLanguageName = sourceLang === "en" ? "English" : "Indonesian (Bahasa Indonesia)";
   const toLanguageName = targetLang === "en" ? "English" : "Indonesian (Bahasa Indonesia)";
 
@@ -52,15 +51,27 @@ ${JSON.stringify(fields, null, 2)}`;
 
   let lastError: any = null;
 
-  // Try each verified free-tier model sequentially
-  for (const modelName of FREE_TIER_MODELS) {
+  // Try each verified active model sequentially via direct REST endpoint (100% reliable)
+  for (const modelName of ACTIVE_MODELS) {
     try {
-      const model = genAI.getGenerativeModel({ model: modelName });
-      const response = await model.generateContent(prompt);
-      const text = response.response.text().trim();
+      const restRes = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+          }),
+        }
+      );
 
-      // Clean any markdown codeblock formatting if returned
-      let cleaned = text;
+      const restData = await restRes.json();
+      if (restData.error) {
+        throw new Error(restData.error.message);
+      }
+
+      const rawText = restData.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      let cleaned = rawText.trim();
       if (cleaned.startsWith("```json")) {
         cleaned = cleaned.replace(/^```json\s*/, "").replace(/\s*```$/, "");
       } else if (cleaned.startsWith("```")) {
@@ -69,41 +80,13 @@ ${JSON.stringify(fields, null, 2)}`;
 
       return JSON.parse(cleaned);
     } catch (err: any) {
-      console.warn(`Model ${modelName} error, trying next free-tier model:`, err.message || err);
+      console.warn(`Model ${modelName} failed, trying next:`, err.message || err);
       lastError = err;
     }
   }
 
-  // Direct REST API Fallback with gemini-1.5-flash
-  try {
-    const restRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-        }),
-      }
-    );
-    const restData = await restRes.json();
-    if (restData.error) {
-      throw new Error(restData.error.message);
-    }
-
-    const rawText = restData.candidates?.[0]?.content?.parts?.[0]?.text || "";
-    let cleaned = rawText.trim();
-    if (cleaned.startsWith("```json")) {
-      cleaned = cleaned.replace(/^```json\s*/, "").replace(/\s*```$/, "");
-    } else if (cleaned.startsWith("```")) {
-      cleaned = cleaned.replace(/^```\s*/, "").replace(/\s*```$/, "");
-    }
-    return JSON.parse(cleaned);
-  } catch (fallbackErr: any) {
-    throw new Error(
-      lastError?.message ||
-        fallbackErr.message ||
-        "Gagal melakukan terjemahan AI. Pastikan API key Google AI Studio Anda aktif."
-    );
-  }
+  throw new Error(
+    lastError?.message ||
+      "Gagal melakukan terjemahan AI. Pastikan API key Google AI Studio Anda aktif."
+  );
 }

@@ -209,22 +209,22 @@ export const Hero: React.FC<HeroProps> = ({ resumeUrl }) => {
       {/* Bottom Row / Scroll Indicator */}
       <div
         ref={scrollRef}
-        className="flex items-center justify-between font-mono text-xs text-[#666666] border-t border-[#1A1A1A] pt-4"
+        className="flex items-center justify-between font-mono text-xs text-[var(--muted)] border-t border-[var(--border)] pt-4"
       >
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <Code2 className="w-3.5 h-3.5 text-[#E31B23]" />
-            <span>FULL-STACK</span>
+            <span className="text-[var(--foreground)] font-medium">FULL-STACK</span>
           </div>
           <div className="flex items-center gap-2">
             <Cpu className="w-3.5 h-3.5 text-[#E31B23]" />
-            <span>INTERACTIVE / WEB</span>
+            <span className="text-[var(--foreground)] font-medium">INTERACTIVE / WEB</span>
           </div>
         </div>
 
         <a
           href="#work"
-          className="group flex items-center gap-2 text-[#777777] hover:text-[#F5F5F5] transition-colors"
+          className="group flex items-center gap-2 text-[var(--muted)] hover:text-[#E31B23] transition-colors"
           data-cursor="link"
         >
           <span className="text-[10px] tracking-widest uppercase">{t.hero.scrollDown}</span>

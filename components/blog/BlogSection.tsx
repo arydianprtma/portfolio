@@ -62,7 +62,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
   }
 
   return (
-    <section id="blog" className="py-24 md:py-36 relative scroll-mt-20 border-t border-[#1A1A1A] overflow-hidden">
+    <section id="blog" className="py-24 md:py-36 relative scroll-mt-20 border-t border-[var(--border)] overflow-hidden">
       {/* Decorative Red Blur Accent */}
       <div className="absolute top-1/2 -right-32 w-80 h-80 bg-[#E31B23]/5 rounded-full blur-[120px] pointer-events-none -z-10" />
 
@@ -71,13 +71,13 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 md:mb-16 gap-6">
           <div>
             <SectionLabel label={t.blog.sectionLabel} number="04." />
-            <h2 className="font-display text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-[#F5F5F5]">
+            <h2 className="font-display text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-[var(--foreground)]">
               {t.blog.headline}
             </h2>
           </div>
 
           <div className="flex items-center justify-between md:justify-end gap-6">
-            <p className="text-[#888888] font-mono text-xs max-w-sm hidden sm:block">
+            <p className="text-[var(--muted)] font-mono text-xs max-w-sm hidden sm:block">
               {t.blog.description}
             </p>
 

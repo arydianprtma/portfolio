@@ -14,7 +14,7 @@ export const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
   const { t } = useLanguage();
 
   return (
-    <section id="work" className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto border-t border-[#1A1A1A] scroll-mt-10">
+    <section id="work" className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto border-t border-[var(--border)] scroll-mt-10">
       <SectionLabel label={t.projects.sectionLabel} number="02." />
 
       <div className="flex flex-col">

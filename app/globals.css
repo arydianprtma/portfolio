@@ -2,25 +2,25 @@
 
 @layer base {
   :root {
-    --background: #fafafa;
-    --foreground: #111111;
-    --muted: #666666;
+    --background: #ffffff;
+    --foreground: #0a0a0a;
+    --muted: #4a4a4a;
     --accent: #e31b23;
     --accent-glow: rgba(227, 27, 35, 0.15);
-    --border: #e5e5e5;
-    --border-light: #d4d4d4;
-    --surface: #f4f4f4;
-    --surface-hover: #eaeaea;
+    --border: #e2e2e2;
+    --border-light: #ececec;
+    --surface: #f5f5f5;
+    --surface-hover: #ebebeb;
   }
 
   .dark {
     --background: #0a0a0a;
     --foreground: #f5f5f5;
-    --muted: #777777;
+    --muted: #8e8e8e;
     --accent: #e31b23;
     --accent-glow: rgba(227, 27, 35, 0.25);
     --border: #222222;
-    --border-light: #333333;
+    --border-light: #2d2d2d;
     --surface: #121212;
     --surface-hover: #181818;
   }
@@ -33,7 +33,6 @@
     scroll-behavior: smooth;
     background-color: var(--background);
     color: var(--foreground);
-    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   body {
@@ -41,13 +40,27 @@
     color: var(--foreground);
     font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     overflow-x: hidden;
-    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   ::selection {
     background-color: var(--accent);
     color: #ffffff;
   }
+}
+
+/* Circular View Transition for Theme Switch */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 999999;
 }
 
 /* Custom Typography & Utility Classes */
@@ -67,7 +80,7 @@
 }
 
 html:not(.dark) .text-outline-stroke {
-  -webkit-text-stroke: 1px rgba(17, 17, 17, 0.3);
+  -webkit-text-stroke: 1.5px rgba(10, 10, 10, 0.4);
 }
 
 .text-outline-stroke-thick {
@@ -76,7 +89,7 @@ html:not(.dark) .text-outline-stroke {
 }
 
 html:not(.dark) .text-outline-stroke-thick {
-  -webkit-text-stroke: 2px rgba(17, 17, 17, 0.35);
+  -webkit-text-stroke: 2px rgba(10, 10, 10, 0.5);
 }
 
 .text-outline-red {
@@ -99,8 +112,8 @@ html:not(.dark) .text-outline-stroke-thick {
 
 html:not(.dark) .bg-grid-pattern {
   background-image: 
-    linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
 }
 
 /* Custom Scrollbar */

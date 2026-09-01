@@ -7,7 +7,7 @@ type Theme = "dark" | "light";
 interface ThemeContextType {
   theme: Theme;
   setTheme: (theme: Theme) => void;
-  toggleTheme: () => void;
+  toggleTheme: (event?: React.MouseEvent) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -45,9 +45,45 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     applyTheme(newTheme);
   };
 
-  const toggleTheme = () => {
+  const toggleTheme = (event?: React.MouseEvent) => {
     const nextTheme = theme === "dark" ? "light" : "dark";
-    setTheme(nextTheme);
+
+    // If View Transition API is supported and not reduced motion, animate circular reveal from click point
+    if (
+      typeof document !== "undefined" &&
+      "startViewTransition" in document &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      const x = event ? event.clientX : window.innerWidth;
+      const y = event ? event.clientY : 0;
+      const endRadius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+      );
+
+      const transition = (document as any).startViewTransition(() => {
+        setTheme(nextTheme);
+      });
+
+      transition.ready.then(() => {
+        const clipPath = [
+          `circle(0px at ${x}px ${y}px)`,
+          `circle(${endRadius}px at ${x}px ${y}px)`,
+        ];
+        document.documentElement.animate(
+          {
+            clipPath: clipPath,
+          },
+          {
+            duration: 500,
+            easing: "cubic-bezier(0.25, 1, 0.5, 1)",
+            pseudoElement: "::view-transition-new(root)",
+          }
+        );
+      });
+    } else {
+      setTheme(nextTheme);
+    }
   };
 
   return (

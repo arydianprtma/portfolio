@@ -14,12 +14,12 @@ export const Navbar: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // 5 core navigation links for balanced spacing
   const navLinks = [
     { label: t.nav.about, href: "/#about", id: "about" },
     { label: t.nav.work, href: "/#work", id: "work" },
     { label: t.nav.skills, href: "/#skills", id: "skills" },
     { label: t.nav.blog, href: "/#blog", id: "blog" },
-    { label: t.nav.experiments, href: "/#experiments", id: "experiments" },
     { label: t.nav.contact, href: "/#contact", id: "contact" },
   ];
 
@@ -28,7 +28,7 @@ export const Navbar: React.FC = () => {
       setIsScrolled(window.scrollY > 30);
 
       // Detect active section on scroll
-      const sectionIds = ["about", "work", "skills", "blog", "experiments", "contact"];
+      const sectionIds = ["about", "work", "skills", "blog", "contact"];
       const scrollPosition = window.scrollY + 200;
 
       let current = "";
@@ -68,22 +68,22 @@ export const Navbar: React.FC = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-[#0A0A0A]/90 backdrop-blur-md border-b border-[#1C1C1C] py-4"
-          : "bg-transparent py-6 md:py-8 border-b border-transparent"
+          ? "bg-[#0A0A0A]/90 backdrop-blur-md border-b border-[#1C1C1C] py-3.5"
+          : "bg-transparent py-5 md:py-7 border-b border-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
         {/* Brand Logo */}
         <Link
           href="/"
-          className="group"
+          className="group shrink-0"
           data-cursor="link"
         >
           <Logo />
         </Link>
 
-        {/* Desktop Nav Items with Active Scroll Indicator */}
-        <nav className="hidden lg:flex items-center gap-7">
+        {/* Desktop Nav Items with Balanced Spacing */}
+        <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
           {navLinks.map((link, idx) => {
             const isActive = activeSection === link.id;
 
@@ -91,7 +91,7 @@ export const Navbar: React.FC = () => {
               <Link
                 key={link.id}
                 href={link.href}
-                className={`group relative font-mono text-xs uppercase tracking-widest transition-colors py-1 ${
+                className={`group relative font-mono text-[11px] xl:text-xs uppercase tracking-widest transition-colors py-1 ${
                   isActive
                     ? "text-[#F5F5F5] font-semibold"
                     : "text-[#777777] hover:text-[#F5F5F5]"
@@ -118,28 +118,31 @@ export const Navbar: React.FC = () => {
           })}
         </nav>
 
-        {/* Quick Search, Language Switcher & CTA Right */}
-        <div className="hidden sm:flex items-center gap-3">
-          {/* Language Switcher */}
+        {/* Right Controls: Compact Language + Search + CTA */}
+        <div className="hidden sm:flex items-center gap-3.5 shrink-0">
+          {/* Minimalist Language Switcher */}
           <LanguageSwitcher />
 
-          {/* Command Palette Search Trigger */}
+          <span className="h-3 w-[1px] bg-[#222222]" />
+
+          {/* Compact Command Palette Search Trigger */}
           <button
             onClick={handleOpenSearch}
-            className="inline-flex items-center gap-2 font-mono text-xs text-[#888888] hover:text-[#F5F5F5] bg-[#121212] hover:bg-[#181818] border border-[#262626] hover:border-[#E31B23]/50 px-3 py-1.5 transition-colors group"
+            className="inline-flex items-center gap-1.5 font-mono text-[11px] text-[#777777] hover:text-[#F5F5F5] p-1.5 hover:bg-[#141414] border border-transparent hover:border-[#222222] transition-colors group"
             title="Search (Ctrl + K)"
+            aria-label="Search"
             data-cursor="link"
           >
             <Search className="w-3.5 h-3.5 text-[#E31B23] group-hover:scale-110 transition-transform" />
-            <span className="text-[11px] hidden md:inline">{t.nav.search}</span>
-            <kbd className="text-[9px] bg-[#1C1C1C] text-[#777777] border border-[#2B2B2B] px-1 py-0.5 ml-0.5">
+            <kbd className="text-[9px] bg-[#161616] text-[#666666] border border-[#262626] px-1 py-0.2">
               ⌘K
             </kbd>
           </button>
 
+          {/* Direct Contact Button */}
           <a
             href="mailto:arydianprtma@gmail.com"
-            className="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-[#F5F5F5] hover:text-[#E31B23] transition-colors border border-[#262626] hover:border-[#E31B23] px-3.5 py-1.5 bg-[#121212]"
+            className="inline-flex items-center gap-1.5 font-mono text-[11px] xl:text-xs uppercase tracking-wider text-[#F5F5F5] hover:text-[#E31B23] transition-colors border border-[#262626] hover:border-[#E31B23] px-3.5 py-1.5 bg-[#121212]"
             data-cursor="link"
           >
             <span>{t.nav.letsTalk}</span>
@@ -149,10 +152,10 @@ export const Navbar: React.FC = () => {
 
         {/* Mobile Right Controls: Language + Hamburger */}
         <div className="flex lg:hidden items-center gap-2">
-          <LanguageSwitcher showIcon={false} />
+          <LanguageSwitcher />
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-[#F5F5F5] hover:text-[#E31B23] transition-colors focus:outline-none"
+            className="p-1.5 text-[#F5F5F5] hover:text-[#E31B23] transition-colors focus:outline-none"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}

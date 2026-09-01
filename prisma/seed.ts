@@ -229,6 +229,58 @@ When design systems harmonize with clean code architecture, the result is a webs
       published: true,
       publishedAt: new Date("2026-08-31"),
     },
+    {
+      slug: "fullstack-system-architecture-scalable-web-apps",
+      title: "Architecting Full-Stack Scalability with Next.js & Supabase",
+      summary:
+        "Practical architectural strategies for connection pooling, type-safe ORM schema migrations, and zero-latency global edge caching.",
+      readingTime: "6 min read",
+      tags: JSON.stringify(["Architecture", "PostgreSQL", "Supabase", "TypeScript"]),
+      coverImage:
+        "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1600&auto=format&fit=crop",
+      content: `Modern software development requires balancing high developer velocity with enterprise-grade system resilience.
+
+## 01. Database Connection Pooling Strategy
+
+When deploying serverless microservices on Vercel or Cloudflare Edge, direct connections to PostgreSQL can rapidly exhaust connection limits under heavy spikes.
+
+> Using Transaction Mode PgBouncer pooling on port 6543 solves concurrency limits while retaining direct migration capabilities on port 5432.
+
+### Architecture Highlights:
+- **Connection Multiplexing**: Handles thousands of simultaneous read requests with negligible database CPU overhead.
+- **Type-Safe ORM**: Prisma Client generates rigorous TypeScript bindings straight from the schema definition.
+- **Automated Defensive Fallback**: Graceful caching ensures website uptime even during intermittent upstream maintenance.`,
+      published: true,
+      publishedAt: new Date("2026-09-01"),
+    },
+    {
+      slug: "tactile-micro-interactions-and-creative-coding",
+      title: "The Art of Tactile Micro-Interactions & Custom Cursors",
+      summary:
+        "How physics-based magnetic attraction, velocity dampening, and custom pointer canvas blending transform ordinary websites into digital art.",
+      readingTime: "4 min read",
+      tags: JSON.stringify(["Creative Coding", "Framer Motion", "UI Engineering"]),
+      coverImage:
+        "https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=1600&auto=format&fit=crop",
+      content: `Tactile feedback is what separates an ordinary webpage from an unforgettable digital experience.
+
+## 01. Physics-Based Magnetic Snapping
+
+By tracking the bounding rectangle of interactive interactive elements (\`<MagneticButton />\`), we calculate the distance vector and apply a non-linear spring dampening curve.
+
+\`\`\`ts
+// Non-linear spring calculation
+const distanceX = clientX - (rect.left + rect.width / 2);
+const distanceY = clientY - (rect.top + rect.height / 2);
+const pullFactor = 0.35;
+\`\`\`
+
+## 02. Summary
+
+Subtle micro-animations convey care, precision, and craftsmanship—attributes that clients and design-conscious companies seek in a top-tier software engineer.`,
+      published: true,
+      publishedAt: new Date("2026-09-01"),
+    },
   ];
 
   for (const post of initialPosts) {

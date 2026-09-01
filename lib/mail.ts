@@ -72,8 +72,8 @@ export async function sendInquiryNotification(
       <body>
         <div class="container">
           <div class="header">
-            <span class="badge">● NEW INCOMING INQUIRY</span>
-            <h1 class="title">PORTFOLIO CONTACT DISPATCH</h1>
+            <span class="badge">● INCOMING CLIENT MESSAGE</span>
+            <h1 class="title">NEW INQUIRY VIA ARDP</h1>
           </div>
 
           <div class="field-group">
@@ -118,13 +118,16 @@ export async function sendInquiryNotification(
     </html>
   `;
 
-  try {
+    const subjectLine = data.subject
+      ? `${data.name} — ${data.subject}`
+      : `Pesan Baru dari ${data.name} (ARDP Portfolio)`;
+
     await transporter.sendMail({
-      from: `"Portfolio Inquiry" <${process.env.SMTP_USER || process.env.EMAIL_USER}>`,
+      from: `"ARDP Portfolio" <${process.env.SMTP_USER || process.env.EMAIL_USER}>`,
       to: recipientEmail,
       replyTo: data.email,
-      subject: `[Portfolio Inquiry] from ${data.name}${data.subject ? `: ${data.subject}` : ""}`,
-      text: `New Portfolio Inquiry from ${data.name} (${data.email})\n\nSubject: ${data.subject || "-"}\nBudget: ${data.budget || "-"}\n\nMessage:\n${data.message}`,
+      subject: subjectLine,
+      text: `Pesan Baru dari ${data.name} (${data.email})\n\nTopik: ${data.subject || "-"}\nBudget: ${data.budget || "-"}\n\nPesan:\n${data.message}`,
       html: htmlContent,
     });
 

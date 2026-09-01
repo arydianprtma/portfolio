@@ -20,7 +20,9 @@ export async function translateContent({
   targetLang: "en" | "id";
   context?: string;
 }): Promise<Record<string, any>> {
-  const apiKey = (process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_API_KEY || "").trim();
+  const apiKey = (process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_API_KEY || "")
+    .replace(/^["']|["']$/g, "")
+    .trim();
 
   if (!apiKey) {
     throw new Error(

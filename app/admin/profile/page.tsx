@@ -138,7 +138,7 @@ export default function AdminProfilePage() {
           <div className="text-[#E31B23] text-xs font-semibold uppercase tracking-widest mb-1">
             IDENTITY & CAPABILITIES
           </div>
-          <h1 className="font-display text-3xl md:text-4xl font-bold uppercase tracking-tight text-[#F5F5F5]">
+          <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold uppercase tracking-tight text-[#F5F5F5]">
             PROFILE & SKILLS MANAGEMENT
           </h1>
         </div>
@@ -147,7 +147,7 @@ export default function AdminProfilePage() {
           type="button"
           onClick={handleSubmit}
           disabled={saving}
-          className="inline-flex items-center gap-2 bg-[#E31B23] hover:bg-[#c9141b] text-white px-6 py-3 font-semibold uppercase tracking-wider transition-colors disabled:opacity-50"
+          className="inline-flex items-center justify-center gap-2 bg-[#E31B23] hover:bg-[#c9141b] text-white px-6 py-3 font-semibold uppercase tracking-wider transition-colors disabled:opacity-50 w-full sm:w-auto"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           <span>Save Changes</span>

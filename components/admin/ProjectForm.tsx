@@ -196,10 +196,10 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
   return (
     <div className="space-y-8 font-mono text-xs pb-16">
       {/* Header Bar */}
-      <div className="flex items-center justify-between pb-6 border-b border-[#1F1F1F]">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-6 border-b border-[#1F1F1F]">
         <Link
           href="/admin/projects"
-          className="inline-flex items-center gap-2 text-[#777777] hover:text-[#F5F5F5] uppercase tracking-wider"
+          className="inline-flex items-center justify-center sm:justify-start gap-2 text-[#777777] hover:text-[#F5F5F5] uppercase tracking-wider py-2"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Projects</span>
@@ -209,7 +209,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
           type="button"
           onClick={handleSubmit}
           disabled={loading}
-          className="inline-flex items-center gap-2 bg-[#E31B23] hover:bg-[#c9141b] text-white px-6 py-3 font-semibold uppercase tracking-wider transition-colors disabled:opacity-50"
+          className="inline-flex items-center justify-center gap-2 bg-[#E31B23] hover:bg-[#c9141b] text-white px-6 py-3 font-semibold uppercase tracking-wider transition-colors disabled:opacity-50 w-full sm:w-auto"
         >
           {loading ? (
             <Loader2 className="w-4 h-4 animate-spin" />

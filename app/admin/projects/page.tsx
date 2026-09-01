@@ -45,22 +45,22 @@ export default function AdminProjectsListPage() {
   return (
     <div className="space-y-8 font-mono text-xs">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#1F1F1F]">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-6 border-b border-[#1F1F1F]">
         <div>
           <div className="text-[#E31B23] text-xs font-semibold uppercase tracking-widest mb-1">
             SHOWCASE MANAGEMENT
           </div>
-          <h1 className="font-display text-3xl md:text-4xl font-bold uppercase tracking-tight text-[#F5F5F5]">
+          <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold uppercase tracking-tight text-[#F5F5F5]">
             ALL PROJECTS
           </h1>
         </div>
 
         <Link
           href="/admin/projects/new"
-          className="inline-flex items-center gap-2 bg-[#E31B23] hover:bg-[#c9141b] text-white px-5 py-2.5 uppercase tracking-wider font-semibold transition-colors"
+          className="inline-flex items-center justify-center gap-2 bg-[#E31B23] hover:bg-[#c9141b] text-white px-5 py-2.5 uppercase tracking-wider font-semibold transition-colors w-full sm:w-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>NEW PROJECT</span>
+          <span>New Project</span>
         </Link>
       </div>
 

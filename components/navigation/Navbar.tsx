@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "motion/react";
 import { Menu, X, ArrowUpRight, Search } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useLanguage } from "@/context/LanguageContext";
 
 export const Navbar: React.FC = () => {
@@ -119,13 +118,10 @@ export const Navbar: React.FC = () => {
           })}
         </nav>
 
-        {/* Right Controls: Compact Language + Theme Switcher + Search + CTA */}
-        <div className="hidden sm:flex items-center gap-2.5 shrink-0">
+        {/* Right Controls: Compact Language + Search + CTA */}
+        <div className="hidden sm:flex items-center gap-3 shrink-0">
           {/* Minimalist Language Switcher */}
           <LanguageSwitcher />
-
-          {/* Theme Toggle (Dark / Light) */}
-          <ThemeToggle />
 
           <span className="h-3 w-[1px] bg-[var(--border)]" />
 
@@ -154,10 +150,9 @@ export const Navbar: React.FC = () => {
           </a>
         </div>
 
-        {/* Mobile Right Controls: Language + Theme + Hamburger */}
-        <div className="flex lg:hidden items-center gap-1.5">
+        {/* Mobile Right Controls: Language + Hamburger */}
+        <div className="flex lg:hidden items-center gap-2">
           <LanguageSwitcher />
-          <ThemeToggle />
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-1.5 text-[var(--foreground)] hover:text-[#E31B23] transition-colors focus:outline-none"

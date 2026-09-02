@@ -135,6 +135,19 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({ initialData }) => {
     }).format(val);
   };
 
+  // Format raw number into readable string with thousand dots
+  const formatInputDisplay = (val: number): string => {
+    if (!val || val === 0) return "";
+    return val.toLocaleString("id-ID");
+  };
+
+  // Parse formatted string back to number
+  const parseInputValue = (str: string): number => {
+    if (!str) return 0;
+    const cleanStr = str.replace(/[^\d]/g, "");
+    return Number(cleanStr) || 0;
+  };
+
   const handleAddItem = () => {
     setItems([
       ...items,
@@ -525,20 +538,23 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({ initialData }) => {
                 />
               </div>
 
-              {/* Rate */}
-              <div className="w-40 space-y-1">
-                <input
-                  type="number"
-                  min="0"
-                  step="any"
-                  required
-                  value={item.rate}
-                  onChange={(e) =>
-                    handleItemChange(idx, "rate", Math.max(0, Number(e.target.value)))
-                  }
-                  className="w-full bg-[#181818] border border-[#282828] focus:border-[#E31B23] px-3.5 py-2 text-[#F5F5F5] outline-none text-xs text-right font-mono"
-                  placeholder="Unit Price"
-                />
+              {/* Rate (Formatted Currency with Separator Dots) */}
+              <div className="w-44 space-y-1">
+                <div className="relative flex items-center">
+                  <span className="absolute left-2.5 text-[10px] font-bold text-[#777777] select-none">
+                    {currency === "USD" ? "$" : "Rp"}
+                  </span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={formatInputDisplay(item.rate)}
+                    onChange={(e) =>
+                      handleItemChange(idx, "rate", parseInputValue(e.target.value))
+                    }
+                    className="w-full bg-[#181818] border border-[#282828] focus:border-[#E31B23] pl-8 pr-2.5 py-2 text-[#F5F5F5] outline-none text-xs text-right font-mono"
+                    placeholder="0"
+                  />
+                </div>
               </div>
 
               {/* Amount Display */}
@@ -639,17 +655,20 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({ initialData }) => {
               </div>
             )}
 
-            {/* Discount Amount */}
+            {/* Discount Amount (Formatted Currency) */}
             <div className="flex items-center justify-between gap-4">
               <span className="text-[#888888]">Discount Amount:</span>
-              <div className="w-36">
+              <div className="w-40 relative flex items-center">
+                <span className="absolute left-2.5 text-[10px] font-bold text-[#777777] select-none">
+                  {currency === "USD" ? "$" : "Rp"}
+                </span>
                 <input
-                  type="number"
-                  min="0"
-                  step="any"
-                  value={discountAmount}
-                  onChange={(e) => setDiscountAmount(Number(e.target.value) || 0)}
-                  className="w-full bg-[#161616] border border-[#2B2B2B] focus:border-[#E31B23] px-2.5 py-1 text-right text-emerald-400 outline-none text-xs font-mono"
+                  type="text"
+                  inputMode="numeric"
+                  value={formatInputDisplay(discountAmount)}
+                  onChange={(e) => setDiscountAmount(parseInputValue(e.target.value))}
+                  className="w-full bg-[#161616] border border-[#2B2B2B] focus:border-[#E31B23] pl-8 pr-2.5 py-1 text-right text-emerald-400 outline-none text-xs font-mono"
+                  placeholder="0"
                 />
               </div>
             </div>

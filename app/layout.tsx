@@ -96,10 +96,12 @@ const jsonLd = {
   ],
 };
 
+import { Suspense } from "react";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { ChatBot } from "@/components/ui/ChatBot";
+import { TopProgressBar } from "@/components/navigation/TopProgressBar";
 
 export default function RootLayout({
   children,
@@ -137,6 +139,9 @@ export default function RootLayout({
       <body className="min-h-screen bg-[var(--background)] text-[var(--foreground)] selection:bg-[#E31B23] selection:text-white antialiased transition-colors duration-200">
         <ThemeProvider>
           <LanguageProvider>
+            <Suspense fallback={null}>
+              <TopProgressBar />
+            </Suspense>
             <CommandPalette />
             <PageTracker />
             <ThemeToggle />

@@ -21,6 +21,7 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
   const activeDescription = language === "id" && project.descriptionId ? project.descriptionId : project.description;
   const activeOverview = language === "id" && project.overviewId ? project.overviewId : (project.overview || project.description);
   const activeRole = language === "id" && project.roleId ? project.roleId : (project.role || "Software Developer");
+  const activeDeliveryStatus = language === "id" && project.deliveryStatusId ? project.deliveryStatusId : (project.deliveryStatus || "Production Ready");
 
   return (
     <main className="pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto">
@@ -112,7 +113,7 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
         </div>
         <div>
           <span className="text-[var(--muted)] block mb-1 uppercase tracking-widest">{language === "id" ? "STATUS RILIS" : "DELIVERY"}</span>
-          <span className="text-emerald-500 font-medium">Production Ready</span>
+          <span className="text-emerald-500 font-medium">{activeDeliveryStatus}</span>
         </div>
       </div>
 

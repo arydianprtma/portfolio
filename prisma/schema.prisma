@@ -34,6 +34,8 @@ model Project {
   demo          String?  @db.Text
   role          String?
   roleId        String?
+  deliveryStatus String?
+  deliveryStatusId String?
   features      String?  @db.Text // Stored as JSON string
   challenges    String?  @db.Text // Stored as JSON string
   createdAt     DateTime @default(now())

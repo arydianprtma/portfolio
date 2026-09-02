@@ -19,6 +19,8 @@ export interface Project {
   demo?: string;
   role?: string;
   roleId?: string;
+  deliveryStatus?: string;
+  deliveryStatusId?: string;
   features?: string[];
   challenges?: string[];
 }

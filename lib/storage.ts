@@ -47,6 +47,8 @@ function mapPrismaProject(p: any): Project {
     demo: p.demo || "",
     role: p.role || "Software Developer",
     roleId: p.roleId || undefined,
+    deliveryStatus: p.deliveryStatus || "Production Ready",
+    deliveryStatusId: p.deliveryStatusId || undefined,
     features: parseJson<string[]>(p.features, []),
     challenges: parseJson<string[]>(p.challenges, []),
   };
@@ -478,6 +480,8 @@ export async function saveProject(projectData: Partial<Project> & { title: strin
     demo: projectData.demo || "",
     role: projectData.role || "Software Developer",
     roleId: projectData.roleId || null,
+    deliveryStatus: projectData.deliveryStatus || "Production Ready",
+    deliveryStatusId: projectData.deliveryStatusId || null,
     features: JSON.stringify(projectData.features || []),
     challenges: JSON.stringify(projectData.challenges || []),
   };

@@ -39,9 +39,10 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
     subtitleId: initialData?.subtitleId || "",
     slug: initialData?.slug || "",
     category: initialData?.category || "Web Development",
-    year: initialData?.year || new Date().getFullYear(),
     role: initialData?.role || "Lead Developer",
     roleId: initialData?.roleId || "",
+    deliveryStatus: initialData?.deliveryStatus || "Production Ready",
+    deliveryStatusId: initialData?.deliveryStatusId || "",
     description: initialData?.description || "",
     descriptionId: initialData?.descriptionId || "",
     overview: initialData?.overview || "",
@@ -78,6 +79,10 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
             title: formData.title,
             subtitle: formData.subtitle,
             subtitleId: formData.subtitleId,
+            role: formData.role,
+            roleId: formData.roleId,
+            deliveryStatus: formData.deliveryStatus,
+            deliveryStatusId: formData.deliveryStatusId,
             description: formData.description,
             descriptionId: formData.descriptionId,
             overview: formData.overview,
@@ -97,6 +102,10 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
         ...prev,
         subtitle: r.subtitle || prev.subtitle,
         subtitleId: r.subtitleId || prev.subtitleId,
+        role: r.role || prev.role,
+        roleId: r.roleId || prev.roleId,
+        deliveryStatus: r.deliveryStatus || prev.deliveryStatus,
+        deliveryStatusId: r.deliveryStatusId || prev.deliveryStatusId,
         description: r.description || prev.description,
         descriptionId: r.descriptionId || prev.descriptionId,
         overview: r.overview || prev.overview,
@@ -422,6 +431,57 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                   onChange={(e) => setFormData({ ...formData, year: Number(e.target.value) })}
                   className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none text-xs"
                 />
+              </div>
+            </div>
+
+            {/* Role / Peran & Delivery Status / Status Rilis */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-[#A0A0A0] uppercase tracking-wider block flex items-center justify-between">
+                  <span>Role / Peran ({langTab.toUpperCase()})</span>
+                  <span className="text-[#E31B23] text-[10px]">{langTab === "en" ? "EN" : "ID"}</span>
+                </label>
+                {langTab === "en" ? (
+                  <input
+                    type="text"
+                    value={formData.role || ""}
+                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                    placeholder="e.g. Lead Full-Stack Engineer / Software Architect"
+                    className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none text-xs"
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    value={formData.roleId || ""}
+                    onChange={(e) => setFormData({ ...formData, roleId: e.target.value })}
+                    placeholder="Contoh: Pengembang Utama / Full-Stack Engineer"
+                    className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none text-xs"
+                  />
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[#A0A0A0] uppercase tracking-wider block flex items-center justify-between">
+                  <span>Delivery Status / Status Rilis ({langTab.toUpperCase()})</span>
+                  <span className="text-[#E31B23] text-[10px]">{langTab === "en" ? "EN" : "ID"}</span>
+                </label>
+                {langTab === "en" ? (
+                  <input
+                    type="text"
+                    value={formData.deliveryStatus || ""}
+                    onChange={(e) => setFormData({ ...formData, deliveryStatus: e.target.value })}
+                    placeholder="e.g. Production Ready / Live in Production / Active Development"
+                    className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none text-xs"
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    value={formData.deliveryStatusId || ""}
+                    onChange={(e) => setFormData({ ...formData, deliveryStatusId: e.target.value })}
+                    placeholder="Contoh: Siap Produksi / Telah Rilis / Dalam Pengembangan"
+                    className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none text-xs"
+                  />
+                )}
               </div>
             </div>
 

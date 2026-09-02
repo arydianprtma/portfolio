@@ -211,23 +211,61 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
         if (validChallenges.length === 0) return null;
 
         const parseChallengeText = (text: string) => {
-          // Check for solution delimiters (e.g. "\n- Solution:", ": Solusi:", " - Solusi:", "Solusi:")
-          const match = text.match(/([\s\S]*?)(?:\r?\n\s*[-*]?\s*(?:Solusi|Solution)\s*:|\s*[-–]\s*(?:Solusi|Solution)\s*:|:\s*(?:Solusi|Solution)\s*:)([\s\S]+)/i);
-          if (match) {
-            return {
-              problem: match[1].replace(/^\*+|\*+$/g, '').trim(),
-              solution: match[2].trim(),
-            };
-          }
-          // If multi-line
+          if (!text) return { problem: "", solutions: [] };
+
           const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
-          if (lines.length > 1) {
+          const problemLines: string[] = [];
+          const solutions: string[] = [];
+          let currentSolution = "";
+          let isCollectingSolutions = false;
+
+          for (const line of lines) {
+            // Check if line starts with Solution: / Solusi: / - Solution: / * Solution:
+            const solutionMatch = line.match(/^[-*]?\s*(?:Solusi|Solution)\s*:\s*(.*)/i);
+
+            if (solutionMatch) {
+              if (currentSolution.trim()) {
+                solutions.push(currentSolution.trim());
+              }
+              currentSolution = solutionMatch[1] || "";
+              isCollectingSolutions = true;
+            } else if (isCollectingSolutions) {
+              // Continuation of current solution or next bullet
+              if (currentSolution) {
+                currentSolution += "\n" + line;
+              } else {
+                currentSolution = line;
+              }
+            } else {
+              // Before any Solution: line, check if the single line contains inline ": Solusi:" or ": Solution:"
+              const inlineMatch = line.match(/(.*?)(?:[-–]\s*(?:Solusi|Solution)\s*:|:\s*(?:Solusi|Solution)\s*:)(.*)/i);
+              if (inlineMatch) {
+                problemLines.push(inlineMatch[1]);
+                currentSolution = inlineMatch[2];
+                isCollectingSolutions = true;
+              } else {
+                problemLines.push(line);
+              }
+            }
+          }
+
+          if (currentSolution.trim()) {
+            solutions.push(currentSolution.trim());
+          }
+
+          // If no Solution: keyword found at all, but there are multiple lines
+          if (solutions.length === 0 && lines.length > 1) {
             return {
               problem: lines[0].replace(/^\*+|\*+$/g, '').trim(),
-              solution: lines.slice(1).join('\n').replace(/^[-*]\s*(?:Solusi|Solution)?\s*:?/i, '').trim(),
+              solutions: [lines.slice(1).join('\n').replace(/^[-*]\s*(?:Solusi|Solution)?\s*:?/i, '').trim()],
             };
           }
-          return { problem: text.replace(/^\*+|\*+$/g, '').trim(), solution: null };
+
+          const problem = problemLines.join("\n").replace(/^\*+|\*+$/g, '').trim();
+          return {
+            problem: problem || text.replace(/^\*+|\*+$/g, '').trim(),
+            solutions: solutions.filter(Boolean),
+          };
         };
 
         return (
@@ -236,7 +274,7 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
 
             <div className="space-y-4">
               {validChallenges.map((challengeRaw, idx) => {
-                const { problem, solution } = parseChallengeText(challengeRaw);
+                const { problem, solutions } = parseChallengeText(challengeRaw);
 
                 return (
                   <div
@@ -255,15 +293,38 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
                     </div>
 
                     {/* Solution Statement in Dedicated Bottom Box */}
-                    {solution && (
-                      <div className="bg-[var(--background)] border border-[var(--border)] p-4 rounded-sm space-y-1.5 mt-2">
-                        <div className="font-mono text-[11px] uppercase tracking-wider text-emerald-500 font-semibold flex items-center gap-1.5">
+                    {solutions.length > 0 && (
+                      <div className="bg-[var(--background)] border border-[var(--border)] p-4 rounded-sm space-y-2.5 mt-3">
+                        <div className="font-mono text-[11px] uppercase tracking-wider text-emerald-500 font-semibold flex items-center gap-1.5 border-b border-[var(--border)]/50 pb-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                          <span>{language === "id" ? "SOLUSI IMPLEMENTASI" : "TECHNICAL SOLUTION"}</span>
+                          <span>
+                            {language === "id"
+                              ? (solutions.length > 1 ? `SOLUSI IMPLEMENTASI (${solutions.length})` : "SOLUSI IMPLEMENTASI")
+                              : (solutions.length > 1 ? `TECHNICAL SOLUTIONS (${solutions.length})` : "TECHNICAL SOLUTION")}
+                          </span>
                         </div>
-                        <p className="text-xs md:text-sm text-[var(--muted)] leading-relaxed whitespace-pre-line">
-                          {formatInline(solution)}
-                        </p>
+
+                        {solutions.length === 1 ? (
+                          <p className="text-xs md:text-sm text-[var(--muted)] leading-relaxed whitespace-pre-line">
+                            {formatInline(solutions[0])}
+                          </p>
+                        ) : (
+                          <div className="space-y-2">
+                            {solutions.map((sol, sIdx) => (
+                              <div
+                                key={sIdx}
+                                className="flex items-start gap-2.5 bg-[var(--surface)]/50 p-2.5 rounded-sm border border-[var(--border)]/40"
+                              >
+                                <span className="font-mono text-[10px] text-emerald-400 font-bold bg-emerald-950/50 border border-emerald-800/60 px-1.5 py-0.5 shrink-0 rounded">
+                                  0{sIdx + 1}
+                                </span>
+                                <p className="text-xs md:text-sm text-[var(--muted)] leading-relaxed whitespace-pre-line flex-1">
+                                  {formatInline(sol)}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

@@ -85,14 +85,14 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
       </div>
 
       {/* Hero Visual Image */}
-      <div className="relative aspect-[16/9] w-full overflow-hidden bg-[var(--surface)] border border-[var(--border)] mb-16 rounded-sm">
+      <div className="relative aspect-[16/9] w-full overflow-hidden bg-[var(--surface)] border border-[var(--border)] mb-16 rounded-lg flex items-center justify-center p-1.5 sm:p-3">
         <Image
           src={project.thumbnail}
           alt={project.title}
           fill
           priority
           sizes="(max-width: 1200px) 100vw, 1200px"
-          className="object-cover object-center"
+          className="object-contain object-center"
         />
       </div>
 
@@ -211,14 +211,14 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
             {project.images.map((img, idx) => (
               <div
                 key={idx}
-                className="relative aspect-[16/10] overflow-hidden bg-[var(--surface)] border border-[var(--border)] rounded-sm"
+                className="relative aspect-[16/10] overflow-hidden bg-[var(--surface)] border border-[var(--border)] rounded-lg flex items-center justify-center p-1.5 sm:p-2.5 hover:border-[#E31B23]/50 transition-colors group"
               >
                 <Image
                   src={img}
                   alt={`${project.title} screenshot ${idx + 1}`}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover object-center hover:scale-105 transition-transform duration-500"
+                  className="object-contain object-center group-hover:scale-[1.02] transition-transform duration-500"
                 />
               </div>
             ))}

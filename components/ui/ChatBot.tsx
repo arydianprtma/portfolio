@@ -45,8 +45,8 @@ export const ChatBot: React.FC = () => {
 
   const initialWelcome =
     language === "id"
-      ? "Halo! Saya adalah **ARDP AI Assistant**, asisten digital resmi Ary Dian Pratama yang ditenagai oleh Google Gemini. Ada yang ingin Anda tanyakan tentang proyek, keahlian, atau kerja sama software development?"
-      : "Hello! I am the **ARDP AI Assistant**, Ary Dian Pratama's official digital twin powered by Google Gemini. What would you like to know about Ary's projects, tech stack, or engineering services?";
+      ? "Halo! Saya adalah **ARDP AI Assistant**, asisten digital resmi Ary Dian Pratama. Ada yang ingin Anda tanyakan tentang proyek, keahlian, atau kerja sama software development?"
+      : "Hello! I am the **ARDP AI Assistant**, Ary Dian Pratama's official digital assistant. What would you like to know about Ary's projects, tech stack, or engineering services?";
 
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -226,9 +226,8 @@ export const ChatBot: React.FC = () => {
                   </h3>
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 </div>
-                <p className="font-mono text-[10px] text-[var(--muted)] flex items-center gap-1">
-                  <span>Powered by Google Gemini</span>
-                  <Sparkles className="w-2.5 h-2.5 text-[#E31B23]" />
+                <p className="font-mono text-[10px] text-[var(--muted)]">
+                  Personal Digital Assistant
                 </p>
               </div>
             </div>
@@ -303,7 +302,7 @@ export const ChatBot: React.FC = () => {
                 </div>
                 <div className="p-3 bg-[var(--background)] border border-[var(--border)] rounded-lg rounded-bl-none flex items-center gap-2 text-[var(--muted)] text-[11px]">
                   <Loader2 className="w-3.5 h-3.5 animate-spin text-[#E31B23]" />
-                  <span>Gemini AI sedang mengetik...</span>
+                  <span>ARDP AI sedang mengetik...</span>
                 </div>
               </div>
             )}

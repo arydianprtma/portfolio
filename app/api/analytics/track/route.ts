@@ -4,14 +4,35 @@ import { incrementPageView, incrementCvDownload, getAnalytics } from "@/lib/stor
 export async function POST(request: Request) {
   try {
     const body = await request.json().catch(() => ({}));
-    const { event } = body;
+    const { event, path } = body;
+
+    // Reject tracking on admin and invoice paths
+    if (
+      path &&
+      (path.startsWith("/admin") ||
+        path.startsWith("/invoice") ||
+        path.startsWith("/api"))
+    ) {
+      return NextResponse.json({
+        success: true,
+        ignored: true,
+        reason: "Internal / Private route",
+      });
+    }
+
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      request.headers.get("cf-connecting-ip") ||
+      request.headers.get("x-real-ip") ||
+      "127.0.0.1";
+    const userAgent = request.headers.get("user-agent") || undefined;
 
     let count = 0;
     if (event === "cv_download") {
-      count = await incrementCvDownload();
+      count = await incrementCvDownload({ ip, userAgent });
     } else {
       // Default to pageview
-      count = await incrementPageView();
+      count = await incrementPageView({ path: path || "/", ip, userAgent });
     }
 
     return NextResponse.json({

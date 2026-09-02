@@ -99,6 +99,7 @@ const jsonLd = {
 import { LanguageProvider } from "@/context/LanguageContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { ChatBot } from "@/components/ui/ChatBot";
 
 export default function RootLayout({
   children,
@@ -139,6 +140,7 @@ export default function RootLayout({
             <CommandPalette />
             <PageTracker />
             <ThemeToggle />
+            <ChatBot />
             {children}
           </LanguageProvider>
         </ThemeProvider>

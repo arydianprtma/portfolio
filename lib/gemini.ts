@@ -194,3 +194,66 @@ Return ONLY valid JSON matching this exact structure:
 
   return await callGemini(prompt);
 }
+
+// 4. Multi-Turn Conversational Chatbot Helper
+export interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export async function chatWithGemini({
+  messages,
+  systemInstruction,
+}: {
+  messages: ChatMessage[];
+  systemInstruction: string;
+}): Promise<string> {
+  const apiKey = getApiKey();
+  let lastError: any = null;
+
+  // Convert messages to Gemini format
+  const contents = messages.map((m) => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content }],
+  }));
+
+  for (const modelName of ACTIVE_MODELS) {
+    try {
+      const restRes = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            systemInstruction: {
+              parts: [{ text: systemInstruction }],
+            },
+            contents,
+            generationConfig: {
+              temperature: 0.7,
+              maxOutputTokens: 1000,
+            },
+          }),
+        }
+      );
+
+      const restData = await restRes.json();
+      if (restData.error) {
+        throw new Error(restData.error.message);
+      }
+
+      const reply = restData.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (reply) {
+        return reply.trim();
+      }
+    } catch (err: any) {
+      console.warn(`Chat model ${modelName} failed, trying next:`, err.message || err);
+      lastError = err;
+    }
+  }
+
+  throw new Error(
+    lastError?.message || "Failed to generate response from Gemini AI."
+  );
+}
+

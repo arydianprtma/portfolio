@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { GithubIcon, LinkedinIcon, TwitterIcon } from "@/components/ui/Icons";
 import { CvUploader } from "@/components/admin/CvUploader";
+import { MediaUploader } from "@/components/admin/MediaUploader";
 
 export default function AdminProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -323,6 +324,16 @@ export default function AdminProfilePage() {
                   </button>
                 </div>
               </div>
+            </div>
+
+            {/* Profile Photo / Avatar Uploader */}
+            <div className="border-b border-[#1A1A1A] pb-6">
+              <MediaUploader
+                label="Profile Photo / Portrait Avatar (01 / Identity Section)"
+                value={profile.avatarUrl || ""}
+                onChange={(url) => setProfile({ ...profile, avatarUrl: url })}
+                onRemove={() => setProfile({ ...profile, avatarUrl: "" })}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

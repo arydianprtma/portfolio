@@ -120,6 +120,7 @@ function mapPrismaProfile(p: any): Profile {
     status: p.status,
     statusId: p.statusId || undefined,
     email: p.email,
+    avatarUrl: p.avatarUrl || undefined,
     resumeUrl: p.resumeUrl || undefined,
     socials: parseJson(p.socials, { github: "", linkedin: "" }),
   };
@@ -615,6 +616,7 @@ export async function updateProfile(profileData: Profile): Promise<Profile> {
       status: profileData.status,
       statusId: profileData.statusId || null,
       email: profileData.email,
+      avatarUrl: profileData.avatarUrl || null,
       resumeUrl: profileData.resumeUrl || null,
       socials: JSON.stringify(profileData.socials || {}),
     },
@@ -632,6 +634,7 @@ export async function updateProfile(profileData: Profile): Promise<Profile> {
       status: profileData.status,
       statusId: profileData.statusId || null,
       email: profileData.email,
+      avatarUrl: profileData.avatarUrl || null,
       resumeUrl: profileData.resumeUrl || null,
       socials: JSON.stringify(profileData.socials || {}),
     },

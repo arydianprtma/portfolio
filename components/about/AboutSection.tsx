@@ -182,8 +182,42 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
 
       {/* Grid Content Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mt-8 pt-12 border-t border-[var(--border)]">
-        {/* Left Identity Details */}
+        {/* Left Identity Details + Cyberpunk Portrait Card */}
         <div ref={leftColRef} className="lg:col-span-5 space-y-6">
+          {/* Option 1: Editorial Cyberpunk Portrait Card */}
+          {profile.avatarUrl ? (
+            <div className="relative group w-full max-w-sm overflow-hidden mb-6">
+              {/* Technical Red Corner Brackets */}
+              <div className="absolute top-0 left-0 w-3.5 h-3.5 border-t-2 border-l-2 border-[#E31B23] z-20 pointer-events-none" />
+              <div className="absolute top-0 right-0 w-3.5 h-3.5 border-t-2 border-r-2 border-[#E31B23] z-20 pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-3.5 h-3.5 border-b-2 border-l-2 border-[#E31B23] z-20 pointer-events-none" />
+              <div className="absolute bottom-0 right-0 w-3.5 h-3.5 border-b-2 border-r-2 border-[#E31B23] z-20 pointer-events-none" />
+
+              {/* Image Frame with Grayscale-to-Color & Smooth Zoom on Hover */}
+              <div className="relative aspect-[4/5] w-full bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
+                <img
+                  src={profile.avatarUrl}
+                  alt={profile.name || "Ary Dian Pratama"}
+                  className="w-full h-full object-cover object-center grayscale contrast-110 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
+                />
+
+                {/* Subtle vignette gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none opacity-80 group-hover:opacity-60 transition-opacity" />
+
+                {/* Live Availability Badge on bottom */}
+                <div className="absolute bottom-3 left-3 z-10 flex items-center gap-2 px-2.5 py-1 bg-black/85 backdrop-blur-md border border-emerald-500/40 text-emerald-400 font-mono text-[10px] uppercase tracking-wider shadow-lg">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>{language === "id" && profile.statusId ? profile.statusId : profile.status}</span>
+                </div>
+
+                {/* Index Stamp on Top Right */}
+                <div className="absolute top-3 right-3 z-10 font-mono text-[9px] text-[#A0A0A0] bg-black/80 backdrop-blur-md px-2 py-0.5 border border-white/10 uppercase tracking-widest">
+                  01 // IDENTITY
+                </div>
+              </div>
+            </div>
+          ) : null}
+
           <h3 className="font-display text-2xl sm:text-3xl font-bold uppercase tracking-tight text-[var(--foreground)] leading-tight">
             ENGINEERING PURPOSEFUL DIGITAL EXPERIENCES.
           </h3>

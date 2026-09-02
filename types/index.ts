@@ -81,6 +81,7 @@ export interface Profile {
   status: string;
   statusId?: string;
   email: string;
+  avatarUrl?: string;
   resumeUrl?: string;
   socials: {
     github: string;

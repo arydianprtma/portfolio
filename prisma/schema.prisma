@@ -83,6 +83,7 @@ model Profile {
   status     String
   statusId   String?
   email      String
+  avatarUrl  String?  @db.Text
   resumeUrl  String?  @db.Text
   socials    String   @db.Text // Stored as JSON string object
   updatedAt  DateTime @updatedAt

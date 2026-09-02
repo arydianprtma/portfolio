@@ -55,9 +55,48 @@ export const PostForm: React.FC<PostFormProps> = ({
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
   const [loading, setLoading] = useState(false);
   const [translating, setTranslating] = useState(false);
+  const [generatingCover, setGeneratingCover] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [translateSuccess, setTranslateSuccess] = useState<string | null>(null);
+
+  // AI Cover Image Generator
+  const handleGenerateCover = async () => {
+    const articleTitle = formData.title?.trim() || formData.titleId?.trim();
+    if (!articleTitle) {
+      setError("Please enter an article title first so the AI can design a matching cover image");
+      return;
+    }
+
+    setGeneratingCover(true);
+    setError(null);
+
+    try {
+      const res = await fetch("/api/admin/ai/generate-cover", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: articleTitle,
+          summary: formData.summary || formData.summaryId,
+          tags: formData.tags || [],
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to generate AI cover image");
+
+      setFormData((prev) => ({
+        ...prev,
+        coverImage: data.url,
+      }));
+      setTranslateSuccess("✓ Cover Image AI berhasil dibuat dan dipasang!");
+      setTimeout(() => setTranslateSuccess(null), 5000);
+    } catch (err: any) {
+      setError(err.message || "Failed to generate AI cover image");
+    } finally {
+      setGeneratingCover(false);
+    }
+  };
 
   // AI Full-Post Auto-Generator & Dual-Language Syncer
   const handleAiTranslate = async () => {
@@ -394,9 +433,25 @@ export const PostForm: React.FC<PostFormProps> = ({
 
               {/* Cover Image Uploader */}
               <div className="space-y-2 pt-2">
-                <label className="text-[#A0A0A0] uppercase tracking-wider block">
-                  Cover Image (Optional)
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="text-[#A0A0A0] uppercase tracking-wider block font-medium">
+                    Cover Image (Optional)
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleGenerateCover}
+                    disabled={generatingCover}
+                    className="inline-flex items-center gap-1.5 bg-[#181818] hover:bg-[#222222] text-[#E31B23] hover:text-white border border-[#E31B23]/40 hover:border-[#E31B23] px-3 py-1 text-[10px] font-bold uppercase tracking-wider transition-all disabled:opacity-50"
+                    title="Generate custom AI illustration based on article title & summary"
+                  >
+                    {generatingCover ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Sparkles className="w-3.5 h-3.5" />
+                    )}
+                    <span>{generatingCover ? "Creating Image..." : "✨ AI Create Cover"}</span>
+                  </button>
+                </div>
                 <MediaUploader
                   label="Upload Article Cover Image"
                   value={formData.coverImage || ""}

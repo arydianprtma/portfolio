@@ -149,6 +149,10 @@ export async function completeAndTranslateProject(input: {
   title?: string;
   subtitle?: string;
   subtitleId?: string;
+  role?: string;
+  roleId?: string;
+  deliveryStatus?: string;
+  deliveryStatusId?: string;
   description?: string;
   descriptionId?: string;
   overview?: string;
@@ -158,30 +162,41 @@ export async function completeAndTranslateProject(input: {
   activeLanguage?: "en" | "id";
 }) {
   const prompt = `You are an expert full-stack developer portfolio editor.
-You are given partial project showcase information in either English or Indonesian.
-Your task is to generate and populate BOTH English and Indonesian versions of all fields completely.
+You are given project showcase information in either English or Indonesian.
+Your task is to accurately generate, translate, and populate BOTH English and Indonesian versions of ALL fields.
 
 Input provided:
 - Project Title: "${input.title || ""}"
 - Subtitle (EN): "${input.subtitle || ""}"
 - Subtitle (ID): "${input.subtitleId || ""}"
+- Role (EN): "${input.role || ""}"
+- Role (ID): "${input.roleId || ""}"
+- Delivery Status (EN): "${input.deliveryStatus || ""}"
+- Delivery Status (ID): "${input.deliveryStatusId || ""}"
 - Short Description (EN): "${input.description || ""}"
 - Short Description (ID): "${input.descriptionId || ""}"
 - Overview (EN Case Study): ${JSON.stringify(input.overview || "")}
 - Overview (ID Case Study): ${JSON.stringify(input.overviewId || "")}
 - Category: "${input.category || ""}"
 - Technologies: ${JSON.stringify(input.technologies || [])}
+- Active Tab: "${input.activeLanguage || "en"}"
 
 Requirements:
 1. **subtitle** (English) & **subtitleId** (Indonesian): Catchy uppercase tagline (e.g. "HIGH-PERFORMANCE WEB APPLICATION" / "APLIKASI WEB BERKINERJA TINGGI").
-2. **description** (English) & **descriptionId** (Indonesian): Concise 2-sentence summary for showcase cards.
-3. **overview** (English) & **overviewId** (Indonesian): If empty, write a structured case study overview with architecture highlights and goals.
-4. **technologies**: If empty or generic, suggest 3-5 modern technologies (e.g. ["Next.js 16", "TypeScript", "Tailwind CSS", "PostgreSQL"]).
+2. **role** (English) & **roleId** (Indonesian): Developer role translation (e.g. "Lead Developer & Full-Stack Architect" ➔ "Pengembang Utama & Arsitek Full-Stack").
+3. **deliveryStatus** (English) & **deliveryStatusId** (Indonesian): Status rilis translation (e.g. "Production Ready" ➔ "Siap Produksi", "Active Development" ➔ "Dalam Pengembangan").
+4. **description** (English) & **descriptionId** (Indonesian): Concise 2-3 sentence summary for showcase cards. If English is provided, translate and polish into natural, professional Indonesian; if Indonesian is provided, translate to English.
+5. **overview** (English) & **overviewId** (Indonesian): Detailed architectural breakdown and purpose. If one is provided, accurately translate and format to the other language.
+6. **technologies**: Return modern technology array (e.g. ["Laravel 11", "Vue 3", "Inertia.js", "Filament PHP", "Tailwind CSS"]).
 
 Return ONLY valid JSON matching this exact structure:
 {
   "subtitle": "string (English)",
   "subtitleId": "string (Indonesian)",
+  "role": "string (English)",
+  "roleId": "string (Indonesian)",
+  "deliveryStatus": "string (English)",
+  "deliveryStatusId": "string (Indonesian)",
   "description": "string (English)",
   "descriptionId": "string (Indonesian)",
   "overview": "string (English)",

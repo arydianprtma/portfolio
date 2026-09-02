@@ -57,6 +57,7 @@ export const PostForm: React.FC<PostFormProps> = ({
   const [translating, setTranslating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [translateSuccess, setTranslateSuccess] = useState<string | null>(null);
 
   // AI Full-Post Auto-Generator & Dual-Language Syncer
   const handleAiTranslate = async () => {
@@ -104,6 +105,16 @@ export const PostForm: React.FC<PostFormProps> = ({
         readingTime: r.readingTime || prev.readingTime,
         slug: prev.slug || genSlug,
       }));
+
+      // Switch tab to the target translated language so user sees the change immediately
+      const targetLang = langTab === "en" ? "id" : "en";
+      setLangTab(targetLang);
+      setTranslateSuccess(
+        targetLang === "id"
+          ? "✓ Berhasil diterjemahkan ke Bahasa Indonesia! Tab dialihkan ke ID."
+          : "✓ Successfully translated to English! Switched to EN tab."
+      );
+      setTimeout(() => setTranslateSuccess(null), 5000);
     } catch (err: any) {
       setError(err.message || "AI Generation failed");
     } finally {
@@ -225,6 +236,13 @@ export const PostForm: React.FC<PostFormProps> = ({
         <div className="p-4 bg-red-950/40 border border-red-800 text-red-300 flex items-center gap-3">
           <AlertCircle className="w-4 h-4" />
           <span>{error}</span>
+        </div>
+      )}
+
+      {translateSuccess && (
+        <div className="p-4 bg-emerald-950/40 border border-emerald-800 text-emerald-300 flex items-center gap-3 animate-fade-in">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <span className="font-semibold">{translateSuccess}</span>
         </div>
       )}
 

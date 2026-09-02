@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
-import { CustomCursor } from "@/components/ui/CustomCursor";
 import { PageTracker } from "@/components/analytics/PageTracker";
 import { CommandPalette } from "@/components/navigation/CommandPalette";
 import "./globals.css";
@@ -137,7 +136,6 @@ export default function RootLayout({
       <body className="min-h-screen bg-[var(--background)] text-[var(--foreground)] selection:bg-[#E31B23] selection:text-white antialiased transition-colors duration-200">
         <ThemeProvider>
           <LanguageProvider>
-            <CustomCursor />
             <CommandPalette />
             <PageTracker />
             <ThemeToggle />

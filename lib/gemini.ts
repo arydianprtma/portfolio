@@ -196,7 +196,9 @@ Requirements:
 4. **description** (English) & **descriptionId** (Indonesian): Concise 2-3 sentence summary for showcase cards. If English is provided, translate and polish into natural, professional Indonesian; if Indonesian is provided, translate to English.
 5. **overview** (English) & **overviewId** (Indonesian): Detailed architectural breakdown and purpose. If one is provided, accurately translate and format to the other language.
 6. **features** (English array) & **featuresId** (Indonesian array): Translate each feature bullet item. If English is provided, produce the exact 1-to-1 translated array in **featuresId** (Indonesian); if Indonesian is provided, translate to English in **features**. Keep any bold prefixes or formatting aligned.
-7. **challenges** (English array) & **challengesId** (Indonesian array): Translate each challenge & solution item. If English is provided, produce the exact 1-to-1 translated array in **challengesId** (Indonesian); if Indonesian is provided, translate to English in **challenges**.
+7. **challenges** (English array) & **challengesId** (Indonesian array): Translate each challenge & solution item. ALWAYS format each item with the Challenge problem on the first line and Solution on the next line using a clear prefix, e.g.:
+   - EN: "Challenge 1: [Specific problem]\nSolution: [Implementation details]"
+   - ID: "Tantangan 1: [Masalah spesifik]\nSolusi: [Rincian implementasi pemecahan]"
 8. **technologies**: Return modern technology array (e.g. ["Laravel 11", "Vue 3", "Inertia.js", "Filament PHP", "Tailwind CSS"]).
 
 Return ONLY valid JSON matching this exact structure:

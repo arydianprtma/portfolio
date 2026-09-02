@@ -188,24 +188,65 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
         const validChallenges = (sourceChallenges || []).filter((c) => c && c.trim().length > 0);
         if (validChallenges.length === 0) return null;
 
+        const parseChallengeText = (text: string) => {
+          // Check for solution delimiters (e.g. "\n- Solution:", ": Solusi:", " - Solusi:", "Solusi:")
+          const match = text.match(/([\s\S]*?)(?:\r?\n\s*[-*]?\s*(?:Solusi|Solution)\s*:|\s*[-–]\s*(?:Solusi|Solution)\s*:|:\s*(?:Solusi|Solution)\s*:)([\s\S]+)/i);
+          if (match) {
+            return {
+              problem: match[1].replace(/^\*+|\*+$/g, '').trim(),
+              solution: match[2].trim(),
+            };
+          }
+          // If multi-line
+          const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+          if (lines.length > 1) {
+            return {
+              problem: lines[0].replace(/^\*+|\*+$/g, '').trim(),
+              solution: lines.slice(1).join('\n').replace(/^[-*]\s*(?:Solusi|Solution)?\s*:?/i, '').trim(),
+            };
+          }
+          return { problem: text.replace(/^\*+|\*+$/g, '').trim(), solution: null };
+        };
+
         return (
           <div className="mb-20">
             <SectionLabel label={language === "id" ? "TANTANGAN TEKNIS & SOLUSI" : "TECHNICAL CHALLENGES & SOLUTIONS"} />
 
             <div className="space-y-4">
-              {validChallenges.map((challenge, idx) => (
-                <div
-                  key={idx}
-                  className="bg-[var(--surface)] border-l-2 border-l-[#E31B23] border border-[var(--border)] p-6"
-                >
-                  <div className="font-mono text-xs text-[var(--muted)] mb-2 uppercase tracking-wider">
-                    CHALLENGE 0{idx + 1}
+              {validChallenges.map((challengeRaw, idx) => {
+                const { problem, solution } = parseChallengeText(challengeRaw);
+
+                return (
+                  <div
+                    key={idx}
+                    className="bg-[var(--surface)] border-l-2 border-l-[#E31B23] border border-[var(--border)] p-6 space-y-3.5 hover:border-[#E31B23]/40 transition-colors rounded-sm"
+                  >
+                    <div className="font-mono text-xs text-[#E31B23] font-semibold tracking-wider">
+                      CHALLENGE 0{idx + 1}
+                    </div>
+
+                    {/* Problem Statement */}
+                    <div>
+                      <p className="text-sm md:text-base text-[var(--foreground)] font-medium leading-relaxed">
+                        {problem}
+                      </p>
+                    </div>
+
+                    {/* Solution Statement in Dedicated Bottom Box */}
+                    {solution && (
+                      <div className="bg-[var(--background)] border border-[var(--border)] p-4 rounded-sm space-y-1.5 mt-2">
+                        <div className="font-mono text-[11px] uppercase tracking-wider text-emerald-500 font-semibold flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                          <span>{language === "id" ? "SOLUSI IMPLEMENTASI" : "TECHNICAL SOLUTION"}</span>
+                        </div>
+                        <p className="text-xs md:text-sm text-[var(--muted)] leading-relaxed whitespace-pre-line">
+                          {solution}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                  <p className="text-sm md:text-base text-[var(--muted)] leading-relaxed text-justify [text-align-last:left] break-words">
-                    {challenge}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         );

@@ -6,6 +6,9 @@ import {
   Profile,
   SkillCategory,
   Experiment,
+  Invoice,
+  InvoiceItem,
+  InvoiceStatus,
   StoreData,
   AdminCredentials,
   AnalyticsData,
@@ -734,4 +737,139 @@ export async function deleteExperiment(id: string): Promise<boolean> {
     return false;
   }
 }
+
+// -------------------------------------------------------------
+// INVOICES CRUD OPERATIONS
+// -------------------------------------------------------------
+function mapPrismaInvoice(i: any): Invoice {
+  return {
+    id: i.id,
+    invoiceNumber: i.invoiceNumber,
+    clientName: i.clientName,
+    clientEmail: i.clientEmail || undefined,
+    clientAddress: i.clientAddress || undefined,
+    clientPhone: i.clientPhone || undefined,
+    status: (i.status as InvoiceStatus) || "PENDING",
+    issueDate: i.issueDate ? new Date(i.issueDate).toISOString() : new Date().toISOString(),
+    dueDate: i.dueDate ? new Date(i.dueDate).toISOString() : new Date().toISOString(),
+    currency: i.currency || "IDR",
+    items: parseJson<InvoiceItem[]>(i.items, []),
+    subtotal: Number(i.subtotal) || 0,
+    taxPercent: Number(i.taxPercent) || 0,
+    taxAmount: Number(i.taxAmount) || 0,
+    discountAmount: Number(i.discountAmount) || 0,
+    total: Number(i.total) || 0,
+    paymentDetails: i.paymentDetails || undefined,
+    notes: i.notes || undefined,
+    createdAt: i.createdAt ? new Date(i.createdAt).toISOString() : undefined,
+    updatedAt: i.updatedAt ? new Date(i.updatedAt).toISOString() : undefined,
+  };
+}
+
+export async function getInvoices(): Promise<Invoice[]> {
+  try {
+    const invoices = await prisma.invoice.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    return invoices.map(mapPrismaInvoice);
+  } catch (err) {
+    console.error("Error getting invoices:", err);
+    return [];
+  }
+}
+
+export async function getInvoiceById(id: string): Promise<Invoice | null> {
+  try {
+    const invoice = await prisma.invoice.findFirst({
+      where: {
+        OR: [{ id }, { invoiceNumber: id }],
+      },
+    });
+    return invoice ? mapPrismaInvoice(invoice) : null;
+  } catch (err) {
+    console.error("Error getting invoice by id:", err);
+    return null;
+  }
+}
+
+export async function saveInvoice(data: Partial<Invoice> & { clientName: string }): Promise<Invoice> {
+  // Generate invoice number if missing
+  let invoiceNumber = data.invoiceNumber?.trim();
+  if (!invoiceNumber) {
+    const count = await prisma.invoice.count();
+    const year = new Date().getFullYear();
+    invoiceNumber = `INV-${year}-${String(count + 1).padStart(3, "0")}`;
+  }
+
+  // Calculate totals
+  const items = data.items || [];
+  const subtotal = items.reduce(
+    (sum, item) => sum + (Number(item.quantity) || 0) * (Number(item.rate) || 0),
+    0
+  );
+  const taxPercent = Number(data.taxPercent) || 0;
+  const taxAmount = (subtotal * taxPercent) / 100;
+  const discountAmount = Number(data.discountAmount) || 0;
+  const total = Math.max(0, subtotal + taxAmount - discountAmount);
+
+  const payload = {
+    invoiceNumber,
+    clientName: data.clientName.trim(),
+    clientEmail: data.clientEmail?.trim() || null,
+    clientAddress: data.clientAddress?.trim() || null,
+    clientPhone: data.clientPhone?.trim() || null,
+    status: data.status || "PENDING",
+    issueDate: data.issueDate ? new Date(data.issueDate) : new Date(),
+    dueDate: data.dueDate ? new Date(data.dueDate) : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+    currency: data.currency || "IDR",
+    items: JSON.stringify(items),
+    subtotal,
+    taxPercent,
+    taxAmount,
+    discountAmount,
+    total,
+    paymentDetails: data.paymentDetails?.trim() || null,
+    notes: data.notes?.trim() || null,
+  };
+
+  let record;
+  if (data.id) {
+    record = await prisma.invoice.update({
+      where: { id: data.id },
+      data: payload,
+    });
+  } else {
+    record = await prisma.invoice.create({
+      data: payload,
+    });
+  }
+
+  return mapPrismaInvoice(record);
+}
+
+export async function updateInvoiceStatus(id: string, status: InvoiceStatus): Promise<Invoice | null> {
+  try {
+    const record = await prisma.invoice.update({
+      where: { id },
+      data: { status },
+    });
+    return mapPrismaInvoice(record);
+  } catch (err) {
+    console.error("Error updating invoice status:", err);
+    return null;
+  }
+}
+
+export async function deleteInvoice(id: string): Promise<boolean> {
+  try {
+    await prisma.invoice.delete({
+      where: { id },
+    });
+    return true;
+  } catch (err) {
+    console.error("Error deleting invoice:", err);
+    return false;
+  }
+}
+
 

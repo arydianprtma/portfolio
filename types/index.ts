@@ -103,6 +103,39 @@ export interface AnalyticsData {
   lastUpdated?: string;
 }
 
+export type InvoiceStatus = "DRAFT" | "PENDING" | "PAID" | "CANCELLED";
+
+export interface InvoiceItem {
+  id: string;
+  description: string;
+  quantity: number;
+  rate: number;
+  amount: number;
+}
+
+export interface Invoice {
+  id: string;
+  invoiceNumber: string;
+  clientName: string;
+  clientEmail?: string;
+  clientAddress?: string;
+  clientPhone?: string;
+  status: InvoiceStatus;
+  issueDate: string;
+  dueDate: string;
+  currency: string;
+  items: InvoiceItem[];
+  subtotal: number;
+  taxPercent?: number;
+  taxAmount?: number;
+  discountAmount?: number;
+  total: number;
+  paymentDetails?: string;
+  notes?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface StoreData {
   projects: Project[];
   posts?: Post[];
@@ -110,6 +143,7 @@ export interface StoreData {
   profile: Profile;
   skills: SkillCategory[];
   experiments: Experiment[];
+  invoices?: Invoice[];
   admin?: AdminCredentials;
   analytics?: AnalyticsData;
 }

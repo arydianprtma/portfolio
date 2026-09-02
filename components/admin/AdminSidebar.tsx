@@ -16,6 +16,7 @@ import {
   BookOpen,
   FlaskConical,
   Mail,
+  Receipt,
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 
@@ -42,6 +43,7 @@ export const AdminSidebar: React.FC = () => {
   const navItems = [
     { label: "DASHBOARD", href: "/admin", icon: LayoutDashboard },
     { label: "INBOX", href: "/admin/messages", icon: Mail },
+    { label: "INVOICES", href: "/admin/invoices", icon: Receipt },
     { label: "PROJECTS", href: "/admin/projects", icon: FolderGit2 },
     { label: "NEW PROJECT", href: "/admin/projects/new", icon: PlusCircle },
     { label: "ARTICLES", href: "/admin/posts", icon: BookOpen },

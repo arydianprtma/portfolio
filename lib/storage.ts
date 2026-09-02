@@ -417,6 +417,35 @@ export async function incrementCvDownload(metadata?: { ip?: string; userAgent?: 
   }
 }
 
+export async function resetAnalytics(): Promise<boolean> {
+  try {
+    const existing = await prisma.analytics.findFirst();
+    const id = existing ? existing.id : "analytics_default";
+
+    await Promise.all([
+      prisma.analytics.upsert({
+        where: { id },
+        update: {
+          pageViews: 0,
+          cvDownloads: 0,
+        },
+        create: {
+          id,
+          pageViews: 0,
+          cvDownloads: 0,
+        },
+      }),
+      prisma.pageViewEvent.deleteMany({}),
+      prisma.cvDownloadEvent.deleteMany({}),
+    ]);
+
+    return true;
+  } catch (err) {
+    console.error("Error resetting analytics:", err);
+    return false;
+  }
+}
+
 // -------------------------------------------------------------
 // PROJECTS QUERIES
 // -------------------------------------------------------------

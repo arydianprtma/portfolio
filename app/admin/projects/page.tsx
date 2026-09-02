@@ -6,6 +6,8 @@ import { Project } from "@/types";
 import { Plus, Edit2, Trash2, ExternalLink, AlertCircle, Loader2, Sparkles } from "lucide-react";
 import { DeleteConfirmModal } from "@/components/admin/DeleteConfirmModal";
 
+import { ResetAnalyticsButton } from "@/components/admin/ResetAnalyticsButton";
+
 export default function AdminProjectsListPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -75,13 +77,16 @@ export default function AdminProjectsListPage() {
           </h1>
         </div>
 
-        <Link
-          href="/admin/projects/new"
-          className="inline-flex items-center justify-center gap-2 bg-[#E31B23] hover:bg-[#c9141b] text-white px-5 py-2.5 uppercase tracking-wider font-semibold transition-colors w-full sm:w-auto"
-        >
-          <Plus className="w-4 h-4" />
-          <span>New Project</span>
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <ResetAnalyticsButton />
+          <Link
+            href="/admin/projects/new"
+            className="inline-flex items-center justify-center gap-2 bg-[#E31B23] hover:bg-[#c9141b] text-white px-5 py-2.5 uppercase tracking-wider font-semibold transition-colors w-full sm:w-auto"
+          >
+            <Plus className="w-4 h-4" />
+            <span>New Project</span>
+          </Link>
+        </div>
       </div>
 
       {error && (

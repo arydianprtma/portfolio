@@ -5,6 +5,7 @@ import { isAuthenticated } from "@/lib/auth";
 import { getStore, getAnalytics } from "@/lib/storage";
 import { LiveClockWidget } from "@/components/admin/LiveClockWidget";
 import { AnalyticsStatsCard } from "@/components/admin/AnalyticsStatsCard";
+import { ResetAnalyticsButton } from "@/components/admin/ResetAnalyticsButton";
 import {
   FolderGit2,
   CheckCircle,
@@ -52,7 +53,8 @@ export default async function AdminDashboardPage() {
           </h1>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <ResetAnalyticsButton />
           <Link
             href="/admin/projects/new"
             className="inline-flex items-center gap-2 bg-[#E31B23] hover:bg-[#c9141b] text-white px-5 py-2.5 uppercase tracking-wider font-semibold transition-colors shadow-sm"

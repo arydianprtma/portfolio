@@ -20,6 +20,9 @@ import {
   CreditCard,
   FileText,
   Copy,
+  Sparkles,
+  RefreshCw,
+  Lock,
 } from "lucide-react";
 
 interface InvoiceFormProps {
@@ -32,8 +35,35 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({ initialData }) => {
 
   // Form State
   const [invoiceNumber, setInvoiceNumber] = useState(
-    initialData?.invoiceNumber || `INV-${new Date().getFullYear()}-001`
+    initialData?.invoiceNumber || ""
   );
+  const [isAutoGenerating, setIsAutoGenerating] = useState(!isEditing && !initialData?.invoiceNumber);
+  const [canEditNumber, setCanEditNumber] = useState(false);
+
+  // Auto-generate invoice number on mount if creating new
+  React.useEffect(() => {
+    if (!isEditing && !initialData?.invoiceNumber) {
+      setIsAutoGenerating(true);
+      fetch("/api/admin/invoices/next-number")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.nextNumber) {
+            setInvoiceNumber(data.nextNumber);
+          } else {
+            const year = new Date().getFullYear();
+            setInvoiceNumber(`INV-${year}-001`);
+          }
+        })
+        .catch(() => {
+          const year = new Date().getFullYear();
+          setInvoiceNumber(`INV-${year}-001`);
+        })
+        .finally(() => {
+          setIsAutoGenerating(false);
+        });
+    }
+  }, [isEditing, initialData]);
+
   const [clientName, setClientName] = useState(initialData?.clientName || "");
   const [clientEmail, setClientEmail] = useState(initialData?.clientEmail || "");
   const [clientPhone, setClientPhone] = useState(initialData?.clientPhone || "");
@@ -260,17 +290,58 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({ initialData }) => {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[#A0A0A0] uppercase tracking-wider block text-[11px]">
-              Invoice Number *
-            </label>
-            <input
-              type="text"
-              required
-              value={invoiceNumber}
-              onChange={(e) => setInvoiceNumber(e.target.value)}
-              placeholder="e.g. INV-2026-001"
-              className="w-full bg-[#161616] border border-[#2B2B2B] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none text-xs font-bold"
-            />
+            <div className="flex items-center justify-between">
+              <label className="text-[#A0A0A0] uppercase tracking-wider block text-[11px] font-medium">
+                Invoice Number *
+              </label>
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center gap-1 text-[10px] text-[#E31B23] font-bold uppercase tracking-wider bg-red-950/40 px-2 py-0.5 border border-red-900/60">
+                  <Sparkles className="w-3 h-3" />
+                  <span>Auto-Generated</span>
+                </span>
+                {!isEditing && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAutoGenerating(true);
+                      fetch("/api/admin/invoices/next-number")
+                        .then((r) => r.json())
+                        .then((d) => setInvoiceNumber(d.nextNumber))
+                        .finally(() => setIsAutoGenerating(false));
+                    }}
+                    disabled={isAutoGenerating}
+                    className="text-[10px] text-[#888888] hover:text-white uppercase flex items-center gap-1 transition-colors"
+                    title="Regenerate next sequential invoice number"
+                  >
+                    <RefreshCw className={`w-3 h-3 ${isAutoGenerating ? "animate-spin text-[#E31B23]" : ""}`} />
+                    <span>Regen</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="relative">
+              <input
+                type="text"
+                required
+                readOnly={!canEditNumber && !isEditing}
+                value={invoiceNumber}
+                onChange={(e) => setInvoiceNumber(e.target.value)}
+                placeholder="INV-2026-001"
+                className={`w-full bg-[#141414] border border-[#2B2B2B] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none text-xs font-bold font-mono ${
+                  !canEditNumber && !isEditing ? "cursor-default text-[#E0E0E0] bg-[#121212]" : ""
+                }`}
+              />
+              {!isEditing && (
+                <button
+                  type="button"
+                  onClick={() => setCanEditNumber(!canEditNumber)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-[#666666] hover:text-[#A0A0A0] underline"
+                >
+                  {canEditNumber ? "Lock" : "Edit"}
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">

@@ -217,16 +217,23 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ content }) => {
             return;
           }
 
-          // Heading 2 (## ...) -> Clean neutral color!
+          // Heading 2 (## ...) -> Clean neutral color with anchor id!
           if (trimmed.startsWith("## ")) {
             flushParagraph(`p-${sIdx}-${lIdx}`);
             flushList(`list-${sIdx}-${lIdx}`);
+            const rawHeading = trimmed.replace(/^##\s+/, "").trim();
+            const headingId = rawHeading
+              .toLowerCase()
+              .replace(/[^\w\s-]/g, "")
+              .replace(/[\s_-]+/g, "-");
+
             renderedElements.push(
               <h2
+                id={headingId}
                 key={`h2-${sIdx}-${lIdx}`}
-                className="font-display text-xl md:text-2xl font-bold uppercase tracking-tight text-[var(--foreground)] pt-6 pb-2 border-b border-[var(--border)]"
+                className="font-display text-xl md:text-2xl font-bold uppercase tracking-tight text-[var(--foreground)] pt-6 pb-2 border-b border-[var(--border)] scroll-mt-28"
               >
-                {trimmed.replace(/^##\s+/, "")}
+                {rawHeading}
               </h2>
             );
             return;
@@ -236,12 +243,19 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ content }) => {
           if (trimmed.startsWith("### ")) {
             flushParagraph(`p-${sIdx}-${lIdx}`);
             flushList(`list-${sIdx}-${lIdx}`);
+            const rawHeading = trimmed.replace(/^###\s+/, "").trim();
+            const headingId = rawHeading
+              .toLowerCase()
+              .replace(/[^\w\s-]/g, "")
+              .replace(/[\s_-]+/g, "-");
+
             renderedElements.push(
               <h3
+                id={headingId}
                 key={`h3-${sIdx}-${lIdx}`}
-                className="font-display text-base md:text-lg font-bold text-[var(--foreground)] pt-4 pb-1 uppercase tracking-wide"
+                className="font-display text-base md:text-lg font-bold text-[var(--foreground)] pt-4 pb-1 uppercase tracking-wide scroll-mt-28"
               >
-                {trimmed.replace(/^###\s+/, "")}
+                {rawHeading}
               </h3>
             );
             return;

@@ -29,7 +29,16 @@ export const BlogPostClient: React.FC<BlogPostClientProps> = ({ post, profile })
   const headings = activeContent
     .split("\n")
     .filter((line) => line.startsWith("## "))
-    .map((line) => line.replace("## ", "").trim());
+    .map((line) => {
+      const raw = line.replace(/^##\s+/, "").trim();
+      const id = raw
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/[\s_-]+/g, "-");
+      // Strip any existing leading numbers from heading text (e.g. "01. Persyaratan" -> "Persyaratan")
+      const cleanTitle = raw.replace(/^0?\d+[\.\)]\s*/, "").trim();
+      return { raw, cleanTitle, id };
+    });
 
   return (
     <article className="max-w-4xl mx-auto px-6 md:px-12">
@@ -105,15 +114,21 @@ export const BlogPostClient: React.FC<BlogPostClientProps> = ({ post, profile })
 
       {/* Table of Contents (if ## sections exist) */}
       {headings.length > 0 && (
-        <div className="bg-[var(--surface)] border border-[var(--border)] p-6 mb-12 font-mono text-xs">
-          <span className="text-[#E31B23] font-bold uppercase tracking-widest block mb-3">
-            {language === "id" ? "DAFTAR ISI" : "TABLE OF CONTENTS"}
+        <div className="bg-[var(--surface)] border border-[var(--border)] p-6 mb-12 font-mono text-xs rounded-sm">
+          <span className="text-[#E31B23] font-bold uppercase tracking-widest block mb-4 flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E31B23]" />
+            <span>{language === "id" ? "DAFTAR ISI ARTIKEL" : "TABLE OF CONTENTS"}</span>
           </span>
-          <ul className="space-y-2 text-[var(--muted)]">
-            {headings.map((heading, i) => (
-              <li key={i} className="hover:text-[var(--foreground)] transition-colors">
-                <span className="text-[var(--muted)] mr-2">0{i + 1}.</span>
-                <span>{heading}</span>
+          <ul className="space-y-2.5">
+            {headings.map((item, i) => (
+              <li key={i}>
+                <a
+                  href={`#${item.id}`}
+                  className="flex items-start gap-2.5 text-[var(--muted)] hover:text-[#E31B23] transition-colors group"
+                >
+                  <span className="text-[#E31B23] font-bold shrink-0">0{i + 1}.</span>
+                  <span className="group-hover:translate-x-0.5 transition-transform">{item.cleanTitle}</span>
+                </a>
               </li>
             ))}
           </ul>

@@ -138,15 +138,23 @@ export const ChatBot: React.FC = () => {
       if (!hasOpenedOnce) {
         setHasOpenedOnce(true);
       }
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 150);
+      // Only auto-focus on desktop screens with a mouse/keyboard (prevent mobile keyboard popup)
+      if (typeof window !== "undefined" && window.innerWidth >= 640 && !("ontouchstart" in window)) {
+        setTimeout(() => {
+          inputRef.current?.focus();
+        }, 150);
+      }
     }
   }, [isOpen, messages]);
 
   const handleSend = async (textToSend?: string) => {
     const text = (textToSend || input).trim();
     if (!text || loading) return;
+
+    // Immediately dismiss/blur virtual keyboard on mobile so user can read full screen
+    if (typeof window !== "undefined" && (window.innerWidth < 640 || "ontouchstart" in window)) {
+      inputRef.current?.blur();
+    }
 
     const userMessage: Message = {
       id: `user-${Date.now()}`,

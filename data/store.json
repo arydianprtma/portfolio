@@ -279,8 +279,8 @@
     "twoFactorEnabled": true
   },
   "analytics": {
-    "pageViews": 13,
-    "cvDownloads": 2,
+    "pageViews": 0,
+    "cvDownloads": 0,
     "lastUpdated": "2026-08-31T17:45:45.715Z"
   }
 }

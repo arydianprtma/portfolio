@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 
 export const ThemeToggle: React.FC = () => {
+  const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -12,7 +14,7 @@ export const ThemeToggle: React.FC = () => {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
+  if (!mounted || pathname?.startsWith("/admin")) {
     return null;
   }
 

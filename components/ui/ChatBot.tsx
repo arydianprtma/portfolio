@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import {
   MessageSquare,
   X,
@@ -37,6 +38,7 @@ const QUICK_PROMPTS_EN = [
 ];
 
 export const ChatBot: React.FC = () => {
+  const pathname = usePathname();
   const { language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [showPromptBubble, setShowPromptBubble] = useState(false);
@@ -389,6 +391,10 @@ export const ChatBot: React.FC = () => {
       );
     });
   };
+
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <div className="no-print print:hidden select-none">

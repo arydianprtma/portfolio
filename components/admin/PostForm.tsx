@@ -55,51 +55,9 @@ export const PostForm: React.FC<PostFormProps> = ({
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
   const [loading, setLoading] = useState(false);
   const [translating, setTranslating] = useState(false);
-  const [generatingCover, setGeneratingCover] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [translateSuccess, setTranslateSuccess] = useState<string | null>(null);
-
-  const [coverStyle, setCoverStyle] = useState("minimal_3d");
-
-  // AI Cover Image Generator
-  const handleGenerateCover = async (selectedStyle = coverStyle) => {
-    const articleTitle = formData.title?.trim() || formData.titleId?.trim();
-    if (!articleTitle) {
-      setError("Please enter an article title first so the AI can design a matching cover image");
-      return;
-    }
-
-    setGeneratingCover(true);
-    setError(null);
-
-    try {
-      const res = await fetch("/api/admin/ai/generate-cover", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: articleTitle,
-          summary: formData.summary || formData.summaryId,
-          tags: formData.tags || [],
-          style: selectedStyle,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to generate AI cover image");
-
-      setFormData((prev) => ({
-        ...prev,
-        coverImage: data.url,
-      }));
-      setTranslateSuccess("✓ Cover Image AI berhasil dibuat dan dipasang!");
-      setTimeout(() => setTranslateSuccess(null), 5000);
-    } catch (err: any) {
-      setError(err.message || "Failed to generate AI cover image");
-    } finally {
-      setGeneratingCover(false);
-    }
-  };
 
   // AI Full-Post Auto-Generator & Dual-Language Syncer
   const handleAiTranslate = async () => {
@@ -157,29 +115,6 @@ export const PostForm: React.FC<PostFormProps> = ({
           : "✓ Full article draft (Markdown Content, Summary, & Tags) generated in English!"
       );
       setTimeout(() => setTranslateSuccess(null), 5000);
-
-      // Auto-create matching cover image in background if empty
-      if (!formData.coverImage) {
-        const genTitle = r.title || r.titleId || formData.title || formData.titleId;
-        const genSummary = r.summary || r.summaryId || formData.summary || formData.summaryId;
-        fetch("/api/admin/ai/generate-cover", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: genTitle,
-            summary: genSummary,
-            tags: r.tags || formData.tags || [],
-            style: coverStyle,
-          }),
-        })
-          .then((res) => res.json())
-          .then((coverData) => {
-            if (coverData.url) {
-              setFormData((prev) => ({ ...prev, coverImage: coverData.url }));
-            }
-          })
-          .catch(() => {});
-      }
     } catch (err: any) {
       setError(err.message || "AI Generation failed");
     } finally {
@@ -459,36 +394,9 @@ export const PostForm: React.FC<PostFormProps> = ({
 
               {/* Cover Image Uploader */}
               <div className="space-y-2 pt-2">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <label className="text-[#A0A0A0] uppercase tracking-wider block font-medium">
-                    Cover Image (Optional)
-                  </label>
-                  <div className="flex items-center gap-1.5">
-                    <select
-                      value={coverStyle}
-                      onChange={(e) => setCoverStyle(e.target.value)}
-                      className="bg-[#181818] border border-[#2B2B2B] text-[#A0A0A0] hover:text-white px-2 py-1 text-[10px] font-mono outline-none cursor-pointer"
-                    >
-                      <option value="minimal_3d">💎 Minimalist 3D (Stripe / Vercel Style)</option>
-                      <option value="workspace">💻 Modern Code & Workspace Setup</option>
-                      <option value="abstract_nodes">⚡ Abstract Tech Nodes & Laser Grid</option>
-                    </select>
-                    <button
-                      type="button"
-                      onClick={() => handleGenerateCover(coverStyle)}
-                      disabled={generatingCover}
-                      className="inline-flex items-center gap-1.5 bg-[#181818] hover:bg-[#222222] text-[#E31B23] hover:text-white border border-[#E31B23]/40 hover:border-[#E31B23] px-3 py-1 text-[10px] font-bold uppercase tracking-wider transition-all disabled:opacity-50"
-                      title="Generate professional tech cover image with AI"
-                    >
-                      {generatingCover ? (
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      ) : (
-                        <Sparkles className="w-3.5 h-3.5" />
-                      )}
-                      <span>{generatingCover ? "Generating..." : "✨ AI Create Cover"}</span>
-                    </button>
-                  </div>
-                </div>
+                <label className="text-[#A0A0A0] uppercase tracking-wider block">
+                  Cover Image (Optional)
+                </label>
                 <MediaUploader
                   label="Upload Article Cover Image"
                   value={formData.coverImage || ""}

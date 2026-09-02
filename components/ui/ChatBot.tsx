@@ -44,17 +44,49 @@ export const ChatBot: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [hasOpenedOnce, setHasOpenedOnce] = useState(false);
 
-  // Synthesized notification sound for proactive chat popup
-  const playNotificationSound = () => {
-    try {
+  // Web Audio Synthesizer Engine
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  const getAudioContext = () => {
+    if (typeof window === "undefined") return null;
+    if (!audioCtxRef.current) {
       const AudioContextClass =
         window.AudioContext || (window as any).webkitAudioContext;
-      if (!AudioContextClass) return;
+      if (AudioContextClass) {
+        audioCtxRef.current = new AudioContextClass();
+      }
+    }
+    if (audioCtxRef.current && audioCtxRef.current.state === "suspended") {
+      audioCtxRef.current.resume();
+    }
+    return audioCtxRef.current;
+  };
 
-      const ctx = new AudioContextClass();
-      if (ctx.state === "suspended") {
+  // Unlock audio engine on first user interaction anywhere on the website
+  useEffect(() => {
+    const unlockAudio = () => {
+      const ctx = getAudioContext();
+      if (ctx && ctx.state === "suspended") {
         ctx.resume();
       }
+    };
+
+    window.addEventListener("click", unlockAudio, { once: true });
+    window.addEventListener("touchstart", unlockAudio, { once: true });
+    window.addEventListener("keydown", unlockAudio, { once: true });
+
+    return () => {
+      window.removeEventListener("click", unlockAudio);
+      window.removeEventListener("touchstart", unlockAudio);
+      window.removeEventListener("keydown", unlockAudio);
+    };
+  }, []);
+
+  // 1. Proactive Floating Chat Invitation Chime
+  const playNotificationSound = () => {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
 
       const now = ctx.currentTime;
 
@@ -63,26 +95,53 @@ export const ChatBot: React.FC = () => {
       const gain1 = ctx.createGain();
       osc1.type = "sine";
       osc1.frequency.setValueAtTime(587.33, now);
-      gain1.gain.setValueAtTime(0.06, now);
-      gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
+      gain1.gain.setValueAtTime(0.12, now);
+      gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
       osc1.connect(gain1);
       gain1.connect(ctx.destination);
       osc1.start(now);
-      osc1.stop(now + 0.25);
+      osc1.stop(now + 0.3);
 
       // Note 2 (A5 ~880Hz)
       const osc2 = ctx.createOscillator();
       const gain2 = ctx.createGain();
       osc2.type = "sine";
-      osc2.frequency.setValueAtTime(880, now + 0.08);
-      gain2.gain.setValueAtTime(0.06, now + 0.08);
-      gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+      osc2.frequency.setValueAtTime(880, now + 0.09);
+      gain2.gain.setValueAtTime(0.12, now + 0.09);
+      gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
       osc2.connect(gain2);
       gain2.connect(ctx.destination);
-      osc2.start(now + 0.08);
-      osc2.stop(now + 0.35);
+      osc2.start(now + 0.09);
+      osc2.stop(now + 0.45);
     } catch (e) {
-      // Audio autoplay policy fallback
+      // Graceful fallback
+    }
+  };
+
+  // 2. Incoming AI Message Reply Sound (Crisp Bubble Pop)
+  const playMessageReceivedSound = () => {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+
+      const now = ctx.currentTime;
+
+      // Soft message pop (600Hz -> 950Hz)
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(600, now);
+      osc.frequency.exponentialRampToValueAtTime(950, now + 0.08);
+
+      gain.gain.setValueAtTime(0.14, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.18);
+    } catch (e) {
+      // Graceful fallback
     }
   };
 
@@ -196,6 +255,7 @@ export const ChatBot: React.FC = () => {
       };
 
       setMessages((prev) => [...prev, botMessage]);
+      playMessageReceivedSound();
     } catch (err: any) {
       const errorMessage: Message = {
         id: `err-${Date.now()}`,

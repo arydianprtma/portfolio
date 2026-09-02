@@ -98,9 +98,18 @@ export interface AdminCredentials {
   twoFactorEnabled?: boolean;
 }
 
+export interface PeriodStats {
+  today: number;
+  last7Days: number;
+  last30Days: number;
+  allTime: number;
+}
+
 export interface AnalyticsData {
   pageViews: number;
   cvDownloads: number;
+  pageViewsBreakdown?: PeriodStats;
+  cvDownloadsBreakdown?: PeriodStats;
   lastUpdated?: string;
 }
 

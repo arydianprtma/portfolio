@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
 import { getStore, getAnalytics } from "@/lib/storage";
 import { LiveClockWidget } from "@/components/admin/LiveClockWidget";
+import { AnalyticsStatsCard } from "@/components/admin/AnalyticsStatsCard";
 import {
   FolderGit2,
   CheckCircle,
@@ -67,44 +68,13 @@ export default async function AdminDashboardPage() {
 
       {/* Analytics & Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Total Website Visits */}
-        <div className="bg-[#101010] border border-[#1F1F1F] p-6 flex items-center justify-between group hover:border-[#E31B23]/40 transition-colors">
-          <div>
-            <div className="flex items-center gap-1.5 text-[#777777] uppercase tracking-wider text-[11px] mb-1">
-              <Eye className="w-3.5 h-3.5 text-[#E31B23]" />
-              <span>TOTAL WEB VISITS</span>
-            </div>
-            <span className="font-display text-3xl sm:text-4xl font-bold text-[#F5F5F5] block">
-              {pageViews.toLocaleString()}
-            </span>
-            <span className="text-[10px] text-emerald-400 font-mono mt-1 inline-flex items-center gap-1">
-              <Activity className="w-3 h-3" />
-              <span>Live Traffic Tracker</span>
-            </span>
-          </div>
-          <div className="w-12 h-12 bg-[#161616] border border-[#262626] flex items-center justify-center text-[#E31B23]">
-            <TrendingUp className="w-6 h-6" />
-          </div>
-        </div>
-
-        {/* Total CV Downloads */}
-        <div className="bg-[#101010] border border-[#1F1F1F] p-6 flex items-center justify-between group hover:border-[#E31B23]/40 transition-colors">
-          <div>
-            <div className="flex items-center gap-1.5 text-[#777777] uppercase tracking-wider text-[11px] mb-1">
-              <FileDown className="w-3.5 h-3.5 text-[#E31B23]" />
-              <span>CV / RESUME DOWNLOADS</span>
-            </div>
-            <span className="font-display text-3xl sm:text-4xl font-bold text-[#F5F5F5] block">
-              {cvDownloads.toLocaleString()}
-            </span>
-            <span className="text-[10px] text-[#888888] font-mono mt-1 block">
-              Conversion: <span className="text-[#E31B23] font-semibold">{cvConversionRate}%</span>
-            </span>
-          </div>
-          <div className="w-12 h-12 bg-[#161616] border border-[#262626] flex items-center justify-center text-[#E31B23]">
-            <FileDown className="w-6 h-6" />
-          </div>
-        </div>
+        {/* Total Website Visits & CV Downloads with Interactive Period Filter */}
+        <AnalyticsStatsCard
+          initialPageViews={pageViews}
+          initialCvDownloads={cvDownloads}
+          pageViewsBreakdown={analytics.pageViewsBreakdown}
+          cvDownloadsBreakdown={analytics.cvDownloadsBreakdown}
+        />
 
         {/* Published Projects */}
         <div className="bg-[#101010] border border-[#1F1F1F] p-6 flex items-center justify-between group hover:border-[#E31B23]/40 transition-colors">

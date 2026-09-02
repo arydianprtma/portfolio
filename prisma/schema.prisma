@@ -123,6 +123,25 @@ model Analytics {
   updatedAt   DateTime @updatedAt
 }
 
+model PageViewEvent {
+  id        String   @id @default(cuid())
+  path      String   @default("/")
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model CvDownloadEvent {
+  id        String   @id @default(cuid())
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
 model Invoice {
   id             String   @id @default(cuid())
   invoiceNumber  String   @unique

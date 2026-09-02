@@ -4,8 +4,17 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import fs from "fs";
 import path from "path";
 
+const ACTIVE_MODELS = [
+  "gemini-flash-lite-latest",
+  "gemini-3.5-flash-lite",
+  "gemini-3.1-flash-lite",
+  "gemini-2.0-flash",
+];
+
 function getApiKey(): string {
-  const key = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+  const key = (process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_API_KEY || "")
+    .replace(/^["']|["']$/g, "")
+    .trim();
   if (!key) throw new Error("GEMINI_API_KEY not configured");
   return key;
 }
@@ -33,7 +42,6 @@ export async function POST(request: Request) {
     try {
       const apiKey = getApiKey();
       const ai = new GoogleGenerativeAI(apiKey);
-      const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
 
       const promptText = `You are a world-class art director at Stripe or Vercel creating a clean, professional, high-end article cover banner.
 Article Title: "${title}"
@@ -50,10 +58,18 @@ Rules for the image prompt:
 Write a single concise English image prompt (under 35 words).
 Return ONLY the raw prompt text, nothing else.`;
 
-      const result = await model.generateContent(promptText);
-      const text = result.response.text().trim();
-      if (text) {
-        visualPrompt = `${text}, clean aesthetic, soft studio lighting, 8k resolution, no humans, no masks, no faces`;
+      for (const modelName of ACTIVE_MODELS) {
+        try {
+          const model = ai.getGenerativeModel({ model: modelName });
+          const result = await model.generateContent(promptText);
+          const text = result.response.text().trim();
+          if (text) {
+            visualPrompt = `${text}, clean aesthetic, soft studio lighting, 8k resolution, no humans, no masks, no faces`;
+            break;
+          }
+        } catch {
+          // try next model
+        }
       }
     } catch (aiErr) {
       console.warn("Gemini prompt enhancement skipped, using fallback prompt:", aiErr);

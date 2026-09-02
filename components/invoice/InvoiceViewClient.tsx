@@ -79,7 +79,7 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
 
   return (
     <>
-      {/* Strict CSS Rules to make entire PDF 100% pure white edge-to-edge */}
+      {/* Strict CSS Rules for 100% Pure White A4 Print & PDF Output */}
       <style dangerouslySetInnerHTML={{
         __html: `
           @media print {
@@ -137,12 +137,12 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
         `
       }} />
 
-      <div className="invoice-root-container min-h-screen bg-[#070707] text-[#F5F5F5] selection:bg-[#E31B23] selection:text-white py-8 md:py-14 px-4 sm:px-6 print:p-0 print:m-0 print:bg-white print:text-black">
+      <div className="invoice-root-container min-h-screen bg-[var(--background)] text-[var(--foreground)] selection:bg-[#E31B23] selection:text-white py-8 md:py-14 px-4 sm:px-6 transition-colors duration-300 print:p-0 print:m-0 print:bg-white print:text-black">
         {/* Top Floating Control Bar (Hidden on Print) */}
         <div className="max-w-4xl mx-auto mb-6 flex flex-wrap items-center justify-between gap-4 no-print">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 font-mono text-xs text-[#777777] hover:text-[#F5F5F5] uppercase tracking-wider transition-colors"
+            className="inline-flex items-center gap-2 font-mono text-xs text-[var(--muted)] hover:text-[var(--foreground)] uppercase tracking-wider transition-colors"
           >
             <span>&larr; Back to Portfolio</span>
           </Link>
@@ -151,13 +151,13 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
             <button
               type="button"
               onClick={handleCopyLink}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#121212] border border-[#262626] hover:border-[#E31B23] text-xs font-mono text-[#D0D0D0] hover:text-white transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[var(--surface)] border border-[var(--border)] hover:border-[#E31B23] text-xs font-mono text-[var(--foreground)] transition-colors"
               title="Copy Shareable Link"
             >
               {copiedLink ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-emerald-400">Link Copied!</span>
+                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                  <span className="text-emerald-500">Link Copied!</span>
                 </>
               ) : (
                 <>
@@ -179,13 +179,13 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
         </div>
 
         {/* Standard A4 Styled Document Container */}
-        <div className="a4-document max-w-4xl mx-auto bg-[#0F0F0F] border border-[#222222] shadow-2xl relative overflow-hidden print:border-none print:shadow-none print:bg-white print:text-black">
+        <div className="a4-document max-w-4xl mx-auto bg-[var(--surface)] border border-[var(--border)] shadow-2xl relative overflow-hidden transition-colors duration-300 print:border-none print:shadow-none print:bg-white print:text-black">
           {/* Top Decorative Border Strip (Web Only) */}
           <div className="h-1.5 bg-gradient-to-r from-[#E31B23] via-red-600 to-[#E31B23] no-print" />
 
           <div className="p-8 sm:p-12 md:p-14 space-y-8 print:p-0 print:space-y-6">
             {/* Header: Brand Identity & Invoice Title */}
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 pb-6 border-b border-[#222222] print:border-gray-200">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 pb-6 border-b border-[var(--border)] print:border-gray-200">
               {/* Left Brand Identity */}
               <div>
                 <div className="no-print">
@@ -200,8 +200,8 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
                   </div>
                 </div>
 
-                <div className="mt-3 space-y-0.5 font-mono text-xs text-[#888888] print:text-gray-600 print:text-[11px]">
-                  <p className="font-bold text-[#D0D0D0] print:text-gray-900">Ary Dian Pratama</p>
+                <div className="mt-3 space-y-0.5 font-mono text-xs text-[var(--muted)] print:text-gray-600 print:text-[11px]">
+                  <p className="font-bold text-[var(--foreground)] print:text-gray-900">Ary Dian Pratama</p>
                   <p>Website Developer & Full-Stack Engineer</p>
                   <p>Email: arydianprtma@gmail.com &bull; portfolio.ardp.my.id</p>
                 </div>
@@ -211,40 +211,40 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
               <div className="sm:text-right space-y-2 font-mono">
                 <div>
                   {isPaid && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-950/60 border border-emerald-600 text-emerald-400 print:bg-emerald-50 print:border-emerald-600 print:text-emerald-700 text-xs font-bold uppercase tracking-widest">
+                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-950/40 border border-emerald-600 text-emerald-400 print:bg-emerald-50 print:border-emerald-600 print:text-emerald-700 text-xs font-bold uppercase tracking-widest">
                       <CheckCircle2 className="w-3 h-3" />
                       PAID / LUNAS
                     </span>
                   )}
                   {isPending && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-950/60 border border-amber-600 text-amber-400 print:bg-amber-50 print:border-amber-600 print:text-amber-700 text-xs font-bold uppercase tracking-widest">
+                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-950/40 border border-amber-600 text-amber-400 print:bg-amber-50 print:border-amber-600 print:text-amber-700 text-xs font-bold uppercase tracking-widest">
                       <Clock className="w-3 h-3" />
                       PENDING PAYMENT
                     </span>
                   )}
                   {isDraft && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-zinc-900 border border-zinc-700 text-zinc-300 print:bg-gray-100 print:border-gray-400 print:text-gray-800 text-xs font-bold uppercase tracking-widest">
+                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-[var(--background)] border border-[var(--border)] text-[var(--muted)] print:bg-gray-100 print:border-gray-400 print:text-gray-800 text-xs font-bold uppercase tracking-widest">
                       DRAFT
                     </span>
                   )}
                   {isCancelled && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-red-950/60 border border-red-700 text-red-400 print:bg-red-50 print:border-red-600 print:text-red-700 text-xs font-bold uppercase tracking-widest">
+                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-red-950/40 border border-red-700 text-red-400 print:bg-red-50 print:border-red-600 print:text-red-700 text-xs font-bold uppercase tracking-widest">
                       CANCELLED
                     </span>
                   )}
                 </div>
 
-                <h2 className="text-xl sm:text-2xl font-bold font-display tracking-tight text-[#F5F5F5] print:text-black uppercase">
+                <h2 className="text-xl sm:text-2xl font-bold font-display tracking-tight text-[var(--foreground)] print:text-black uppercase">
                   {invoice.invoiceNumber}
                 </h2>
 
-                <div className="text-xs print:text-[11px] text-[#888888] print:text-gray-600 space-y-0.5">
+                <div className="text-xs print:text-[11px] text-[var(--muted)] print:text-gray-600 space-y-0.5">
                   <p>
-                    <span className="text-[#666666] print:text-gray-500">Date Issued: </span>
-                    <strong className="text-[#D0D0D0] print:text-gray-900">{formatDate(invoice.issueDate)}</strong>
+                    <span className="text-[var(--muted)] print:text-gray-500">Date Issued: </span>
+                    <strong className="text-[var(--foreground)] print:text-gray-900">{formatDate(invoice.issueDate)}</strong>
                   </p>
                   <p>
-                    <span className="text-[#666666] print:text-gray-500">Payment Due: </span>
+                    <span className="text-[var(--muted)] print:text-gray-500">Payment Due: </span>
                     <strong className="text-[#E31B23] print:text-red-600 font-bold">{formatDate(invoice.dueDate)}</strong>
                   </p>
                 </div>
@@ -254,19 +254,19 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
             {/* Billed To & Payment Summary (Balanced 2-Column Grid) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 font-mono text-xs print:gap-4">
               {/* Billed To / Client */}
-              <div className="bg-[#141414] print:bg-[#F9FAFB] border border-[#222222] print:border-gray-200 p-5 print:p-4 space-y-2">
+              <div className="bg-[var(--background)] print:bg-[#F9FAFB] border border-[var(--border)] print:border-gray-200 p-5 print:p-4 space-y-2">
                 <span className="text-[#E31B23] print:text-gray-700 uppercase tracking-widest font-bold text-[10px] block">
                   BILLED TO / KLIEN
                 </span>
-                <p className="text-base font-bold text-[#F5F5F5] print:text-gray-900 uppercase">
+                <p className="text-base font-bold text-[var(--foreground)] print:text-gray-900 uppercase">
                   {invoice.clientName}
                 </p>
                 {invoice.clientAddress && (
-                  <p className="text-[#A0A0A0] print:text-gray-700 text-xs leading-relaxed whitespace-pre-line">
+                  <p className="text-[var(--muted)] print:text-gray-700 text-xs leading-relaxed whitespace-pre-line">
                     {invoice.clientAddress}
                   </p>
                 )}
-                <div className="flex flex-wrap gap-x-4 gap-y-1 pt-1 text-xs print:text-[11px] text-[#888888] print:text-gray-600">
+                <div className="flex flex-wrap gap-x-4 gap-y-1 pt-1 text-xs print:text-[11px] text-[var(--muted)] print:text-gray-600">
                   {invoice.clientEmail && (
                     <span className="flex items-center gap-1.5">
                       <Mail className="w-3 h-3 text-[#E31B23] no-print" />
@@ -283,20 +283,20 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
               </div>
 
               {/* Payment Summary */}
-              <div className="bg-[#141414] print:bg-[#F9FAFB] border border-[#222222] print:border-gray-200 p-5 print:p-4 flex flex-col justify-between space-y-3">
+              <div className="bg-[var(--background)] print:bg-[#F9FAFB] border border-[var(--border)] print:border-gray-200 p-5 print:p-4 flex flex-col justify-between space-y-3">
                 <div>
                   <span className="text-[#E31B23] print:text-gray-700 uppercase tracking-widest font-bold text-[10px] block mb-1">
                     RINGKASAN TAGIHAN
                   </span>
-                  <p className="text-xs text-[#888888] print:text-gray-600 leading-relaxed">
+                  <p className="text-xs text-[var(--muted)] print:text-gray-600 leading-relaxed">
                     Total kewajiban pembayaran atas rincian jasa dan layanan pengembangan sistem:
                   </p>
                 </div>
-                <div className="pt-2 border-t border-[#222222] print:border-gray-200">
-                  <span className="text-[10px] uppercase text-[#777777] print:text-gray-500 font-bold block">
+                <div className="pt-2 border-t border-[var(--border)] print:border-gray-200">
+                  <span className="text-[10px] uppercase text-[var(--muted)] print:text-gray-500 font-bold block">
                     TOTAL AMOUNT DUE
                   </span>
-                  <p className="text-2xl print:text-xl font-black font-display text-[#F5F5F5] print:text-black">
+                  <p className="text-2xl print:text-xl font-black font-display text-[var(--foreground)] print:text-black">
                     {formatCurrency(invoice.total, invoice.currency)}
                   </p>
                 </div>
@@ -307,7 +307,7 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
             <div className="overflow-x-auto print-table">
               <table className="w-full text-left font-mono text-xs border-collapse">
                 <thead>
-                  <tr className="bg-[#161616] print:bg-[#F3F4F6] border-b-2 border-[#262626] print:border-gray-300 text-[#888888] print:text-gray-800 uppercase text-[10px] tracking-wider">
+                  <tr className="bg-[var(--background)] print:bg-[#F3F4F6] border-b-2 border-[var(--border)] print:border-gray-300 text-[var(--muted)] print:text-gray-800 uppercase text-[10px] tracking-wider">
                     <th className="py-3 px-3 w-12 text-center">#</th>
                     <th className="py-3 px-4">Layanan & Deskripsi</th>
                     <th className="py-3 px-4 text-center w-20">Qty</th>
@@ -315,22 +315,22 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
                     <th className="py-3 px-4 text-right w-44">Total</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#1D1D1D] print:divide-gray-200">
+                <tbody className="divide-y divide-[var(--border)] print:divide-gray-200">
                   {invoice.items.map((item, idx) => (
-                    <tr key={item.id || idx} className="hover:bg-[#141414] print:hover:bg-transparent transition-colors">
-                      <td className="py-4 px-3 text-center text-[#555555] print:text-gray-500 font-bold">
+                    <tr key={item.id || idx} className="hover:bg-[var(--background)]/50 print:hover:bg-transparent transition-colors">
+                      <td className="py-4 px-3 text-center text-[var(--muted)] print:text-gray-500 font-bold">
                         {idx + 1}
                       </td>
-                      <td className="py-4 px-4 font-sans text-sm print:text-xs text-[#E0E0E0] print:text-gray-900 leading-relaxed">
+                      <td className="py-4 px-4 font-sans text-sm print:text-xs text-[var(--foreground)] print:text-gray-900 leading-relaxed">
                         {item.description}
                       </td>
-                      <td className="py-4 px-4 text-center text-[#A0A0A0] print:text-gray-700">
+                      <td className="py-4 px-4 text-center text-[var(--muted)] print:text-gray-700">
                         {item.quantity}
                       </td>
-                      <td className="py-4 px-4 text-right text-[#A0A0A0] print:text-gray-700">
+                      <td className="py-4 px-4 text-right text-[var(--muted)] print:text-gray-700">
                         {formatCurrency(item.rate, invoice.currency)}
                       </td>
-                      <td className="py-4 px-4 text-right font-bold text-[#F5F5F5] print:text-gray-900">
+                      <td className="py-4 px-4 text-right font-bold text-[var(--foreground)] print:text-gray-900">
                         {formatCurrency(item.amount || item.quantity * item.rate, invoice.currency)}
                       </td>
                     </tr>
@@ -340,7 +340,7 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
             </div>
 
             {/* Payment Instructions & Totals Calculation */}
-            <div className="flex flex-col sm:flex-row justify-between items-start gap-8 pt-4 border-t border-[#222222] print:border-gray-200 font-mono text-xs page-break-avoid">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-8 pt-4 border-t border-[var(--border)] print:border-gray-200 font-mono text-xs page-break-avoid">
               {/* Payment Details & Bank Transfer */}
               <div className="sm:w-6/12 w-full space-y-2.5">
                 <div className="flex items-center justify-between">
@@ -351,10 +351,10 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
                     <button
                       type="button"
                       onClick={handleCopyBank}
-                      className="no-print inline-flex items-center gap-1 text-[11px] text-[#A0A0A0] hover:text-white transition-colors"
+                      className="no-print inline-flex items-center gap-1 text-[11px] text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
                     >
                       {copiedBank ? (
-                        <Check className="w-3 h-3 text-emerald-400" />
+                        <Check className="w-3 h-3 text-emerald-500" />
                       ) : (
                         <Copy className="w-3 h-3" />
                       )}
@@ -363,13 +363,13 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
                   )}
                 </div>
 
-                <div className="p-4 bg-[#141414] print:bg-[#F9FAFB] border border-[#222222] print:border-gray-200 text-[#CCCCCC] print:text-gray-800 text-xs leading-relaxed whitespace-pre-line">
+                <div className="p-4 bg-[var(--background)] print:bg-[#F9FAFB] border border-[var(--border)] print:border-gray-200 text-[var(--foreground)] print:text-gray-800 text-xs leading-relaxed whitespace-pre-line">
                   {invoice.paymentDetails ||
                     "Bank Transfer:\nBCA: 1234567890 (a.n. Ary Dian Pratama)\nKonfirmasi via WhatsApp: 0812-xxxx-xxxx"}
                 </div>
 
                 {invoice.notes && (
-                  <div className="text-[11px] text-[#777777] print:text-gray-600 italic leading-relaxed">
+                  <div className="text-[11px] text-[var(--muted)] print:text-gray-600 italic leading-relaxed">
                     <strong>Catatan:</strong> {invoice.notes}
                   </div>
                 )}
@@ -377,24 +377,24 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
 
               {/* Subtotal, Tax, Discount & Grand Total */}
               <div className="sm:w-5/12 w-full space-y-2">
-                <div className="flex justify-between text-[#888888] print:text-gray-600 text-xs py-0.5">
+                <div className="flex justify-between text-[var(--muted)] print:text-gray-600 text-xs py-0.5">
                   <span>Subtotal:</span>
-                  <span className="font-semibold text-[#D0D0D0] print:text-gray-900">
+                  <span className="font-semibold text-[var(--foreground)] print:text-gray-900">
                     {formatCurrency(invoice.subtotal, invoice.currency)}
                   </span>
                 </div>
 
                 {invoice.taxPercent && invoice.taxPercent > 0 ? (
-                  <div className="flex justify-between text-[#888888] print:text-gray-600 text-xs py-0.5">
+                  <div className="flex justify-between text-[var(--muted)] print:text-gray-600 text-xs py-0.5">
                     <span>Tax / PPN ({invoice.taxPercent}%):</span>
-                    <span className="font-semibold text-[#D0D0D0] print:text-gray-900">
+                    <span className="font-semibold text-[var(--foreground)] print:text-gray-900">
                       +{formatCurrency(invoice.taxAmount || 0, invoice.currency)}
                     </span>
                   </div>
                 ) : null}
 
                 {invoice.discountAmount && invoice.discountAmount > 0 ? (
-                  <div className="flex justify-between text-emerald-400 print:text-emerald-700 text-xs py-0.5">
+                  <div className="flex justify-between text-emerald-500 print:text-emerald-700 text-xs py-0.5">
                     <span>Discount:</span>
                     <span className="font-semibold">
                       -{formatCurrency(invoice.discountAmount, invoice.currency)}
@@ -402,7 +402,7 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
                   </div>
                 ) : null}
 
-                <div className="flex justify-between items-baseline text-base font-bold text-[#F5F5F5] print:text-black pt-3 border-t-2 border-[#262626] print:border-black">
+                <div className="flex justify-between items-baseline text-base font-bold text-[var(--foreground)] print:text-black pt-3 border-t-2 border-[var(--border)] print:border-black">
                   <span className="uppercase tracking-wider">TOTAL DUE:</span>
                   <span className="text-xl font-display text-[#E31B23] print:text-black">
                     {formatCurrency(invoice.total, invoice.currency)}
@@ -412,18 +412,18 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
             </div>
 
             {/* Footer Signature & Thank You */}
-            <div className="pt-6 border-t border-[#202020] print:border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left font-mono text-[11px] text-[#666666] print:text-gray-500 page-break-avoid">
+            <div className="pt-6 border-t border-[var(--border)] print:border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left font-mono text-[11px] text-[var(--muted)] print:text-gray-500 page-break-avoid">
               <div>
                 <p>Terima kasih atas kerja sama dan kepercayaannya.</p>
-                <p className="text-[10px] text-[#444444] print:text-gray-400 mt-0.5">
+                <p className="text-[10px] text-[var(--muted)] opacity-70 print:text-gray-400 mt-0.5">
                   Official Digital Invoice &bull; Generated by ARDP Portfolio System
                 </p>
               </div>
               <div className="text-right print:block">
-                <span className="text-[10px] font-bold text-[#888888] print:text-gray-700 uppercase tracking-widest block">
+                <span className="text-[10px] font-bold text-[var(--muted)] print:text-gray-700 uppercase tracking-widest block">
                   AUTHORIZED SIGNATURE
                 </span>
-                <p className="font-display font-bold text-sm text-[#D0D0D0] print:text-black mt-1">
+                <p className="font-display font-bold text-sm text-[var(--foreground)] print:text-black mt-1">
                   ARY DIAN PRATAMA
                 </p>
               </div>

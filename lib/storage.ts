@@ -50,7 +50,9 @@ function mapPrismaProject(p: any): Project {
     deliveryStatus: p.deliveryStatus || "Production Ready",
     deliveryStatusId: p.deliveryStatusId || undefined,
     features: parseJson<string[]>(p.features, []),
+    featuresId: parseJson<string[]>(p.featuresId, []),
     challenges: parseJson<string[]>(p.challenges, []),
+    challengesId: parseJson<string[]>(p.challengesId, []),
   };
 }
 
@@ -483,7 +485,9 @@ export async function saveProject(projectData: Partial<Project> & { title: strin
     deliveryStatus: projectData.deliveryStatus || "Production Ready",
     deliveryStatusId: projectData.deliveryStatusId || null,
     features: JSON.stringify(projectData.features || []),
+    featuresId: JSON.stringify(projectData.featuresId || []),
     challenges: JSON.stringify(projectData.challenges || []),
+    challengesId: JSON.stringify(projectData.challengesId || []),
   };
 
   const project = await prisma.project.upsert({

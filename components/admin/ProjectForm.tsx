@@ -51,7 +51,9 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
     thumbnail: initialData?.thumbnail || "",
     images: initialData?.images || [],
     features: initialData?.features || [""],
+    featuresId: initialData?.featuresId || [""],
     challenges: initialData?.challenges || [""],
+    challengesId: initialData?.challengesId || [""],
     github: initialData?.github || "",
     demo: initialData?.demo || "",
     featured: initialData?.featured ?? true,
@@ -89,6 +91,10 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
             descriptionId: formData.descriptionId,
             overview: formData.overview,
             overviewId: formData.overviewId,
+            features: formData.features,
+            featuresId: formData.featuresId,
+            challenges: formData.challenges,
+            challengesId: formData.challengesId,
             category: formData.category,
             technologies: formData.technologies,
             activeLanguage: langTab,
@@ -112,6 +118,10 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
         descriptionId: r.descriptionId || prev.descriptionId,
         overview: r.overview || prev.overview,
         overviewId: r.overviewId || prev.overviewId,
+        features: r.features && r.features.length > 0 ? r.features : prev.features,
+        featuresId: r.featuresId && r.featuresId.length > 0 ? r.featuresId : prev.featuresId,
+        challenges: r.challenges && r.challenges.length > 0 ? r.challenges : prev.challenges,
+        challengesId: r.challengesId && r.challengesId.length > 0 ? r.challengesId : prev.challengesId,
         technologies: r.technologies && r.technologies.length > 0 ? r.technologies : prev.technologies,
       }));
 
@@ -166,45 +176,51 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
     }));
   };
 
-  // Feature repeaters
+  // Feature repeaters (language aware)
   const handleFeatureChange = (index: number, val: string) => {
-    const updated = [...(formData.features || [])];
+    const key = langTab === "en" ? "features" : "featuresId";
+    const updated = [...(formData[key] || [])];
     updated[index] = val;
-    setFormData((prev) => ({ ...prev, features: updated }));
+    setFormData((prev) => ({ ...prev, [key]: updated }));
   };
 
   const handleAddFeature = () => {
+    const key = langTab === "en" ? "features" : "featuresId";
     setFormData((prev) => ({
       ...prev,
-      features: [...(prev.features || []), ""],
+      [key]: [...(prev[key] || []), ""],
     }));
   };
 
   const handleRemoveFeature = (index: number) => {
+    const key = langTab === "en" ? "features" : "featuresId";
     setFormData((prev) => ({
       ...prev,
-      features: prev.features?.filter((_, i) => i !== index),
+      [key]: prev[key]?.filter((_, i) => i !== index),
     }));
   };
 
-  // Challenge repeaters
+  // Challenge repeaters (language aware)
   const handleChallengeChange = (index: number, val: string) => {
-    const updated = [...(formData.challenges || [])];
+    const key = langTab === "en" ? "challenges" : "challengesId";
+    const updated = [...(formData[key] || [])];
     updated[index] = val;
-    setFormData((prev) => ({ ...prev, challenges: updated }));
+    setFormData((prev) => ({ ...prev, [key]: updated }));
   };
 
   const handleAddChallenge = () => {
+    const key = langTab === "en" ? "challenges" : "challengesId";
     setFormData((prev) => ({
       ...prev,
-      challenges: [...(prev.challenges || []), ""],
+      [key]: [...(prev[key] || []), ""],
     }));
   };
 
   const handleRemoveChallenge = (index: number) => {
+    const key = langTab === "en" ? "challenges" : "challengesId";
     setFormData((prev) => ({
       ...prev,
-      challenges: prev.challenges?.filter((_, i) => i !== index),
+      [key]: prev[key]?.filter((_, i) => i !== index),
     }));
   };
 
@@ -249,7 +265,9 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
       const cleanData = {
         ...formData,
         features: (formData.features || []).filter((f) => f && f.trim().length > 0),
+        featuresId: (formData.featuresId || []).filter((f) => f && f.trim().length > 0),
         challenges: (formData.challenges || []).filter((c) => c && c.trim().length > 0),
+        challengesId: (formData.challengesId || []).filter((c) => c && c.trim().length > 0),
       };
 
       const res = await fetch(url, {
@@ -717,11 +735,12 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
           <div className="bg-[#101010] border border-[#1F1F1F] p-6 md:p-8 space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1A1A1A] pb-3">
               <div>
-                <h2 className="text-[#E31B23] text-sm uppercase tracking-widest font-semibold">
-                  04. Key Features & Capabilities
+                <h2 className="text-[#E31B23] text-sm uppercase tracking-widest font-semibold flex items-center gap-2">
+                  <span>04. Key Features & Capabilities</span>
+                  <span className="text-white text-[10px] bg-[#E31B23] px-1.5 py-0.2 font-bold">{langTab.toUpperCase()}</span>
                 </h2>
                 <p className="text-[10px] text-[#777777] mt-0.5">
-                  Highlights displayed in the project detail page feature grid
+                  Highlights displayed in the project detail page feature grid ({langTab === "en" ? "English" : "Bahasa Indonesia"})
                 </p>
               </div>
 
@@ -731,18 +750,18 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                 className="inline-flex items-center gap-1 bg-[#181818] hover:bg-[#222222] text-[#E31B23] hover:text-white border border-[#E31B23]/40 hover:border-[#E31B23] px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Add Feature</span>
+                <span>Add Feature ({langTab.toUpperCase()})</span>
               </button>
             </div>
 
-            {(!formData.features || formData.features.length === 0) && (
+            {(!((langTab === "en" ? formData.features : formData.featuresId) || []).length) && (
               <div className="text-center py-6 border border-dashed border-[#222222] text-[#666666] text-xs">
-                No features added yet. Click &quot;Add Feature&quot; to add cards to the detail page.
+                No features added yet. Click &quot;Add Feature&quot; or use &quot;AI Translate&quot; to auto-generate.
               </div>
             )}
 
             <div className="space-y-3">
-              {formData.features?.map((feature, idx) => (
+              {((langTab === "en" ? formData.features : formData.featuresId) || []).map((feature, idx) => (
                 <div key={idx} className="flex gap-2 items-start bg-[#141414] border border-[#262626] p-3">
                   <span className="text-[#E31B23] font-bold text-xs pt-1 select-none">
                     0{idx + 1}.
@@ -751,7 +770,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                     rows={2}
                     value={feature}
                     onChange={(e) => handleFeatureChange(idx, e.target.value)}
-                    placeholder={`Describe Feature 0${idx + 1}...`}
+                    placeholder={langTab === "en" ? `Describe Feature 0${idx + 1}...` : `Jelaskan Fitur 0${idx + 1}...`}
                     className="flex-1 bg-transparent border-0 text-[#F5F5F5] outline-none text-xs resize-y"
                   />
                   <button
@@ -771,11 +790,12 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
           <div className="bg-[#101010] border border-[#1F1F1F] p-6 md:p-8 space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1A1A1A] pb-3">
               <div>
-                <h2 className="text-[#E31B23] text-sm uppercase tracking-widest font-semibold">
-                  05. Technical Challenges & Solutions
+                <h2 className="text-[#E31B23] text-sm uppercase tracking-widest font-semibold flex items-center gap-2">
+                  <span>05. Technical Challenges & Solutions</span>
+                  <span className="text-white text-[10px] bg-[#E31B23] px-1.5 py-0.2 font-bold">{langTab.toUpperCase()}</span>
                 </h2>
                 <p className="text-[10px] text-[#777777] mt-0.5">
-                  Complex problems solved and architectural engineering choices
+                  Complex problems solved and architectural engineering choices ({langTab === "en" ? "English" : "Bahasa Indonesia"})
                 </p>
               </div>
 
@@ -785,18 +805,18 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                 className="inline-flex items-center gap-1 bg-[#181818] hover:bg-[#222222] text-[#E31B23] hover:text-white border border-[#E31B23]/40 hover:border-[#E31B23] px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Add Challenge</span>
+                <span>Add Challenge ({langTab.toUpperCase()})</span>
               </button>
             </div>
 
-            {(!formData.challenges || formData.challenges.length === 0) && (
+            {(!((langTab === "en" ? formData.challenges : formData.challengesId) || []).length) && (
               <div className="text-center py-6 border border-dashed border-[#222222] text-[#666666] text-xs">
-                No challenges added yet. Click &quot;Add Challenge&quot; to add solution callouts.
+                No challenges added yet. Click &quot;Add Challenge&quot; or use &quot;AI Translate&quot; to auto-generate.
               </div>
             )}
 
             <div className="space-y-3">
-              {formData.challenges?.map((challenge, idx) => (
+              {((langTab === "en" ? formData.challenges : formData.challengesId) || []).map((challenge, idx) => (
                 <div key={idx} className="flex gap-2 items-start bg-[#141414] border border-[#262626] p-3">
                   <span className="text-[#A0A0A0] font-bold text-xs pt-1 select-none">
                     0{idx + 1}.
@@ -805,7 +825,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                     rows={2}
                     value={challenge}
                     onChange={(e) => handleChallengeChange(idx, e.target.value)}
-                    placeholder={`Describe Technical Challenge 0${idx + 1}...`}
+                    placeholder={langTab === "en" ? `Describe Technical Challenge 0${idx + 1}...` : `Jelaskan Tantangan Teknis 0${idx + 1}...`}
                     className="flex-1 bg-transparent border-0 text-[#F5F5F5] outline-none text-xs resize-y"
                   />
                   <button

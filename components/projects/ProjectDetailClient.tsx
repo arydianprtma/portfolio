@@ -149,7 +149,11 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
 
       {/* Features & Architectural Highlights */}
       {(() => {
-        const validFeatures = (project.features || []).filter((f) => f && f.trim().length > 0);
+        const sourceFeatures =
+          language === "id" && project.featuresId && project.featuresId.length > 0
+            ? project.featuresId
+            : project.features;
+        const validFeatures = (sourceFeatures || []).filter((f) => f && f.trim().length > 0);
         if (validFeatures.length === 0) return null;
 
         return (
@@ -177,7 +181,11 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
 
       {/* Technical Challenges */}
       {(() => {
-        const validChallenges = (project.challenges || []).filter((c) => c && c.trim().length > 0);
+        const sourceChallenges =
+          language === "id" && project.challengesId && project.challengesId.length > 0
+            ? project.challengesId
+            : project.challenges;
+        const validChallenges = (sourceChallenges || []).filter((c) => c && c.trim().length > 0);
         if (validChallenges.length === 0) return null;
 
         return (

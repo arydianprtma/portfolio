@@ -37,7 +37,9 @@ model Project {
   deliveryStatus String?
   deliveryStatusId String?
   features      String?  @db.Text // Stored as JSON string
+  featuresId    String?  @db.Text // Stored as JSON string
   challenges    String?  @db.Text // Stored as JSON string
+  challengesId  String?  @db.Text // Stored as JSON string
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }

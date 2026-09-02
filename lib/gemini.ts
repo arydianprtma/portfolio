@@ -157,13 +157,17 @@ export async function completeAndTranslateProject(input: {
   descriptionId?: string;
   overview?: string;
   overviewId?: string;
+  features?: string[];
+  featuresId?: string[];
+  challenges?: string[];
+  challengesId?: string[];
   category?: string;
   technologies?: string[];
   activeLanguage?: "en" | "id";
 }) {
   const prompt = `You are an expert full-stack developer portfolio editor.
 You are given project showcase information in either English or Indonesian.
-Your task is to accurately generate, translate, and populate BOTH English and Indonesian versions of ALL fields.
+Your task is to accurately generate, translate, and populate BOTH English and Indonesian versions of ALL fields including features and technical challenges.
 
 Input provided:
 - Project Title: "${input.title || ""}"
@@ -177,6 +181,10 @@ Input provided:
 - Short Description (ID): "${input.descriptionId || ""}"
 - Overview (EN Case Study): ${JSON.stringify(input.overview || "")}
 - Overview (ID Case Study): ${JSON.stringify(input.overviewId || "")}
+- Key Features (EN): ${JSON.stringify(input.features || [])}
+- Key Features (ID): ${JSON.stringify(input.featuresId || [])}
+- Technical Challenges & Solutions (EN): ${JSON.stringify(input.challenges || [])}
+- Technical Challenges & Solutions (ID): ${JSON.stringify(input.challengesId || [])}
 - Category: "${input.category || ""}"
 - Technologies: ${JSON.stringify(input.technologies || [])}
 - Active Tab: "${input.activeLanguage || "en"}"
@@ -187,7 +195,9 @@ Requirements:
 3. **deliveryStatus** (English) & **deliveryStatusId** (Indonesian): Status rilis translation (e.g. "Production Ready" ➔ "Siap Produksi", "Active Development" ➔ "Dalam Pengembangan").
 4. **description** (English) & **descriptionId** (Indonesian): Concise 2-3 sentence summary for showcase cards. If English is provided, translate and polish into natural, professional Indonesian; if Indonesian is provided, translate to English.
 5. **overview** (English) & **overviewId** (Indonesian): Detailed architectural breakdown and purpose. If one is provided, accurately translate and format to the other language.
-6. **technologies**: Return modern technology array (e.g. ["Laravel 11", "Vue 3", "Inertia.js", "Filament PHP", "Tailwind CSS"]).
+6. **features** (English array) & **featuresId** (Indonesian array): Translate each feature bullet item. If English is provided, produce the exact 1-to-1 translated array in **featuresId** (Indonesian); if Indonesian is provided, translate to English in **features**. Keep any bold prefixes or formatting aligned.
+7. **challenges** (English array) & **challengesId** (Indonesian array): Translate each challenge & solution item. If English is provided, produce the exact 1-to-1 translated array in **challengesId** (Indonesian); if Indonesian is provided, translate to English in **challenges**.
+8. **technologies**: Return modern technology array (e.g. ["Laravel 11", "Vue 3", "Inertia.js", "Filament PHP", "Tailwind CSS"]).
 
 Return ONLY valid JSON matching this exact structure:
 {
@@ -201,6 +211,10 @@ Return ONLY valid JSON matching this exact structure:
   "descriptionId": "string (Indonesian)",
   "overview": "string (English)",
   "overviewId": "string (Indonesian)",
+  "features": ["string (English)"],
+  "featuresId": ["string (Indonesian)"],
+  "challenges": ["string (English)"],
+  "challengesId": ["string (Indonesian)"],
   "technologies": ["string"]
 }`;
 

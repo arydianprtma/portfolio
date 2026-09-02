@@ -22,7 +22,9 @@ export interface Project {
   deliveryStatus?: string;
   deliveryStatusId?: string;
   features?: string[];
+  featuresId?: string[];
   challenges?: string[];
+  challengesId?: string[];
 }
 
 export interface Post {

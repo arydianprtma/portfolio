@@ -1,11 +1,8 @@
 // Verified active models ordered by speed and availability
 const ACTIVE_MODELS = [
-  "gemini-3.5-flash",
-  "gemini-3.6-flash",
-  "gemini-3.7-flash",
-  "gemini-3.5-flash-lite",
   "gemini-2.0-flash",
   "gemini-1.5-flash",
+  "gemini-2.0-flash-lite",
 ];
 
 function getApiKey(): string {
@@ -230,8 +227,8 @@ export async function chatWithGemini({
             },
             contents,
             generationConfig: {
-              temperature: 0.7,
-              maxOutputTokens: 1000,
+              temperature: 0.4,
+              maxOutputTokens: 500,
             },
           }),
         }

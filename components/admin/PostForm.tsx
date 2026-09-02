@@ -153,10 +153,33 @@ export const PostForm: React.FC<PostFormProps> = ({
       setLangTab(targetLang);
       setTranslateSuccess(
         targetLang === "id"
-          ? "✓ Berhasil diterjemahkan ke Bahasa Indonesia! Tab dialihkan ke ID."
-          : "✓ Successfully translated to English! Switched to EN tab."
+          ? "✓ Artikel lengkap (Konten Markdown, Ringkasan, & Tag) berhasil digenerate ke Bahasa Indonesia!"
+          : "✓ Full article draft (Markdown Content, Summary, & Tags) generated in English!"
       );
       setTimeout(() => setTranslateSuccess(null), 5000);
+
+      // Auto-create matching cover image in background if empty
+      if (!formData.coverImage) {
+        const genTitle = r.title || r.titleId || formData.title || formData.titleId;
+        const genSummary = r.summary || r.summaryId || formData.summary || formData.summaryId;
+        fetch("/api/admin/ai/generate-cover", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: genTitle,
+            summary: genSummary,
+            tags: r.tags || formData.tags || [],
+            style: coverStyle,
+          }),
+        })
+          .then((res) => res.json())
+          .then((coverData) => {
+            if (coverData.url) {
+              setFormData((prev) => ({ ...prev, coverImage: coverData.url }));
+            }
+          })
+          .catch(() => {});
+      }
     } catch (err: any) {
       setError(err.message || "AI Generation failed");
     } finally {

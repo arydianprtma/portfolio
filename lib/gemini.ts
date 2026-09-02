@@ -106,9 +106,9 @@ export async function completeAndTranslatePost(input: {
   tags?: string[];
   activeLanguage?: "en" | "id";
 }) {
-  const prompt = `You are an expert software engineering technical author and developer portfolio editor.
-You are given partial article information in either English or Indonesian.
-Your task is to generate and populate BOTH English and Indonesian versions of all fields completely.
+  const prompt = `You are a principal software engineer and technical author creating a comprehensive, high-quality developer blog article.
+You are given article information in either English or Indonesian.
+Your task is to produce BOTH complete, in-depth English and Indonesian versions for all fields (Title, Summary, and full Markdown Article Content).
 
 Input provided:
 - Title (EN): "${input.title || ""}"
@@ -121,13 +121,20 @@ Input provided:
 - Active Tab: "${input.activeLanguage || "en"}"
 
 Requirements:
-1. **title** (English) & **titleId** (Indonesian): Ensure both are compelling, clear, professional developer article titles.
-2. **summary** (English) & **summaryId** (Indonesian): If empty, write a crisp, engaging 2-3 sentence summary explaining what readers will learn. If one is provided, polish and translate to the other.
+1. **title** (English) & **titleId** (Indonesian): Catchy, professional technical titles (e.g. "How to Install Laravel 11 on Windows and Linux" / "Panduan Lengkap Cara Instal Laravel 11 di Windows dan Linux").
+2. **summary** (English) & **summaryId** (Indonesian): Crisp, engaging 2-3 sentence overview explaining prerequisites and what the reader will achieve.
 3. **content** (English Markdown) & **contentId** (Indonesian Markdown):
-   - If empty or very short, write an informative, high-quality technical article draft in Markdown format with structured sections (e.g., \`## 01. Pendahuluan / Introduction\`, \`## 02. Implementasi / Implementation\`, code snippets \`\`\`ts...\`\`\`, and best practices).
-   - If content is already provided, translate and polish into both English and Indonesian, keeping all code and headings aligned.
-4. **tags**: Return an array of 3-5 relevant developer tags (e.g. ["JavaScript", "Web Dev", "Tutorial", "Next.js"]).
-5. **readingTime**: Estimated reading time string (e.g. "4 min read" or "5 min read").
+   - ALWAYS generate a rich, full-length, step-by-step technical guide (with 4-6 detailed sections).
+   - Structure with clean Markdown headings:
+     ## 01. Persyaratan Sistem / Prerequisites & System Requirements
+     ## 02. Instalasi & Konfigurasi / Step-by-Step Installation
+     ## 03. Menjalankan Proyek / Serving the Application
+     ## 04. Struktur Direktori & Konfigurasi / Directory Structure & Configuration
+     ## 05. Kesimpulan & Langkah Selanjutnya / Summary & Next Steps
+   - Include clear, realistic shell/code blocks (e.g. \`\`\`bash\\ncomposer create-project laravel/laravel my-project\\ncd my-project\\nphp artisan serve\\n\`\`\`).
+   - If content was already provided by the user, expand and accurately translate it to the other language while keeping all code snippets aligned.
+4. **tags**: 3-5 modern developer tags matching the framework/topic (e.g. ["Laravel 11", "PHP", "Web Development", "Backend"]).
+5. **readingTime**: Estimated reading time (e.g. "5 min read").
 
 Return ONLY valid JSON matching this exact structure:
 {

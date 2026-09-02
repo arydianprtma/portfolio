@@ -39,9 +39,30 @@ const QUICK_PROMPTS_EN = [
 export const ChatBot: React.FC = () => {
   const { language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
+  const [showPromptBubble, setShowPromptBubble] = useState(false);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [hasOpenedOnce, setHasOpenedOnce] = useState(false);
+
+  // Proactive Chat Prompt Timer (Triggers after 20 seconds of viewing)
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    try {
+      const isDismissed = sessionStorage.getItem("ardp_chat_prompt_dismissed");
+      if (!isDismissed) {
+        timer = setTimeout(() => {
+          setShowPromptBubble((prev) => {
+            // Only show if chat hasn't been opened yet
+            return !isOpen ? true : prev;
+          });
+        }, 20000); // 20 seconds
+      }
+    } catch (err) {}
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [isOpen]);
 
   const initialWelcome =
     language === "id"
@@ -66,6 +87,7 @@ export const ChatBot: React.FC = () => {
 
   useEffect(() => {
     if (isOpen) {
+      setShowPromptBubble(false);
       scrollToBottom();
       if (!hasOpenedOnce) {
         setHasOpenedOnce(true);
@@ -190,9 +212,57 @@ export const ChatBot: React.FC = () => {
     <div className="no-print print:hidden select-none">
       {/* 1. Floating Launcher Button (Bottom Right next to ThemeToggle) */}
       <div className="fixed bottom-6 right-20 sm:bottom-8 sm:right-24 z-40">
+        {/* Proactive Floating Chat Speech Bubble Prompt */}
+        {!isOpen && showPromptBubble && (
+          <div className="absolute bottom-14 sm:bottom-16 right-0 z-40 w-64 sm:w-72 bg-[var(--surface)] border border-[var(--border)] p-3 rounded-lg flex flex-col gap-1.5 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="flex items-start gap-2.5">
+              <div className="w-6 h-6 rounded-full bg-[#E31B23]/15 border border-[#E31B23]/40 flex items-center justify-center shrink-0 text-[#E31B23] mt-0.5">
+                <Bot className="w-3.5 h-3.5" />
+              </div>
+              <div
+                className="flex-1 cursor-pointer"
+                onClick={() => {
+                  setShowPromptBubble(false);
+                  setIsOpen(true);
+                }}
+              >
+                <p className="font-mono text-xs text-[var(--foreground)] leading-relaxed">
+                  {language === "id"
+                    ? "Hai! 👋 Mau tanya-tanya langsung seputar proyek atau skill Ary? Klik di sini!"
+                    : "Hi! 👋 Want to ask anything about Ary's projects or skills? Click here!"}
+                </p>
+                <span className="font-mono text-[10px] text-[#E31B23] font-bold mt-1.5 inline-flex items-center gap-1 hover:underline">
+                  <span>{language === "id" ? "Buka Chat" : "Open Chat"}</span>
+                  <ArrowUpRight className="w-3 h-3" />
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowPromptBubble(false);
+                  try {
+                    sessionStorage.setItem("ardp_chat_prompt_dismissed", "true");
+                  } catch (err) {}
+                }}
+                className="p-1 text-[var(--muted)] hover:text-[#E31B23] rounded transition-colors -mr-1 -mt-1"
+                title="Tutup notifikasi"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Speech Bubble Arrow pointing down to the button */}
+            <div className="absolute -bottom-1.5 right-8 sm:right-10 w-3 h-3 bg-[var(--surface)] border-b border-r border-[var(--border)] rotate-45" />
+          </div>
+        )}
+
         <button
           type="button"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => {
+            setShowPromptBubble(false);
+            setIsOpen(!isOpen);
+          }}
           aria-label={isOpen ? "Close AI Chat" : "Chat with ARDP AI Assistant"}
           title={isOpen ? "Tutup Chat" : "Tanya ARDP AI Assistant"}
           className="relative h-11 sm:h-12 px-3.5 sm:px-4 rounded-full bg-[var(--surface)] border border-[var(--border)] hover:border-[#E31B23] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2.5 group"

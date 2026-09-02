@@ -427,7 +427,6 @@ export async function resetAnalytics(): Promise<boolean> {
         where: { id },
         update: {
           pageViews: 0,
-          cvDownloads: 0,
         },
         create: {
           id,
@@ -436,12 +435,11 @@ export async function resetAnalytics(): Promise<boolean> {
         },
       }),
       prisma.pageViewEvent.deleteMany({}),
-      prisma.cvDownloadEvent.deleteMany({}),
     ]);
 
     return true;
   } catch (err) {
-    console.error("Error resetting analytics:", err);
+    console.error("Error resetting page views:", err);
     return false;
   }
 }

@@ -60,7 +60,7 @@ export const ResetAnalyticsButton: React.FC = () => {
             </div>
 
             <p className="text-xs text-[#A0A0A0] leading-relaxed">
-              Tindakan ini akan me-reset total <strong className="text-white font-bold">Website Visits</strong> dan <strong className="text-white font-bold">CV Downloads</strong> kembali ke <strong className="text-[#E31B23] font-bold">0</strong> serta menghapus riwayat log kunjungan.
+              Tindakan ini hanya akan me-reset total <strong className="text-white font-bold">Website Visits</strong> kembali ke <strong className="text-[#E31B23] font-bold">0</strong>. Data <strong className="text-emerald-400 font-bold">CV Downloads</strong> akan tetap aman dan tidak terhapus.
             </p>
 
             {error && (

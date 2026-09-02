@@ -297,14 +297,14 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
               rel="noopener noreferrer"
               download
               onClick={trackCvDownload}
-              className="flex items-center justify-between p-4 bg-[#141414] border border-[#262626] hover:border-[#E31B23] text-[#F5F5F5] transition-all group font-mono text-xs"
+              className="flex items-center justify-between p-4 bg-[var(--surface)] border border-[var(--border)] hover:border-[#E31B23] text-[var(--foreground)] transition-all group font-mono text-xs"
               data-cursor="link"
             >
               <div className="flex items-center gap-3">
                 <FileText className="w-4 h-4 text-[#E31B23]" />
                 <span className="font-semibold uppercase tracking-wider">{t.contact.downloadCvBadge}</span>
               </div>
-              <Download className="w-4 h-4 text-[#777777] group-hover:text-[#E31B23] transition-colors" />
+              <Download className="w-4 h-4 text-[var(--muted)] group-hover:text-[#E31B23] transition-colors" />
             </a>
           )}
 
@@ -315,13 +315,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
                 href={profile.socials.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-3.5 bg-[#121212] border border-[#222222] hover:border-[#E31B23] text-[#A0A0A0] hover:text-[#F5F5F5] transition-all group"
+                className="flex items-center justify-between p-3.5 bg-[var(--surface)] border border-[var(--border)] hover:border-[#E31B23] text-[var(--foreground)] transition-all group"
               >
                 <div className="flex items-center gap-3">
-                  <GithubIcon className="w-4 h-4 text-[#777777] group-hover:text-[#E31B23] transition-colors" />
+                  <GithubIcon className="w-4 h-4 text-[var(--muted)] group-hover:text-[#E31B23] transition-colors" />
                   <span className="tracking-wider">{t.contact.githubProfile}</span>
                 </div>
-                <ArrowUpRight className="w-3.5 h-3.5 text-[#555555] group-hover:text-[#E31B23] transition-colors" />
+                <ArrowUpRight className="w-3.5 h-3.5 text-[var(--muted)] group-hover:text-[#E31B23] transition-colors" />
               </a>
             )}
 
@@ -330,13 +330,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
                 href={profile.socials.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-3.5 bg-[#121212] border border-[#222222] hover:border-[#E31B23] text-[#A0A0A0] hover:text-[#F5F5F5] transition-all group"
+                className="flex items-center justify-between p-3.5 bg-[var(--surface)] border border-[var(--border)] hover:border-[#E31B23] text-[var(--foreground)] transition-all group"
               >
                 <div className="flex items-center gap-3">
-                  <LinkedinIcon className="w-4 h-4 text-[#777777] group-hover:text-[#E31B23] transition-colors" />
+                  <LinkedinIcon className="w-4 h-4 text-[var(--muted)] group-hover:text-[#E31B23] transition-colors" />
                   <span className="tracking-wider">{t.contact.linkedinProfile}</span>
                 </div>
-                <ArrowUpRight className="w-3.5 h-3.5 text-[#555555] group-hover:text-[#E31B23] transition-colors" />
+                <ArrowUpRight className="w-3.5 h-3.5 text-[var(--muted)] group-hover:text-[#E31B23] transition-colors" />
               </a>
             )}
 
@@ -345,13 +345,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
                 href={profile.socials.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-3.5 bg-[#121212] border border-[#222222] hover:border-[#E31B23] text-[#A0A0A0] hover:text-[#F5F5F5] transition-all group"
+                className="flex items-center justify-between p-3.5 bg-[var(--surface)] border border-[var(--border)] hover:border-[#E31B23] text-[var(--foreground)] transition-all group"
               >
                 <div className="flex items-center gap-3">
-                  <TwitterIcon className="w-4 h-4 text-[#777777] group-hover:text-[#E31B23] transition-colors" />
+                  <TwitterIcon className="w-4 h-4 text-[var(--muted)] group-hover:text-[#E31B23] transition-colors" />
                   <span className="tracking-wider">{t.contact.twitterProfile}</span>
                 </div>
-                <ArrowUpRight className="w-3.5 h-3.5 text-[#555555] group-hover:text-[#E31B23] transition-colors" />
+                <ArrowUpRight className="w-3.5 h-3.5 text-[var(--muted)] group-hover:text-[#E31B23] transition-colors" />
               </a>
             )}
 
@@ -360,13 +360,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
                 href={profile.socials.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-3.5 bg-[#121212] border border-[#222222] hover:border-[#E31B23] text-[#A0A0A0] hover:text-[#F5F5F5] transition-all group"
+                className="flex items-center justify-between p-3.5 bg-[var(--surface)] border border-[var(--border)] hover:border-[#E31B23] text-[var(--foreground)] transition-all group"
               >
                 <div className="flex items-center gap-3">
-                  <InstagramIcon className="w-4 h-4 text-[#777777] group-hover:text-[#E31B23] transition-colors" />
+                  <InstagramIcon className="w-4 h-4 text-[var(--muted)] group-hover:text-[#E31B23] transition-colors" />
                   <span className="tracking-wider">{t.contact.instagramProfile}</span>
                 </div>
-                <ArrowUpRight className="w-3.5 h-3.5 text-[#555555] group-hover:text-[#E31B23] transition-colors" />
+                <ArrowUpRight className="w-3.5 h-3.5 text-[var(--muted)] group-hover:text-[#E31B23] transition-colors" />
               </a>
             )}
           </div>

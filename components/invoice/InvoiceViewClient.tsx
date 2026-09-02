@@ -211,24 +211,24 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
               <div className="sm:text-right space-y-2 font-mono">
                 <div>
                   {isPaid && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-950/40 border border-emerald-600 text-emerald-400 print:bg-emerald-50 print:border-emerald-600 print:text-emerald-700 text-xs font-bold uppercase tracking-widest">
-                      <CheckCircle2 className="w-3 h-3" />
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/15 dark:bg-emerald-950/40 border border-emerald-500/40 dark:border-emerald-600 text-emerald-600 dark:text-emerald-400 print:bg-emerald-50 print:border-emerald-600 print:text-emerald-700 text-xs font-bold uppercase tracking-widest">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
                       PAID / LUNAS
                     </span>
                   )}
                   {isPending && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-950/40 border border-amber-600 text-amber-400 print:bg-amber-50 print:border-amber-600 print:text-amber-700 text-xs font-bold uppercase tracking-widest">
-                      <Clock className="w-3 h-3" />
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/15 dark:bg-amber-950/40 border border-amber-500/40 dark:border-amber-600 text-amber-600 dark:text-amber-400 print:bg-amber-50 print:border-amber-600 print:text-amber-700 text-xs font-bold uppercase tracking-widest">
+                      <Clock className="w-3.5 h-3.5" />
                       PENDING PAYMENT
                     </span>
                   )}
                   {isDraft && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-[var(--background)] border border-[var(--border)] text-[var(--muted)] print:bg-gray-100 print:border-gray-400 print:text-gray-800 text-xs font-bold uppercase tracking-widest">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-zinc-500/10 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 print:bg-gray-100 print:border-gray-400 print:text-gray-800 text-xs font-bold uppercase tracking-widest">
                       DRAFT
                     </span>
                   )}
                   {isCancelled && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-red-950/40 border border-red-700 text-red-400 print:bg-red-50 print:border-red-600 print:text-red-700 text-xs font-bold uppercase tracking-widest">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-500/15 dark:bg-red-950/40 border border-red-500/40 dark:border-red-700 text-red-600 dark:text-red-400 print:bg-red-50 print:border-red-600 print:text-red-700 text-xs font-bold uppercase tracking-widest">
                       CANCELLED
                     </span>
                   )}

@@ -195,7 +195,7 @@ export const ChatBot: React.FC = () => {
           onClick={() => setIsOpen(!isOpen)}
           aria-label={isOpen ? "Close AI Chat" : "Chat with ARDP AI Assistant"}
           title={isOpen ? "Tutup Chat" : "Tanya ARDP AI Assistant"}
-          className="relative h-11 sm:h-12 px-3.5 sm:px-4 rounded-full bg-[var(--surface)]/95 backdrop-blur-md border border-[var(--border)] hover:border-[#E31B23] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2.5 group shadow-xl"
+          className="relative h-11 sm:h-12 px-3.5 sm:px-4 rounded-full bg-[var(--surface)] border border-[var(--border)] hover:border-[#E31B23] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2.5 group"
         >
           <div className="relative">
             <Bot className="w-5 h-5 text-[#E31B23] group-hover:rotate-12 transition-transform duration-300" />
@@ -204,15 +204,12 @@ export const ChatBot: React.FC = () => {
           <span className="hidden sm:inline font-mono text-xs font-bold text-[var(--foreground)] tracking-wider">
             ARDP AI
           </span>
-          <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#E31B23]/15 text-[#E31B23] text-[9px] font-mono font-extrabold uppercase">
-            GEMINI
-          </span>
         </button>
       </div>
 
       {/* 2. Expandable Cyberpunk Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-20 right-4 sm:bottom-24 sm:right-8 z-50 w-[calc(100vw-2rem)] sm:w-[420px] max-h-[600px] h-[82vh] bg-[var(--surface)] border border-[var(--border)] rounded-lg shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-300">
+        <div className="fixed bottom-20 right-4 sm:bottom-24 sm:right-8 z-50 w-[calc(100vw-2rem)] sm:w-[420px] max-h-[600px] h-[82vh] bg-[var(--surface)] border border-[var(--border)] rounded-lg flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-300">
           {/* Top Decorative Cyberpunk Strip */}
           <div className="h-1 bg-gradient-to-r from-[#E31B23] via-red-500 to-[#E31B23]" />
 
@@ -272,7 +269,7 @@ export const ChatBot: React.FC = () => {
                 )}
 
                 <div
-                  className={`max-w-[85%] rounded-lg p-3 leading-relaxed text-xs shadow-sm ${
+                  className={`max-w-[85%] rounded-lg p-3 leading-relaxed text-xs ${
                     m.role === "user"
                       ? "bg-[#E31B23] text-white rounded-br-none"
                       : "bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] rounded-bl-none"

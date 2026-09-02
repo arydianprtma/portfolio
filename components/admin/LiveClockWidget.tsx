@@ -4,12 +4,15 @@ import React, { useState, useEffect } from "react";
 import { Clock, Calendar, Globe, Radio } from "lucide-react";
 
 export const LiveClockWidget: React.FC = () => {
+  const [mounted, setMounted] = useState(false);
   const [time, setTime] = useState<string>("");
   const [dayName, setDayName] = useState<string>("");
   const [dateStr, setDateStr] = useState<string>("");
   const [timezone, setTimezone] = useState<string>("");
 
   useEffect(() => {
+    setMounted(true);
+
     const updateTime = () => {
       const now = new Date();
 
@@ -59,7 +62,7 @@ export const LiveClockWidget: React.FC = () => {
           </div>
 
           <div className="font-display font-black text-2xl sm:text-3xl text-[#F5F5F5] tracking-wider mt-0.5">
-            {time || "00:00:00"}
+            {mounted && time ? time : "--:--:--"}
           </div>
         </div>
       </div>
@@ -70,17 +73,17 @@ export const LiveClockWidget: React.FC = () => {
           <Calendar className="w-4 h-4 text-[#777777]" />
           <div>
             <span className="text-[10px] text-[#E31B23] font-bold tracking-wider block">
-              {dayName || "TODAY"}
+              {mounted && dayName ? dayName : "LOCAL TIME"}
             </span>
             <span className="text-xs text-[#F5F5F5] font-semibold tracking-wide">
-              {dateStr || "01 JANUARY 2026"}
+              {mounted && dateStr ? dateStr : "SYNCHRONIZING..."}
             </span>
           </div>
         </div>
 
         <div className="flex items-center gap-2 bg-[#141414] border border-[#242424] px-3 py-1.5 text-[11px] text-[#A0A0A0]">
           <Globe className="w-3.5 h-3.5 text-emerald-400" />
-          <span>{timezone || "UTC+7"}</span>
+          <span>{mounted && timezone ? timezone : "UTC+7"}</span>
           <span className="text-[10px] text-emerald-400">● LIVE</span>
         </div>
       </div>

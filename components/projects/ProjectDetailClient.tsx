@@ -156,6 +156,28 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
         const validFeatures = (sourceFeatures || []).filter((f) => f && f.trim().length > 0);
         if (validFeatures.length === 0) return null;
 
+        const formatFeatureText = (text: string): React.ReactNode => {
+          if (!text) return null;
+          const cleaned = text.trim();
+
+          // If text has "Title: Description" format, automatically bold the Title before the colon
+          const colonIndex = cleaned.indexOf(":");
+          if (colonIndex > 0 && colonIndex < 100) {
+            const rawTitle = cleaned.slice(0, colonIndex + 1);
+            const rest = cleaned.slice(colonIndex + 1);
+            return (
+              <>
+                <strong className="font-bold text-[var(--foreground)] mr-1.5">
+                  {formatInline(rawTitle.replace(/^\*+|\*+$/g, ''))}
+                </strong>
+                <span>{formatInline(rest)}</span>
+              </>
+            );
+          }
+
+          return formatInline(cleaned);
+        };
+
         return (
           <div className="mb-20">
             <SectionLabel label={language === "id" ? "FITUR UTAMA & KAPABILITAS" : "KEY FEATURES & CAPABILITIES"} />
@@ -170,7 +192,7 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
                     FEATURE 0{idx + 1}
                   </div>
                   <p className="text-sm md:text-base text-[var(--muted)] leading-relaxed text-justify [text-align-last:left] break-words">
-                    {formatInline(feature)}
+                    {formatFeatureText(feature)}
                   </p>
                 </div>
               ))}

@@ -104,6 +104,7 @@ export interface Translations {
     githubProfile: string;
     linkedinProfile: string;
     twitterProfile: string;
+    instagramProfile: string;
     copy: string;
     copied: string;
   };
@@ -232,6 +233,7 @@ export const translations: Record<Language, Translations> = {
       githubProfile: "GITHUB PROFILE",
       linkedinProfile: "LINKEDIN PROFILE",
       twitterProfile: "TWITTER / X",
+      instagramProfile: "INSTAGRAM",
       copy: "COPY",
       copied: "COPIED!",
     },
@@ -355,6 +357,7 @@ export const translations: Record<Language, Translations> = {
       githubProfile: "PROFIL GITHUB",
       linkedinProfile: "PROFIL LINKEDIN",
       twitterProfile: "TWITTER / X",
+      instagramProfile: "PROFIL INSTAGRAM",
       copy: "SALIN",
       copied: "TERSALIN!",
     },

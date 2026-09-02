@@ -511,7 +511,7 @@ export default function AdminProfilePage() {
               02. Social Channels
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="space-y-2">
                 <label className="text-[#A0A0A0] uppercase tracking-wider block">GitHub URL</label>
                 <input
@@ -523,6 +523,7 @@ export default function AdminProfilePage() {
                       socials: { ...profile.socials, github: e.target.value },
                     })
                   }
+                  placeholder="https://github.com/..."
                   className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none"
                 />
               </div>
@@ -538,6 +539,7 @@ export default function AdminProfilePage() {
                       socials: { ...profile.socials, linkedin: e.target.value },
                     })
                   }
+                  placeholder="https://linkedin.com/in/..."
                   className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none"
                 />
               </div>
@@ -553,6 +555,23 @@ export default function AdminProfilePage() {
                       socials: { ...profile.socials, twitter: e.target.value },
                     })
                   }
+                  placeholder="https://x.com/..."
+                  className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[#A0A0A0] uppercase tracking-wider block">Instagram URL</label>
+                <input
+                  type="text"
+                  value={profile.socials.instagram || ""}
+                  onChange={(e) =>
+                    setProfile({
+                      ...profile,
+                      socials: { ...profile.socials, instagram: e.target.value },
+                    })
+                  }
+                  placeholder="https://instagram.com/..."
                   className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2.5 text-[#F5F5F5] outline-none"
                 />
               </div>

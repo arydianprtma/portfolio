@@ -16,7 +16,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { trackCvDownload } from "@/components/analytics/PageTracker";
-import { GithubIcon, LinkedinIcon, TwitterIcon } from "@/components/ui/Icons";
+import { GithubIcon, LinkedinIcon, TwitterIcon, InstagramIcon } from "@/components/ui/Icons";
 import { useLanguage } from "@/context/LanguageContext";
 
 interface ContactSectionProps {
@@ -308,35 +308,39 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
             </a>
           )}
 
-          {/* Social Links List */}
+          {/* Social Links List (Only render channels that have a valid URL) */}
           <div className="flex flex-col gap-2 font-mono text-xs">
-            <a
-              href={profile.socials.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between p-3.5 bg-[#121212] border border-[#222222] hover:border-[#E31B23] text-[#A0A0A0] hover:text-[#F5F5F5] transition-all group"
-            >
-              <div className="flex items-center gap-3">
-                <GithubIcon className="w-4 h-4 text-[#777777] group-hover:text-[#E31B23] transition-colors" />
-                <span className="tracking-wider">{t.contact.githubProfile}</span>
-              </div>
-              <ArrowUpRight className="w-3.5 h-3.5 text-[#555555] group-hover:text-[#E31B23] transition-colors" />
-            </a>
+            {profile.socials?.github && profile.socials.github.trim() !== "" && (
+              <a
+                href={profile.socials.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-3.5 bg-[#121212] border border-[#222222] hover:border-[#E31B23] text-[#A0A0A0] hover:text-[#F5F5F5] transition-all group"
+              >
+                <div className="flex items-center gap-3">
+                  <GithubIcon className="w-4 h-4 text-[#777777] group-hover:text-[#E31B23] transition-colors" />
+                  <span className="tracking-wider">{t.contact.githubProfile}</span>
+                </div>
+                <ArrowUpRight className="w-3.5 h-3.5 text-[#555555] group-hover:text-[#E31B23] transition-colors" />
+              </a>
+            )}
 
-            <a
-              href={profile.socials.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between p-3.5 bg-[#121212] border border-[#222222] hover:border-[#E31B23] text-[#A0A0A0] hover:text-[#F5F5F5] transition-all group"
-            >
-              <div className="flex items-center gap-3">
-                <LinkedinIcon className="w-4 h-4 text-[#777777] group-hover:text-[#E31B23] transition-colors" />
-                <span className="tracking-wider">{t.contact.linkedinProfile}</span>
-              </div>
-              <ArrowUpRight className="w-3.5 h-3.5 text-[#555555] group-hover:text-[#E31B23] transition-colors" />
-            </a>
+            {profile.socials?.linkedin && profile.socials.linkedin.trim() !== "" && (
+              <a
+                href={profile.socials.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-3.5 bg-[#121212] border border-[#222222] hover:border-[#E31B23] text-[#A0A0A0] hover:text-[#F5F5F5] transition-all group"
+              >
+                <div className="flex items-center gap-3">
+                  <LinkedinIcon className="w-4 h-4 text-[#777777] group-hover:text-[#E31B23] transition-colors" />
+                  <span className="tracking-wider">{t.contact.linkedinProfile}</span>
+                </div>
+                <ArrowUpRight className="w-3.5 h-3.5 text-[#555555] group-hover:text-[#E31B23] transition-colors" />
+              </a>
+            )}
 
-            {profile.socials.twitter && (
+            {profile.socials?.twitter && profile.socials.twitter.trim() !== "" && (
               <a
                 href={profile.socials.twitter}
                 target="_blank"
@@ -346,6 +350,21 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
                 <div className="flex items-center gap-3">
                   <TwitterIcon className="w-4 h-4 text-[#777777] group-hover:text-[#E31B23] transition-colors" />
                   <span className="tracking-wider">{t.contact.twitterProfile}</span>
+                </div>
+                <ArrowUpRight className="w-3.5 h-3.5 text-[#555555] group-hover:text-[#E31B23] transition-colors" />
+              </a>
+            )}
+
+            {profile.socials?.instagram && profile.socials.instagram.trim() !== "" && (
+              <a
+                href={profile.socials.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-3.5 bg-[#121212] border border-[#222222] hover:border-[#E31B23] text-[#A0A0A0] hover:text-[#F5F5F5] transition-all group"
+              >
+                <div className="flex items-center gap-3">
+                  <InstagramIcon className="w-4 h-4 text-[#777777] group-hover:text-[#E31B23] transition-colors" />
+                  <span className="tracking-wider">{t.contact.instagramProfile}</span>
                 </div>
                 <ArrowUpRight className="w-3.5 h-3.5 text-[#555555] group-hover:text-[#E31B23] transition-colors" />
               </a>

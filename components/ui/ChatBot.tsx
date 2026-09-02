@@ -285,21 +285,89 @@ export const ChatBot: React.FC = () => {
 
   const quickPrompts = language === "id" ? QUICK_PROMPTS_ID : QUICK_PROMPTS_EN;
 
-  // Simple Markdown text formatter (bold, lists, code)
+  // Simple Markdown text formatter (links, bold, code, emails, lists)
+  const renderInlineFormatted = (text: string) => {
+    // Matches markdown links [label](url), bold **text**, code `code`, raw URLs, and emails
+    const tokenRegex = /(\[.*?\]\(https?:\/\/[^\s)]+\)|\*\*.*?\*\*|`.*?`|https?:\/\/[^\s.,!?)]+(?:\.[^\s.,!?)]+)*|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
+    const parts = text.split(tokenRegex);
+
+    return parts.map((part, i) => {
+      if (!part) return null;
+
+      // 1. Markdown link [text](url)
+      const mdLinkMatch = part.match(/^\[(.*?)\]\((https?:\/\/[^\s)]+)\)$/);
+      if (mdLinkMatch) {
+        return (
+          <a
+            key={i}
+            href={mdLinkMatch[2]}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#E31B23] font-semibold underline underline-offset-2 hover:text-red-400 transition-colors inline-flex items-center gap-0.5"
+          >
+            <span>{mdLinkMatch[1]}</span>
+            <ArrowUpRight className="w-3 h-3 inline-block" />
+          </a>
+        );
+      }
+
+      // 2. Bold **text**
+      if (part.startsWith("**") && part.endsWith("**") && part.length >= 4) {
+        return (
+          <strong key={i} className="font-bold text-[var(--foreground)]">
+            {part.slice(2, -2)}
+          </strong>
+        );
+      }
+
+      // 3. Inline `code`
+      if (part.startsWith("`") && part.endsWith("`") && part.length >= 2) {
+        return (
+          <code
+            key={i}
+            className="px-1.5 py-0.5 rounded bg-[var(--border)]/50 text-[#E31B23] font-mono text-[11px]"
+          >
+            {part.slice(1, -1)}
+          </code>
+        );
+      }
+
+      // 4. Raw URL
+      if (part.startsWith("http://") || part.startsWith("https://")) {
+        return (
+          <a
+            key={i}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#E31B23] font-semibold underline underline-offset-2 hover:text-red-400 transition-colors inline-flex items-center gap-0.5"
+          >
+            <span>{part}</span>
+            <ArrowUpRight className="w-3 h-3 inline-block" />
+          </a>
+        );
+      }
+
+      // 5. Email address
+      if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(part)) {
+        return (
+          <a
+            key={i}
+            href={`mailto:${part}`}
+            className="text-[#E31B23] font-semibold underline underline-offset-2 hover:text-red-400 transition-colors"
+          >
+            {part}
+          </a>
+        );
+      }
+
+      return part;
+    });
+  };
+
   const formatMarkdown = (text: string) => {
     return text.split("\n").map((line, idx) => {
-      // Process bold **text**
-      const parts = line.split(/(\*\*.*?\*\*)/g);
-      const formattedLine = parts.map((part, pIdx) => {
-        if (part.startsWith("**") && part.endsWith("**")) {
-          return (
-            <strong key={pIdx} className="font-bold text-[var(--foreground)]">
-              {part.slice(2, -2)}
-            </strong>
-          );
-        }
-        return part;
-      });
+      const formattedLine = renderInlineFormatted(line);
 
       // Check if bullet point
       if (line.trim().startsWith("- ") || line.trim().startsWith("• ")) {

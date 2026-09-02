@@ -64,8 +64,12 @@ export const ChatBot: React.FC = () => {
     return audioCtxRef.current;
   };
 
-  // Unlock audio engine on first user interaction anywhere on the website
+  // Unlock audio engine on first user interaction anywhere on the website (except admin/invoice)
   useEffect(() => {
+    if (pathname?.startsWith("/admin") || pathname?.startsWith("/invoice")) {
+      return;
+    }
+
     const unlockAudio = () => {
       const ctx = getAudioContext();
       if (ctx && ctx.state === "suspended") {
@@ -82,10 +86,11 @@ export const ChatBot: React.FC = () => {
       window.removeEventListener("touchstart", unlockAudio);
       window.removeEventListener("keydown", unlockAudio);
     };
-  }, []);
+  }, [pathname]);
 
   // 1. Proactive Floating Chat Invitation Chime
   const playNotificationSound = () => {
+    if (pathname?.startsWith("/admin") || pathname?.startsWith("/invoice")) return;
     try {
       const ctx = getAudioContext();
       if (!ctx) return;
@@ -147,8 +152,12 @@ export const ChatBot: React.FC = () => {
     }
   };
 
-  // Proactive Chat Prompt Timer (Triggers after 20 seconds of viewing)
+  // Proactive Chat Prompt Timer (Triggers after 20 seconds of viewing, never in admin/invoice)
   useEffect(() => {
+    if (pathname?.startsWith("/admin") || pathname?.startsWith("/invoice")) {
+      return;
+    }
+
     let timer: NodeJS.Timeout;
     try {
       const isDismissed = sessionStorage.getItem("ardp_chat_prompt_dismissed");
@@ -169,7 +178,7 @@ export const ChatBot: React.FC = () => {
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [isOpen]);
+  }, [isOpen, pathname]);
 
   const initialWelcome =
     language === "id"
@@ -392,7 +401,7 @@ export const ChatBot: React.FC = () => {
     });
   };
 
-  if (pathname?.startsWith("/admin")) {
+  if (pathname?.startsWith("/admin") || pathname?.startsWith("/invoice")) {
     return null;
   }
 

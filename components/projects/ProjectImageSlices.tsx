@@ -24,18 +24,18 @@ export const ProjectImageSlices: React.FC<ProjectImageSlicesProps> = ({
       <div className="absolute bottom-0 right-0 w-3.5 h-3.5 border-b-2 border-r-2 border-[#E31B23] z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
       {/* Main Solid Showcase Image */}
-      <div className="relative w-full h-full overflow-hidden">
+      <div className="relative w-full h-full overflow-hidden flex items-center justify-center p-1.5 sm:p-2.5">
         <Image
           src={src}
           alt={alt}
           fill
           priority={priority}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 60vw, 50vw"
-          className="object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+          className="object-contain object-center transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
         />
 
         {/* Subtle hover gradient vignette */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
       </div>
 
       {/* Floating Case Study Badge on Hover */}

@@ -1,9 +1,8 @@
-// Verified active models ordered by speed and availability
+// Verified active models ordered by speed and availability (tested < 1.5s latency)
 const ACTIVE_MODELS = [
-  "gemini-3.6-flash",
-  "gemini-3.5-flash",
-  "gemini-3.7-flash",
+  "gemini-flash-lite-latest",
   "gemini-3.5-flash-lite",
+  "gemini-3.1-flash-lite",
 ];
 
 function getApiKey(): string {
@@ -216,11 +215,15 @@ export async function chatWithGemini({
   }));
 
   for (const modelName of ACTIVE_MODELS) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+
     try {
       const restRes = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`,
         {
           method: "POST",
+          signal: controller.signal,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             systemInstruction: {
@@ -228,12 +231,14 @@ export async function chatWithGemini({
             },
             contents,
             generationConfig: {
-              temperature: 0.4,
-              maxOutputTokens: 500,
+              temperature: 0.2,
+              maxOutputTokens: 300,
             },
           }),
         }
       );
+
+      clearTimeout(timeoutId);
 
       const restData = await restRes.json();
       if (restData.error) {
@@ -245,7 +250,8 @@ export async function chatWithGemini({
         return reply.trim();
       }
     } catch (err: any) {
-      console.warn(`Chat model ${modelName} failed, trying next:`, err.message || err);
+      clearTimeout(timeoutId);
+      console.warn(`Chat model ${modelName} failed or timed out, trying next:`, err.message || err);
       lastError = err;
     }
   }

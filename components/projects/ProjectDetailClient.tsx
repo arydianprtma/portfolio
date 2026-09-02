@@ -8,7 +8,7 @@ import { GithubIcon } from "@/components/ui/Icons";
 import { Project } from "@/types";
 import { useLanguage } from "@/context/LanguageContext";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { ArticleContent } from "@/components/blog/ArticleContent";
+import { ArticleContent, formatInline } from "@/components/blog/ArticleContent";
 
 interface ProjectDetailClientProps {
   project: Project;
@@ -170,7 +170,7 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
                     FEATURE 0{idx + 1}
                   </div>
                   <p className="text-sm md:text-base text-[var(--muted)] leading-relaxed text-justify [text-align-last:left] break-words">
-                    {feature}
+                    {formatInline(feature)}
                   </p>
                 </div>
               ))}
@@ -228,7 +228,7 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
                     {/* Problem Statement */}
                     <div>
                       <p className="text-sm md:text-base text-[var(--foreground)] font-medium leading-relaxed">
-                        {problem}
+                        {formatInline(problem)}
                       </p>
                     </div>
 
@@ -240,7 +240,7 @@ export const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ projec
                           <span>{language === "id" ? "SOLUSI IMPLEMENTASI" : "TECHNICAL SOLUTION"}</span>
                         </div>
                         <p className="text-xs md:text-sm text-[var(--muted)] leading-relaxed whitespace-pre-line">
-                          {solution}
+                          {formatInline(solution)}
                         </p>
                       </div>
                     )}

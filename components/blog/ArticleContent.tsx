@@ -7,11 +7,11 @@ interface ArticleContentProps {
   content: string;
 }
 
-// Robust inline formatter for bold, italic, inline code, and links
-function formatInline(text: string): React.ReactNode[] {
+// Robust inline formatter for bold, inline code, and links
+export function formatInline(text: string): React.ReactNode[] {
   if (!text) return [];
 
-  // Match: inline code `...`, bold **...**, italic *...*, markdown link [...](...)
+  // Match: inline code `...`, bold **...**, bold *...*, markdown link [...](...)
   const tokenRegex = /(`[^`]+`|\*\*[^*]+?\*\*|\*[^*]+?\*|\[[^\]]+\]\([^)]+\))/g;
   const parts = text.split(tokenRegex);
 
@@ -30,21 +30,16 @@ function formatInline(text: string): React.ReactNode[] {
       );
     }
 
-    // 2. Bold Text (**...**) -> Clean neutral text, NOT red!
-    if (part.startsWith("**") && part.endsWith("**") && part.length >= 4) {
+    // 2. Bold Text (**...** or *...*) -> Clean bright bold text
+    if (
+      (part.startsWith("**") && part.endsWith("**") && part.length >= 4) ||
+      (part.startsWith("*") && part.endsWith("*") && part.length >= 2)
+    ) {
+      const inner = part.startsWith("**") ? part.slice(2, -2) : part.slice(1, -1);
       return (
-        <strong key={index} className="font-semibold text-[var(--foreground)]">
-          {part.slice(2, -2)}
+        <strong key={index} className="font-bold text-[var(--foreground)]">
+          {inner}
         </strong>
-      );
-    }
-
-    // 3. Italic Text (*...*)
-    if (part.startsWith("*") && part.endsWith("*") && part.length >= 2) {
-      return (
-        <em key={index} className="italic text-[var(--foreground)]/90">
-          {part.slice(1, -1)}
-        </em>
       );
     }
 

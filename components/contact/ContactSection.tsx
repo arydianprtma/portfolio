@@ -34,6 +34,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
     subject: "",
     budget: "",
     message: "",
+    _hp_website: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -78,6 +79,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
         subject: "",
         budget: "",
         message: "",
+        _hp_website: "",
       });
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
@@ -138,6 +140,18 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Anti-spam Honeypot Trap (Hidden from human users) */}
+              <div className="hidden opacity-0 pointer-events-none absolute -left-[9999px]" aria-hidden="true">
+                <input
+                  type="text"
+                  name="_hp_website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={formData._hp_website}
+                  onChange={(e) => setFormData({ ...formData, _hp_website: e.target.value })}
+                />
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-[var(--foreground)] uppercase tracking-wider block text-[11px] font-medium">

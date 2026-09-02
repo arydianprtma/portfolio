@@ -28,29 +28,32 @@ export async function POST(request: Request) {
     }
 
     // 1. Generate an optimized visual prompt using Gemini
-    let visualPrompt = `futuristic dark tech illustration for ${title}, modern developer workspace, code, cyber neon red accents, 8k wallpaper`;
+    let visualPrompt = `high-end minimalist 3D render tech banner for ${title}, sleek modern developer workspace, glowing glass icon, dark obsidian background, soft studio lighting, octane render, ultra clean, 8k, no people, no faces, no masks`;
 
     try {
       const apiKey = getApiKey();
       const ai = new GoogleGenerativeAI(apiKey);
       const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-      const promptText = `You are an art director creating a high-end, futuristic tech cover image banner for a developer blog article.
+      const promptText = `You are a world-class art director at Stripe or Vercel creating a clean, professional, high-end article cover banner.
 Article Title: "${title}"
 Summary: "${summary || ""}"
 Tags: ${tags.join(", ")}
+Requested Style: "${body.style || "minimal_3d"}"
 
-Write a concise, descriptive English image prompt (1-2 sentences) for an AI image generator. Focus on:
-- Conceptual 3D tech illustration, digital geometry, code abstractions, or modern software development aesthetic.
-- Color palette: Dark mode background, sleek carbon grey, subtle neon red (#E31B23) and cyan accents.
-- Style: Minimalist, cinematic lighting, 4K rendering, no distorted text or messy watermarks.
+Rules for the image prompt:
+- FOCUS: Beautiful modern software engineering visuals, minimalist 3D glass geometry, clean code on a borderless modern display, sleek dark studio aesthetic, or iconic tech symbols (e.g. glowing cube for Laravel/frameworks, data nodes for databases, clean terminal for CLI).
+- PALETTE: Elegant dark matte theme (charcoal/obsidian #111111) with tasteful neon red (#E31B23) or cyan/purple subtle glowing highlights.
+- STRICTLY FORBIDDEN: NO humans, NO faces, NO creepy hooded hackers, NO masks, NO anime characters, NO messy watermarks, NO blurry text.
+- STYLE: Minimalist 3D Octane render, raytracing, soft studio depth of field, Apple/Stripe keynote aesthetic, ultra-clean 4K wallpaper.
 
+Write a single concise English image prompt (under 35 words).
 Return ONLY the raw prompt text, nothing else.`;
 
       const result = await model.generateContent(promptText);
       const text = result.response.text().trim();
       if (text) {
-        visualPrompt = text;
+        visualPrompt = `${text}, clean aesthetic, soft studio lighting, 8k resolution, no humans, no masks, no faces`;
       }
     } catch (aiErr) {
       console.warn("Gemini prompt enhancement skipped, using fallback prompt:", aiErr);

@@ -60,8 +60,10 @@ export const PostForm: React.FC<PostFormProps> = ({
   const [success, setSuccess] = useState(false);
   const [translateSuccess, setTranslateSuccess] = useState<string | null>(null);
 
+  const [coverStyle, setCoverStyle] = useState("minimal_3d");
+
   // AI Cover Image Generator
-  const handleGenerateCover = async () => {
+  const handleGenerateCover = async (selectedStyle = coverStyle) => {
     const articleTitle = formData.title?.trim() || formData.titleId?.trim();
     if (!articleTitle) {
       setError("Please enter an article title first so the AI can design a matching cover image");
@@ -79,6 +81,7 @@ export const PostForm: React.FC<PostFormProps> = ({
           title: articleTitle,
           summary: formData.summary || formData.summaryId,
           tags: formData.tags || [],
+          style: selectedStyle,
         }),
       });
 
@@ -433,24 +436,35 @@ export const PostForm: React.FC<PostFormProps> = ({
 
               {/* Cover Image Uploader */}
               <div className="space-y-2 pt-2">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <label className="text-[#A0A0A0] uppercase tracking-wider block font-medium">
                     Cover Image (Optional)
                   </label>
-                  <button
-                    type="button"
-                    onClick={handleGenerateCover}
-                    disabled={generatingCover}
-                    className="inline-flex items-center gap-1.5 bg-[#181818] hover:bg-[#222222] text-[#E31B23] hover:text-white border border-[#E31B23]/40 hover:border-[#E31B23] px-3 py-1 text-[10px] font-bold uppercase tracking-wider transition-all disabled:opacity-50"
-                    title="Generate custom AI illustration based on article title & summary"
-                  >
-                    {generatingCover ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : (
-                      <Sparkles className="w-3.5 h-3.5" />
-                    )}
-                    <span>{generatingCover ? "Creating Image..." : "✨ AI Create Cover"}</span>
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    <select
+                      value={coverStyle}
+                      onChange={(e) => setCoverStyle(e.target.value)}
+                      className="bg-[#181818] border border-[#2B2B2B] text-[#A0A0A0] hover:text-white px-2 py-1 text-[10px] font-mono outline-none cursor-pointer"
+                    >
+                      <option value="minimal_3d">💎 Minimalist 3D (Stripe / Vercel Style)</option>
+                      <option value="workspace">💻 Modern Code & Workspace Setup</option>
+                      <option value="abstract_nodes">⚡ Abstract Tech Nodes & Laser Grid</option>
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => handleGenerateCover(coverStyle)}
+                      disabled={generatingCover}
+                      className="inline-flex items-center gap-1.5 bg-[#181818] hover:bg-[#222222] text-[#E31B23] hover:text-white border border-[#E31B23]/40 hover:border-[#E31B23] px-3 py-1 text-[10px] font-bold uppercase tracking-wider transition-all disabled:opacity-50"
+                      title="Generate professional tech cover image with AI"
+                    >
+                      {generatingCover ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Sparkles className="w-3.5 h-3.5" />
+                      )}
+                      <span>{generatingCover ? "Generating..." : "✨ AI Create Cover"}</span>
+                    </button>
+                  </div>
                 </div>
                 <MediaUploader
                   label="Upload Article Cover Image"

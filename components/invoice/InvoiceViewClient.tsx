@@ -12,10 +12,6 @@ import {
   Clock,
   Mail,
   Phone,
-  Building,
-  FileText,
-  CreditCard,
-  ShieldCheck,
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 
@@ -83,22 +79,27 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
 
   return (
     <>
-      {/* Strict CSS Rules for 1-Page A4 Precision & PDF Export */}
+      {/* Strict CSS Rules to make entire PDF 100% pure white edge-to-edge */}
       <style dangerouslySetInnerHTML={{
         __html: `
           @media print {
             @page {
               size: A4 portrait;
-              margin: 16mm 18mm 16mm 18mm;
+              margin: 0 !important;
             }
-            html, body {
-              background: #ffffff !important;
-              color: #111827 !important;
-              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-              font-size: 11px !important;
-              line-height: 1.45 !important;
+            *, *::before, *::after {
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
+            }
+            html, body, #__next, main, .invoice-root-container {
+              background: #ffffff !important;
+              background-color: #ffffff !important;
+              color: #111827 !important;
+              margin: 0 !important;
+              padding: 0 !important;
+              width: 100% !important;
+              min-height: 100% !important;
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
             }
             .no-print, .no-print *, #theme-toggle-btn, [data-cursor], .fixed, [class*="fixed"] {
               display: none !important;
@@ -113,17 +114,12 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
               border: none !important;
               box-shadow: none !important;
               background: #ffffff !important;
-              padding: 0 !important;
-              margin: 0 !important;
+              background-color: #ffffff !important;
+              padding: 16mm 18mm !important;
+              margin: 0 auto !important;
               width: 100% !important;
-              max-width: 100% !important;
-              min-height: auto !important;
-            }
-            .print-border {
-              border-color: #E5E7EB !important;
-            }
-            .print-bg-light {
-              background-color: #F9FAFB !important;
+              max-width: 210mm !important;
+              box-sizing: border-box !important;
             }
             .print-table th {
               background-color: #F3F4F6 !important;
@@ -141,7 +137,7 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
         `
       }} />
 
-      <div className="min-h-screen bg-[#070707] text-[#F5F5F5] selection:bg-[#E31B23] selection:text-white py-8 md:py-14 px-4 sm:px-6 print:p-0 print:bg-white print:text-black">
+      <div className="invoice-root-container min-h-screen bg-[#070707] text-[#F5F5F5] selection:bg-[#E31B23] selection:text-white py-8 md:py-14 px-4 sm:px-6 print:p-0 print:m-0 print:bg-white print:text-black">
         {/* Top Floating Control Bar (Hidden on Print) */}
         <div className="max-w-4xl mx-auto mb-6 flex flex-wrap items-center justify-between gap-4 no-print">
           <Link
@@ -187,7 +183,7 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
           {/* Top Decorative Border Strip (Web Only) */}
           <div className="h-1.5 bg-gradient-to-r from-[#E31B23] via-red-600 to-[#E31B23] no-print" />
 
-          <div className="p-8 sm:p-12 md:p-14 space-y-8 print:p-2 print:space-y-6">
+          <div className="p-8 sm:p-12 md:p-14 space-y-8 print:p-0 print:space-y-6">
             {/* Header: Brand Identity & Invoice Title */}
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 pb-6 border-b border-[#222222] print:border-gray-200">
               {/* Left Brand Identity */}
@@ -216,13 +212,13 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
                 <div>
                   {isPaid && (
                     <span className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-950/60 border border-emerald-600 text-emerald-400 print:bg-emerald-50 print:border-emerald-600 print:text-emerald-700 text-xs font-bold uppercase tracking-widest">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <CheckCircle2 className="w-3 h-3" />
                       PAID / LUNAS
                     </span>
                   )}
                   {isPending && (
                     <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-950/60 border border-amber-600 text-amber-400 print:bg-amber-50 print:border-amber-600 print:text-amber-700 text-xs font-bold uppercase tracking-widest">
-                      <Clock className="w-3.5 h-3.5" />
+                      <Clock className="w-3 h-3" />
                       PENDING PAYMENT
                     </span>
                   )}

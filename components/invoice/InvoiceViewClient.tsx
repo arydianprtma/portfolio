@@ -89,21 +89,23 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
           @media print {
             @page {
               size: A4 portrait;
-              margin: 10mm 12mm;
+              margin: 16mm 18mm 16mm 18mm;
             }
             html, body {
               background: #ffffff !important;
               color: #111827 !important;
               font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
               font-size: 11px !important;
-              line-height: 1.4 !important;
+              line-height: 1.45 !important;
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
             }
-            .no-print, .no-print * {
+            .no-print, .no-print *, #theme-toggle-btn, [data-cursor], .fixed, [class*="fixed"] {
               display: none !important;
               visibility: hidden !important;
+              opacity: 0 !important;
               height: 0 !important;
+              width: 0 !important;
               margin: 0 !important;
               padding: 0 !important;
             }
@@ -112,6 +114,7 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
               box-shadow: none !important;
               background: #ffffff !important;
               padding: 0 !important;
+              margin: 0 !important;
               width: 100% !important;
               max-width: 100% !important;
               min-height: auto !important;

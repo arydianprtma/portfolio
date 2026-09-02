@@ -19,7 +19,7 @@ export const ThemeToggle: React.FC = () => {
   const isDark = theme === "dark";
 
   return (
-    <div className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-40 select-none">
+    <div className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-40 select-none no-print print:hidden">
       <button
         id="theme-toggle-btn"
         type="button"

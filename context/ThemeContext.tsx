@@ -54,18 +54,15 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       "startViewTransition" in document &&
       !window.matchMedia("(prefers-reduced-motion: reduce)").matches
     ) {
-      let x = window.innerWidth - 48;
-      let y = window.innerHeight - 48;
+      let x = window.innerWidth - 44;
+      let y = window.innerHeight - 44;
 
+      // Prioritize live DOM rect of the actual theme toggle button
       const toggleBtn = document.getElementById("theme-toggle-btn");
       if (toggleBtn) {
         const rect = toggleBtn.getBoundingClientRect();
-        x = rect.left + rect.width / 2;
-        y = rect.top + rect.height / 2;
-      } else if (event?.currentTarget) {
-        const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-        x = rect.left + rect.width / 2;
-        y = rect.top + rect.height / 2;
+        x = Math.round(rect.left + rect.width / 2);
+        y = Math.round(rect.top + rect.height / 2);
       } else if (
         event &&
         typeof event.clientX === "number" &&
@@ -73,8 +70,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         typeof event.clientY === "number" &&
         event.clientY > 0
       ) {
-        x = event.clientX;
-        y = event.clientY;
+        x = Math.round(event.clientX);
+        y = Math.round(event.clientY);
       }
 
       const endRadius = Math.hypot(

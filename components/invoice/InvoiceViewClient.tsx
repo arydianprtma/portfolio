@@ -179,7 +179,7 @@ export const InvoiceViewClient: React.FC<InvoiceViewClientProps> = ({ invoice })
         </div>
 
         {/* Standard A4 Styled Document Container */}
-        <div className="a4-document max-w-4xl mx-auto bg-[var(--surface)] border border-[var(--border)] shadow-2xl relative overflow-hidden transition-colors duration-300 print:border-none print:shadow-none print:bg-white print:text-black">
+        <div className="a4-document max-w-4xl mx-auto bg-[var(--surface)] border border-[var(--border)] relative overflow-hidden transition-colors duration-300 print:border-none print:shadow-none print:bg-white print:text-black">
           {/* Top Decorative Border Strip (Web Only) */}
           <div className="h-1.5 bg-gradient-to-r from-[#E31B23] via-red-600 to-[#E31B23] no-print" />
 

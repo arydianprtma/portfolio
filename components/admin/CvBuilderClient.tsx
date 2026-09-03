@@ -1292,7 +1292,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
           </div>
 
           {/* Paper Container */}
-          <div className="bg-[#0A0A0A] border border-[#222222] p-4 sm:p-8 overflow-auto flex justify-center max-h-[850px] shadow-inner print:p-0 print:m-0 print:border-none print:bg-transparent print:max-h-none print:overflow-visible">
+          <div className="bg-[#0A0A0A] border border-[#222222] p-4 sm:p-8 overflow-auto flex justify-center max-h-[850px] print:p-0 print:m-0 print:border-none print:bg-transparent print:max-h-none print:overflow-visible">
             <CvDocument cv={cv} scale={previewZoom} />
           </div>
         </div>

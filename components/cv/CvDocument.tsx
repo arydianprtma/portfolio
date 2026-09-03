@@ -81,7 +81,7 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
           transform: scale !== 1 ? `scale(${scale})` : undefined,
           transformOrigin: "top left",
         }}
-        className="cv-a4-page bg-white text-[#111827] shadow-2xl mx-auto font-sans relative overflow-hidden"
+        className="cv-a4-page bg-white text-[#111827] mx-auto font-sans relative overflow-hidden"
       >
         {/* Strict Print Stylesheet: Isolates purely the A4 paper and hides all other page elements */}
         <style dangerouslySetInnerHTML={{

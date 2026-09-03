@@ -115,7 +115,7 @@ export const PublicCvClient: React.FC<PublicCvClientProps> = ({ initialCv }) => 
       </header>
 
       {/* Printable Document Sheet */}
-      <main className="max-w-4xl mx-auto flex justify-center shadow-2xl">
+      <main className="max-w-4xl mx-auto flex justify-center">
         <CvDocument cv={cv} />
       </main>
     </div>

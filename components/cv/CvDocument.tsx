@@ -512,6 +512,20 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                 </div>
               </section>
             )}
+
+            {/* Certifications (ATS) */}
+            {showCertificationsSection && (
+              <section className="space-y-0.5">
+                <h2 className="text-[11px] font-bold uppercase tracking-wider border-b border-[#9CA3AF] pb-0.5">
+                  {isId ? "SERTIFIKASI & LISENSI" : "CERTIFICATIONS"}
+                </h2>
+                <ul className="list-disc ml-5 space-y-0.5 pt-0.5 text-[10.5px] text-[#374151]">
+                  {displayCertifications!.map((c, i) => (
+                    <li key={i}>{c}</li>
+                  ))}
+                </ul>
+              </section>
+            )}
           </div>
         )}
 
@@ -522,7 +536,7 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
           <div className="grid grid-cols-12 text-[11px] leading-relaxed h-[297mm] max-h-[297mm] overflow-hidden -m-[14mm] -my-[14mm]">
             {/* Left Column (35% Width) - Full Height Sidebar */}
             <div className="col-span-4 bg-[#F3F4F6] p-5 space-y-3.5 border-r border-[#E5E7EB] h-[297mm] flex flex-col justify-between">
-              <div className="space-y-3.5">
+              <div className="space-y-3">
                 <div>
                   <h1 className="text-lg font-bold uppercase text-[#111827]">{cv.fullName}</h1>
                   <p className="text-[10.5px] font-semibold text-[#E31B23] uppercase mt-0.5">{displayJobTitle}</p>
@@ -566,6 +580,20 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                         </div>
                       );
                     })}
+                  </div>
+                )}
+
+                {/* Certifications (Executive Sidebar) */}
+                {showCertificationsSection && (
+                  <div className="space-y-1 pt-2 border-t border-[#D1D5DB]">
+                    <span className="text-[9.5px] font-bold uppercase tracking-wider text-[#111827] block">
+                      {isId ? "Sertifikasi" : "Certifications"}
+                    </span>
+                    <ul className="list-disc ml-3.5 space-y-0.5 text-[9.5px] text-[#4B5563]">
+                      {displayCertifications!.map((c, i) => (
+                        <li key={i} className="leading-tight">{c}</li>
+                      ))}
+                    </ul>
                   </div>
                 )}
               </div>

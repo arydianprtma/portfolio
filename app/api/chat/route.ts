@@ -1,6 +1,14 @@
 import { NextResponse } from "next/server";
 import { chatWithGemini, ChatMessage } from "@/lib/gemini";
-import { getProfile, getSkills, getProjects, getPosts, getCvData } from "@/lib/storage";
+import {
+  getProfile,
+  getSkills,
+  getProjects,
+  getPosts,
+  getCvData,
+  getProposalById,
+} from "@/lib/storage";
+import { Proposal } from "@/types";
 
 // In-memory sliding-window rate limiter (Max 15 queries per 10 minutes per IP)
 interface RateLimitRecord {
@@ -83,6 +91,58 @@ export async function POST(request: Request) {
       getCvData(),
     ]);
 
+    // Check if the user mentioned or referenced a specific Proposal (via CUID, proposal number, or URL)
+    let proposalContext = "";
+    let matchedProposal: Proposal | null = null;
+    const allUserText = messages.map((m) => m.content).join(" ");
+    const proposalUrlMatch = allUserText.match(/\/proposal\/([a-zA-Z0-9_-]+)/i);
+    const propNumberMatch = allUserText.match(/\b(PROP-\d{4}-\d+)\b/i);
+    const cuidMatch = allUserText.match(/\b(c[a-z0-9]{20,32})\b/i);
+
+    const targetProposalQuery =
+      proposalUrlMatch?.[1] || propNumberMatch?.[1] || cuidMatch?.[1] || null;
+
+    if (targetProposalQuery) {
+      matchedProposal = await getProposalById(targetProposalQuery);
+      if (matchedProposal) {
+        const prop = matchedProposal;
+        proposalContext = `
+SPECIFIC PROPOSAL REFERENCED BY CLIENT:
+- Proposal ID / Code Hash: ${prop.id}
+- Proposal Number: ${prop.proposalNumber}
+- Project Title: ${prop.title}
+- Client Name: ${prop.clientName} (${prop.clientCompany || "Individu / Perusahaan"})
+- Status: ${prop.status}
+- Date: ${new Date(prop.issueDate).toLocaleDateString("id-ID")} (Valid until: ${new Date(prop.validUntil).toLocaleDateString("id-ID")})
+- Direct Public Link: https://portfolio.ardp.my.id/proposal/${prop.id}
+- Executive Summary: ${prop.summary || "-"}
+- Scope of Work & Deliverable Modules:
+${(prop.deliverables || [])
+  .map(
+    (d, i) =>
+      `  * Modul ${i + 1} (${d.title}): ${d.description || ""} - Features: ${(d.features || []).join(", ")}`
+  )
+  .join("\n")}
+- Project Timeline / Milestones:
+${(prop.timeline || [])
+  .map((t) => `  * ${t.phase} (${t.duration}): ${t.activities}`)
+  .join("\n")}
+- Investment & Pricing:
+${(prop.items || [])
+  .map(
+    (it) =>
+      `  * ${it.description} (${it.quantity}x @ ${prop.currency} ${it.rate.toLocaleString()} = ${prop.currency} ${it.amount.toLocaleString()})`
+  )
+  .join("\n")}
+  * Subtotal: ${prop.currency} ${prop.subtotal.toLocaleString()}
+  * Total Investment: ${prop.currency} ${prop.total.toLocaleString()}
+- Payment Terms: ${prop.paymentTerms || "-"}
+- Guarantee & Terms: ${prop.terms || "-"}
+- INSTRUCTIONS: The user has provided or referenced the proposal code "${targetProposalQuery}". Greet the client politely, confirm that you have retrieved the official proposal for "${prop.title}" (${prop.proposalNumber}), and answer any questions about the scope, modules, timeline, investment cost, payment terms, or how to proceed!
+`;
+      }
+    }
+
     const projectsSummary = projects
       .slice(0, 8)
       .map(
@@ -123,7 +183,7 @@ export async function POST(request: Request) {
 You are embedded directly inside his personal developer portfolio website (portfolio.ardp.my.id).
 
 YOUR MISSION:
-Help visitors, recruiters, and prospective clients learn about Ary's background, engineering philosophy, tech stack, featured projects, services, provide his CV / Resume, and how to hire/contact him.
+Help visitors, recruiters, and prospective clients learn about Ary's background, engineering philosophy, tech stack, featured projects, services, provide his CV / Resume, explain project proposals, and how to hire/contact him.
 
 ABOUT ARY DIAN PRATAMA:
 - Name: ${profile.name || "Ary Dian Pratama"}
@@ -133,6 +193,8 @@ ABOUT ARY DIAN PRATAMA:
 - Availability: ${profile.status || "Available for select opportunities & contract work"}
 - Bio: ${(profile.bio || []).join(" ")}
 - Socials: GitHub (${profile.socials?.github || ""}), LinkedIn (${profile.socials?.linkedin || ""}), Instagram (${profile.socials?.instagram || ""})
+
+${proposalContext}
 
 CURRICULUM VITAE (CV / RESUME) ACCESS & DETAILS (CRITICAL):
 - Direct Official CV (PDF) Download Link: [Download Curriculum Vitae (PDF)](${resumePdfUrl})
@@ -179,7 +241,9 @@ STRICT SCOPE & GUARDRAIL RULES (MANDATORY):
       console.warn("Gemini AI API temporarily unavailable, using smart fallback reply:", aiErr);
       const lastUserMsg = (messages[messages.length - 1]?.content || "").toLowerCase();
 
-      if (
+      if (matchedProposal) {
+        reply = `Halo! Saya menemukan dokumen proposal resmi untuk proyek **"${matchedProposal.title}"** (${matchedProposal.proposalNumber}) yang ditujukan kepada **${matchedProposal.clientName}**.\n\n- **Total Investasi**: ${matchedProposal.currency} ${matchedProposal.total.toLocaleString()}\n- **Status**: ${matchedProposal.status}\n- **Tautan Proposal Resmi**: [Buka Dokumen Proposal](https://portfolio.ardp.my.id/proposal/${matchedProposal.id})\n\nAda bagian modul, jadwal pengerjaan, atau skema pembayaran yang ingin Anda diskusikan lebih lanjut?`;
+      } else if (
         lastUserMsg.includes("cv") ||
         lastUserMsg.includes("resume") ||
         lastUserMsg.includes("riwayat") ||

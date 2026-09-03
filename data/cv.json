@@ -1,6 +1,6 @@
 {
-  "template": "executive",
-  "language": "en",
+  "template": "ats",
+  "language": "id",
   "fullName": "ARY DIAN PRATAMA",
   "jobTitle": "WEB DEVELOPER",
   "email": "arydianprtma@gmail.com",
@@ -66,7 +66,7 @@
     {
       "id": "proj-1",
       "title": "Pondok Pesantren Riyadussalikin & SPMB Online Platform",
-      "role": "Lead Developer",
+      "role": "",
       "technologies": [
         "Laravel 11",
         "Vue.js 3",
@@ -74,7 +74,7 @@
         "Filament PHP v3"
       ],
       "link": "https://riyadussalikin.ponpes.id/",
-      "description": "Membangun sebuah website pondok digital beserta sistem penerimaan murid baru menggunakan teknologi terbaru seperti Laravel 11, TailwindCss, Api Key Whatsapp",
+      "description": "Merancang dan mendeploy platform digital pesantren modern berskala tinggi menggunakan Laravel 11, Vue.js 3, Inertia.js, dan Filament PHP v3, yang dilengkapi sistem Penerimaan Peserta Didik Baru (PPDB) otomatis dan integrasi WhatsApp API untuk notifikasi real-time, sehingga berhasil memangkas beban kerja administratif manual serta meningkatkan responsivitas sistem secara signifikan.",
       "highlights": [
         "Sistem SPMB Mandiri Online multi-tahap dengan pemotong foto interaktif dan unggah dokumen KK/Akta.",
         "E-Verifikasi Cepat & Sistem Kode QR Dinamis pada kartu peserta untuk presensi ujian instan."
@@ -92,7 +92,7 @@
         "Inertia.js"
       ],
       "link": "https://github.com/arydianprtma/sekolah-digital",
-      "description": "Designed and architected a modern, full-stack educational digital platform for High Schools (SMA). The system bridges complex administrat...",
+      "description": "Merancang dan membangun platform digital pendidikan skala menengah atas secara end-to-end menggunakan Laravel 11, Filament 3, dan Vue.js via Inertia.js untuk mengintegrasikan kompleksitas administrasi akademik, meningkatkan skalabilitas sistem, serta mengoptimalkan pengalaman pengguna secara optimal.",
       "highlights": [
         "Dynamic Public Academic Portal: High-performance public pages (News, Announcements, School Agenda, Gallery, Facilities, Achievements) fea...",
         "Automated Online PPDB (New Student Admission): Comprehensive online admission module supporting wave management, document uploads, regist..."
@@ -169,5 +169,5 @@
     "Full-Stack Web Development Certification",
     "Modern Next.js & React Architecture Specialist"
   ],
-  "updatedAt": "2026-09-03T06:52:49.968Z"
+  "updatedAt": "2026-09-03T06:55:33.650Z"
 }

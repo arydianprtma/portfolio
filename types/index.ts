@@ -92,6 +92,7 @@ export interface Profile {
     linkedin: string;
     twitter?: string;
     instagram?: string;
+    whatsapp?: string;
   };
 }
 

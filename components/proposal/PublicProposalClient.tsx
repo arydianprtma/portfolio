@@ -36,8 +36,14 @@ export const PublicProposalClient: React.FC<PublicProposalClientProps> = ({
     }
   };
 
-  const cleanPhone = (profile.socials as any)?.whatsapp || "62895325785000";
-  const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(
+  const rawPhone = profile.socials?.whatsapp || "62895325785000";
+  let digits = rawPhone.replace(/\D/g, "");
+  if (digits.startsWith("0")) {
+    digits = "62" + digits.slice(1);
+  } else if (!digits.startsWith("62") && digits.length > 0) {
+    digits = "62" + digits;
+  }
+  const whatsappUrl = `https://wa.me/${digits || "62895325785000"}?text=${encodeURIComponent(
     `Halo Ary, saya telah meninjau dokumen Proposal *${proposal.proposalNumber}* untuk proyek *${proposal.title}*. Saya ingin mendiskusikan langkah selanjutnya.`
   )}`;
 

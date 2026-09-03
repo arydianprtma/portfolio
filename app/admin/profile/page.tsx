@@ -513,7 +513,26 @@ export default function AdminProfilePage() {
               02. Social Channels
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <label className="text-[#A0A0A0] uppercase tracking-wider block flex items-center justify-between">
+                  <span>Nomor WhatsApp Resmi</span>
+                  <span className="text-emerald-400 text-[10px] font-bold">Proposal & Chat</span>
+                </label>
+                <input
+                  type="text"
+                  value={profile.socials.whatsapp || ""}
+                  onChange={(e) =>
+                    setProfile({
+                      ...profile,
+                      socials: { ...profile.socials, whatsapp: e.target.value },
+                    })
+                  }
+                  placeholder="Contoh: 0895325785000 / 62895325785000"
+                  className="w-full bg-[#141414] border border-[#262626] focus:border-emerald-500 px-3.5 py-2.5 text-[#F5F5F5] outline-none"
+                />
+              </div>
+
               <div className="space-y-2">
                 <label className="text-[#A0A0A0] uppercase tracking-wider block">GitHub URL</label>
                 <input

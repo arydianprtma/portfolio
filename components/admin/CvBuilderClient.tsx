@@ -1,26 +1,22 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { CvData, CvExperience, CvEducation, CvProjectItem } from "@/types";
 import { CvDocument } from "@/components/cv/CvDocument";
 import {
   Save,
-  Printer,
-  Sparkles,
-  Plus,
-  Trash2,
-  ExternalLink,
   CheckCircle2,
   AlertCircle,
   Loader2,
-  Globe,
-  FileText,
-  RotateCcw,
-  Check,
+  Sparkles,
+  Plus,
+  Trash2,
+  Printer,
   Eye,
-  Sliders,
-  Maximize2,
-  Minimize2,
+  ExternalLink,
+  Languages,
+  Layers,
+  ArrowRight,
 } from "lucide-react";
 
 interface CvBuilderClientProps {
@@ -29,24 +25,30 @@ interface CvBuilderClientProps {
 
 export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) => {
   const [cv, setCv] = useState<CvData>(initialCv);
-  const [activeTab, setActiveTab] = useState<"profile" | "experience" | "projects" | "skills" | "education">("profile");
+  const [activeTab, setActiveTab] = useState<
+    "profile" | "experience" | "projects" | "skills" | "education"
+  >("profile");
   const [saving, setSaving] = useState(false);
-  const [aiLoading, setAiLoading] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [setActiveSuccess, setSetActiveSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [aiLoading, setAiLoading] = useState<string | null>(null);
   const [previewZoom, setPreviewZoom] = useState<number>(0.85);
 
+  const isId = cv.language === "id";
+
+  // Handle Save
   const handleSave = async (setAsActive = false) => {
     setSaving(true);
-    setError(null);
     setSaveSuccess(false);
+    setSetActiveSuccess(false);
+    setError(null);
 
     try {
       const res = await fetch("/api/admin/cv", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cv, setAsActiveResume: setAsActive }),
+        body: JSON.stringify({ cv, setAsActive }),
       });
 
       const data = await res.json();
@@ -55,18 +57,19 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
       setCv(data.cv);
       if (setAsActive) {
         setSetActiveSuccess(true);
-        setTimeout(() => setSetActiveSuccess(false), 3000);
+        setTimeout(() => setSetActiveSuccess(false), 4000);
       } else {
         setSaveSuccess(true);
         setTimeout(() => setSaveSuccess(false), 3000);
       }
     } catch (err: any) {
-      setError(err.message || "Failed to save CV");
+      setError(err.message || "An error occurred");
     } finally {
       setSaving(false);
     }
   };
 
+  // Handle AI Polish per Section
   const handleAiPolish = async (
     type: "summary" | "experience_highlight" | "project_highlight" | "project_description",
     currentText: string,
@@ -85,7 +88,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
         body: JSON.stringify({
           type,
           currentText,
-          roleContext: extraContext?.role || cv.jobTitle,
+          roleContext: extraContext?.role || (isId ? cv.jobTitleId || cv.jobTitle : cv.jobTitle),
           technologiesContext: extraContext?.technologies,
           language: cv.language,
         }),
@@ -102,6 +105,98 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
     }
   };
 
+  // Handle Full AI Translation EN <-> ID
+  const handleAutoTranslateFullCv = async () => {
+    const targetLang = cv.language === "en" ? "id" : "en";
+    setAiLoading("translate_full");
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/ai/cv", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "translate_full",
+          cv,
+          targetLang,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Full translation failed");
+
+      const t = data.translated;
+      if (t) {
+        if (targetLang === "id") {
+          setCv({
+            ...cv,
+            language: "id",
+            jobTitleId: t.jobTitle || cv.jobTitleId || cv.jobTitle,
+            summaryId: t.summary || cv.summaryId || cv.summary,
+            experiences: cv.experiences.map((exp) => {
+              const matched = (t.experiences || []).find((e: any) => e.id === exp.id);
+              return {
+                ...exp,
+                roleId: matched?.role || exp.roleId || exp.role,
+                highlightsId: matched?.highlights || exp.highlightsId || exp.highlights,
+              };
+            }),
+            projects: cv.projects.map((proj) => {
+              const matched = (t.projects || []).find((p: any) => p.id === proj.id);
+              return {
+                ...proj,
+                roleId: matched?.role || proj.roleId || proj.role,
+                descriptionId: matched?.description || proj.descriptionId || proj.description,
+              };
+            }),
+            education: cv.education.map((edu) => {
+              const matched = (t.education || []).find((e: any) => e.id === edu.id);
+              return {
+                ...edu,
+                degreeId: matched?.degree || edu.degreeId || edu.degree,
+                detailsId: matched?.details || edu.detailsId || edu.details,
+              };
+            }),
+          });
+        } else {
+          setCv({
+            ...cv,
+            language: "en",
+            jobTitle: t.jobTitle || cv.jobTitle,
+            summary: t.summary || cv.summary,
+            experiences: cv.experiences.map((exp) => {
+              const matched = (t.experiences || []).find((e: any) => e.id === exp.id);
+              return {
+                ...exp,
+                role: matched?.role || exp.role,
+                highlights: matched?.highlights || exp.highlights,
+              };
+            }),
+            projects: cv.projects.map((proj) => {
+              const matched = (t.projects || []).find((p: any) => p.id === proj.id);
+              return {
+                ...proj,
+                role: matched?.role || proj.role,
+                description: matched?.description || proj.description,
+              };
+            }),
+            education: cv.education.map((edu) => {
+              const matched = (t.education || []).find((e: any) => e.id === edu.id);
+              return {
+                ...edu,
+                degree: matched?.degree || edu.degree,
+                details: matched?.details || edu.details,
+              };
+            }),
+          });
+        }
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to auto-translate CV with AI");
+    } finally {
+      setAiLoading(null);
+    }
+  };
+
   const handlePrintPdf = () => {
     window.print();
   };
@@ -111,13 +206,18 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
     const newExp: CvExperience = {
       id: `exp-${Date.now()}`,
       role: "Software Engineer",
+      roleId: "Software Engineer",
       company: "Company / Client",
       location: "Remote",
+      locationId: "Remote",
       startDate: "2024",
       endDate: "Present",
       current: true,
       highlights: [
         "Engineered scalable web systems using modern framework and optimized data queries.",
+      ],
+      highlightsId: [
+        "Merekayasa sistem web terdistribusi dengan performa tinggi dan kueri data optimal.",
       ],
     };
     setCv({ ...cv, experiences: [newExp, ...cv.experiences] });
@@ -128,10 +228,12 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
     const newEdu: CvEducation = {
       id: `edu-${Date.now()}`,
       degree: "Bachelor of Computer Science",
-      institution: "University Name",
-      location: "City, Indonesia",
-      year: "2020 - 2024",
+      degreeId: "S1 Informatika",
+      institution: "Universitas Amikom Purwokerto",
+      location: "Purwokerto, Indonesia",
+      year: "2022 - 2026",
       details: "Software Engineering & Web Architecture.",
+      detailsId: "Rekayasa Perangkat Lunak & Arsitektur Web.",
     };
     setCv({ ...cv, education: [...cv.education, newEdu] });
   };
@@ -143,10 +245,10 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
         <div>
           <div className="flex items-center gap-2 text-[#E31B23] text-xs font-semibold uppercase tracking-widest mb-1">
             <span>●</span>
-            <span>INTELLIGENT RESUME ENGINE</span>
+            <span>INTELLIGENT DUAL-LANGUAGE RESUME ENGINE</span>
           </div>
           <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold uppercase tracking-tight text-[#F5F5F5]">
-            AI CV / RESUME BUILDER
+            AI CV & RESUME BUILDER
           </h1>
         </div>
 
@@ -176,7 +278,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
             onClick={() => handleSave(true)}
             disabled={saving}
             className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2.5 uppercase tracking-wider font-semibold transition-colors shadow-sm disabled:opacity-50"
-            title="Set as the active CV downloaded from your portfolio landing page"
+            title="Set this CV as the active resume for your portfolio's public download button"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
             <span>Set as Public CV</span>
@@ -221,9 +323,9 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
         {/* ========================================================================= */}
         {/* LEFT COLUMN: CUSTOMIZER & EDITORS (5 COLS)                                 */}
         {/* ========================================================================= */}
-        <div className="xl:col-span-5 space-y-6">
-          {/* Template & Language Bar */}
-          <div className="bg-[#101010] border border-[#1F1F1F] p-4 space-y-3">
+        <div className="xl:col-span-5 space-y-5">
+          {/* Template Layout & Language Bar */}
+          <div className="bg-[#101010] border border-[#1F1F1F] p-4 space-y-3.5">
             <div className="flex items-center justify-between">
               <span className="text-[#777777] uppercase tracking-wider text-[11px] font-semibold">
                 Template Layout
@@ -246,35 +348,68 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-2 border-t border-[#1C1C1C]">
-              <span className="text-[#777777] uppercase tracking-wider text-[11px] font-semibold">
-                Target Language
-              </span>
-              <div className="flex gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => setCv({ ...cv, language: "en" })}
-                  className={`px-3 py-1 text-[11px] uppercase tracking-wider font-bold transition-colors ${
-                    cv.language === "en"
-                      ? "bg-[#252525] text-white border border-[#444444]"
-                      : "bg-[#141414] text-[#666666] hover:text-white"
-                  }`}
-                >
-                  English (EN)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCv({ ...cv, language: "id" })}
-                  className={`px-3 py-1 text-[11px] uppercase tracking-wider font-bold transition-colors ${
-                    cv.language === "id"
-                      ? "bg-[#252525] text-white border border-[#444444]"
-                      : "bg-[#141414] text-[#666666] hover:text-white"
-                  }`}
-                >
-                  Bahasa (ID)
-                </button>
+            {/* Language Switcher + AI Auto Translate */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-3 border-t border-[#1C1C1C]">
+              <div className="flex items-center gap-2">
+                <Languages className="w-3.5 h-3.5 text-[#E31B23]" />
+                <span className="text-[#A0A0A0] uppercase tracking-wider text-[11px] font-semibold">
+                  Bahasa CV:
+                </span>
+                <div className="flex gap-1 bg-[#0A0A0A] p-0.5 border border-[#252525] rounded">
+                  <button
+                    type="button"
+                    onClick={() => setCv({ ...cv, language: "en" })}
+                    className={`px-2.5 py-1 text-[10px] uppercase font-bold transition-colors ${
+                      cv.language === "en"
+                        ? "bg-[#E31B23] text-white"
+                        : "text-[#777777] hover:text-white"
+                    }`}
+                  >
+                    🇺🇸 English (EN)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCv({ ...cv, language: "id" })}
+                    className={`px-2.5 py-1 text-[10px] uppercase font-bold transition-colors ${
+                      cv.language === "id"
+                        ? "bg-[#E31B23] text-white"
+                        : "text-[#777777] hover:text-white"
+                    }`}
+                  >
+                    🇮🇩 Indonesia (ID)
+                  </button>
+                </div>
               </div>
+
+              {/* 1-Click AI Translation */}
+              <button
+                type="button"
+                disabled={aiLoading === "translate_full"}
+                onClick={handleAutoTranslateFullCv}
+                className="inline-flex items-center gap-1.5 bg-[#1C1C1C] hover:bg-[#282828] text-amber-400 hover:text-amber-300 border border-amber-900/60 px-3 py-1.5 text-[10px] uppercase font-bold tracking-wider transition-colors disabled:opacity-50"
+                title="Terjemahkan dan sinkronkan seluruh CV secara otomatis dengan AI"
+              >
+                {aiLoading === "translate_full" ? (
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                ) : (
+                  <Sparkles className="w-3 h-3 text-amber-400" />
+                )}
+                <span>✨ AI Auto-Translate {isId ? "EN ➔ ID" : "ID ➔ EN"}</span>
+              </button>
             </div>
+          </div>
+
+          {/* Active Language Mode Banner */}
+          <div className="flex items-center justify-between bg-[#151515] px-3.5 py-2 border border-[#242424] text-xs">
+            <div className="flex items-center gap-2">
+              <span className="text-[13px]">{isId ? "🇮🇩" : "🇺🇸"}</span>
+              <span className="font-bold text-[#F5F5F5] text-[11px]">
+                {isId ? "Sedang Mengedit Versi: Bahasa Indonesia (ID)" : "Editing Mode: English Version (EN)"}
+              </span>
+            </div>
+            <span className="text-[10px] text-[#888888]">
+              {isId ? "Preview & Form tersinkron ID" : "Preview & Form in English"}
+            </span>
           </div>
 
           {/* Section Navigation Tabs */}
@@ -314,15 +449,28 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                     className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2 text-[#F5F5F5] outline-none"
                   />
                 </div>
+
                 <div className="space-y-1.5">
-                  <label className="text-[#A0A0A0] uppercase tracking-wider text-[11px]">Job Title / Headline</label>
+                  <div className="flex justify-between">
+                    <label className="text-[#A0A0A0] uppercase tracking-wider text-[11px]">
+                      Job Title / Headline ({isId ? "ID" : "EN"})
+                    </label>
+                  </div>
                   <input
                     type="text"
-                    value={cv.jobTitle}
-                    onChange={(e) => setCv({ ...cv, jobTitle: e.target.value })}
+                    value={isId ? (cv.jobTitleId ?? cv.jobTitle) : cv.jobTitle}
+                    onChange={(e) => {
+                      if (isId) {
+                        setCv({ ...cv, jobTitleId: e.target.value });
+                      } else {
+                        setCv({ ...cv, jobTitle: e.target.value });
+                      }
+                    }}
+                    placeholder={isId ? "Pengembang Web Full Stack" : "Full Stack Developer"}
                     className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2 text-[#F5F5F5] outline-none"
                   />
                 </div>
+
                 <div className="space-y-1.5">
                   <label className="text-[#A0A0A0] uppercase tracking-wider text-[11px]">Email</label>
                   <input
@@ -332,6 +480,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                     className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2 text-[#F5F5F5] outline-none"
                   />
                 </div>
+
                 <div className="space-y-1.5">
                   <label className="text-[#A0A0A0] uppercase tracking-wider text-[11px]">Phone</label>
                   <input
@@ -341,15 +490,25 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                     className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2 text-[#F5F5F5] outline-none"
                   />
                 </div>
+
                 <div className="space-y-1.5">
-                  <label className="text-[#A0A0A0] uppercase tracking-wider text-[11px]">Location</label>
+                  <label className="text-[#A0A0A0] uppercase tracking-wider text-[11px]">
+                    Location ({isId ? "ID" : "EN"})
+                  </label>
                   <input
                     type="text"
-                    value={cv.location}
-                    onChange={(e) => setCv({ ...cv, location: e.target.value })}
+                    value={isId ? (cv.locationId ?? cv.location) : cv.location}
+                    onChange={(e) => {
+                      if (isId) {
+                        setCv({ ...cv, locationId: e.target.value });
+                      } else {
+                        setCv({ ...cv, location: e.target.value });
+                      }
+                    }}
                     className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2 text-[#F5F5F5] outline-none"
                   />
                 </div>
+
                 <div className="space-y-1.5">
                   <label className="text-[#A0A0A0] uppercase tracking-wider text-[11px]">Website</label>
                   <input
@@ -359,6 +518,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                     className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2 text-[#F5F5F5] outline-none"
                   />
                 </div>
+
                 <div className="space-y-1.5">
                   <label className="text-[#A0A0A0] uppercase tracking-wider text-[11px]">GitHub URL</label>
                   <input
@@ -368,6 +528,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                     className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3.5 py-2 text-[#F5F5F5] outline-none"
                   />
                 </div>
+
                 <div className="space-y-1.5">
                   <label className="text-[#A0A0A0] uppercase tracking-wider text-[11px]">LinkedIn URL</label>
                   <input
@@ -383,19 +544,26 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
               <div className="space-y-2 pt-2 border-t border-[#1F1F1F]">
                 <div className="flex items-center justify-between">
                   <label className="text-[#A0A0A0] uppercase tracking-wider text-[11px] font-semibold">
-                    Executive Summary / Bio
+                    Ringkasan Eksekutif / Bio ({isId ? "Bahasa Indonesia" : "English"})
                   </label>
                   <button
                     type="button"
                     disabled={aiLoading === "summary"}
-                    onClick={() =>
+                    onClick={() => {
+                      const textToPolish = isId ? (cv.summaryId || cv.summary) : cv.summary;
                       handleAiPolish(
                         "summary",
-                        cv.summary,
-                        (enhanced) => setCv({ ...cv, summary: enhanced }),
+                        textToPolish,
+                        (enhanced) => {
+                          if (isId) {
+                            setCv({ ...cv, summaryId: enhanced });
+                          } else {
+                            setCv({ ...cv, summary: enhanced });
+                          }
+                        },
                         "summary"
-                      )
-                    }
+                      );
+                    }}
                     className="inline-flex items-center gap-1.5 text-[10px] text-[#E31B23] hover:text-red-400 font-bold uppercase transition-colors disabled:opacity-50"
                   >
                     {aiLoading === "summary" ? (
@@ -408,13 +576,21 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                 </div>
                 <textarea
                   rows={4}
-                  value={cv.summary}
-                  onChange={(e) => setCv({ ...cv, summary: e.target.value })}
+                  value={isId ? (cv.summaryId ?? cv.summary) : cv.summary}
+                  onChange={(e) => {
+                    if (isId) {
+                      setCv({ ...cv, summaryId: e.target.value });
+                    } else {
+                      setCv({ ...cv, summary: e.target.value });
+                    }
+                  }}
                   className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] p-3 text-[#F5F5F5] outline-none text-xs leading-relaxed"
                 />
               </div>
             </div>
-          )}          {/* TAB 2: EXPERIENCE */}
+          )}
+
+          {/* TAB 2: EXPERIENCE */}
           {activeTab === "experience" && (
             <div className="space-y-4">
               <div className="flex justify-between items-center bg-[#101010] p-3 border border-[#1F1F1F]">
@@ -431,161 +607,204 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                 </button>
               </div>
 
-              {cv.experiences.map((exp, expIdx) => (
-                <div key={exp.id} className="bg-[#101010] border border-[#1F1F1F] p-4 space-y-3">
-                  <div className="flex items-center justify-between pb-2 border-b border-[#1C1C1C]">
-                    <div className="flex items-center gap-3">
-                      <span className="text-[#E31B23] font-bold text-xs">Role #{expIdx + 1}</span>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const updated = [...cv.experiences];
-                          updated[expIdx].enabled = updated[expIdx].enabled === false ? true : false;
-                          setCv({ ...cv, experiences: updated });
-                        }}
-                        className={`px-2.5 py-0.5 text-[10px] font-bold uppercase transition-colors border ${
-                          exp.enabled !== false
-                            ? "bg-emerald-950/80 text-emerald-400 border-emerald-800"
-                            : "bg-[#181818] text-[#666666] border-[#2B2B2B]"
-                        }`}
-                      >
-                        {exp.enabled !== false ? "● ON (Tampil)" : "○ OFF (Disembunyikan)"}
-                      </button>
-                    </div>
+              {cv.experiences.map((exp, expIdx) => {
+                const currentRole = isId ? (exp.roleId ?? exp.role) : exp.role;
+                const currentHighlights = isId
+                  ? (exp.highlightsId && exp.highlightsId.length > 0 ? exp.highlightsId : exp.highlights)
+                  : exp.highlights;
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setCv({
-                          ...cv,
-                          experiences: cv.experiences.filter((_, i) => i !== expIdx),
-                        })
-                      }
-                      className="text-[#777777] hover:text-red-400 p-1 transition-colors"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input
-                      type="text"
-                      placeholder="Job Title / Role"
-                      value={exp.role}
-                      onChange={(e) => {
-                        const updated = [...cv.experiences];
-                        updated[expIdx].role = e.target.value;
-                        setCv({ ...cv, experiences: updated });
-                      }}
-                      className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Company Name"
-                      value={exp.company}
-                      onChange={(e) => {
-                        const updated = [...cv.experiences];
-                        updated[expIdx].company = e.target.value;
-                        setCv({ ...cv, experiences: updated });
-                      }}
-                      className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Start Year (e.g. 2023)"
-                      value={exp.startDate}
-                      onChange={(e) => {
-                        const updated = [...cv.experiences];
-                        updated[expIdx].startDate = e.target.value;
-                        setCv({ ...cv, experiences: updated });
-                      }}
-                      className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
-                    />
-                    <input
-                      type="text"
-                      placeholder="End Year (or Present)"
-                      value={exp.endDate}
-                      onChange={(e) => {
-                        const updated = [...cv.experiences];
-                        updated[expIdx].endDate = e.target.value;
-                        setCv({ ...cv, experiences: updated });
-                      }}
-                      className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
-                    />
-                  </div>
-
-                  {/* Highlights Bullet Points */}
-                  <div className="space-y-2 pt-2 border-t border-[#1C1C1C]">
-                    <span className="text-[10px] text-[#777777] uppercase tracking-wider block font-semibold">
-                      Key Highlights & Achievements
-                    </span>
-                    {exp.highlights.map((h, hIdx) => (
-                      <div key={hIdx} className="flex gap-2 items-center">
-                        <input
-                          type="text"
-                          value={h}
-                          onChange={(e) => {
-                            const updated = [...cv.experiences];
-                            updated[expIdx].highlights[hIdx] = e.target.value;
-                            setCv({ ...cv, experiences: updated });
-                          }}
-                          className="flex-1 bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none text-[11px]"
-                        />
-                        <button
-                          type="button"
-                          disabled={aiLoading === `exp-${expIdx}-${hIdx}`}
-                          onClick={() =>
-                            handleAiPolish(
-                              "experience_highlight",
-                              h,
-                              (enhanced) => {
-                                const updated = [...cv.experiences];
-                                updated[expIdx].highlights[hIdx] = enhanced;
-                                setCv({ ...cv, experiences: updated });
-                              },
-                              `exp-${expIdx}-${hIdx}`
-                            )
-                          }
-                          className="p-1.5 bg-[#181818] hover:bg-[#222222] text-[#E31B23] border border-[#2B2B2B]"
-                          title="AI Enhance bullet point"
-                        >
-                          {aiLoading === `exp-${expIdx}-${hIdx}` ? (
-                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          ) : (
-                            <Sparkles className="w-3.5 h-3.5" />
-                          )}
-                        </button>
+                return (
+                  <div key={exp.id} className="bg-[#101010] border border-[#1F1F1F] p-4 space-y-3">
+                    <div className="flex items-center justify-between pb-2 border-b border-[#1C1C1C]">
+                      <div className="flex items-center gap-3">
+                        <span className="text-[#E31B23] font-bold text-xs">Role #{expIdx + 1}</span>
                         <button
                           type="button"
                           onClick={() => {
                             const updated = [...cv.experiences];
-                            updated[expIdx].highlights = updated[expIdx].highlights.filter(
-                              (_, i) => i !== hIdx
-                            );
+                            updated[expIdx].enabled = updated[expIdx].enabled === false ? true : false;
                             setCv({ ...cv, experiences: updated });
                           }}
-                          className="p-1.5 text-[#666666] hover:text-red-400"
+                          className={`px-2.5 py-0.5 text-[10px] font-bold uppercase transition-colors border ${
+                            exp.enabled !== false
+                              ? "bg-emerald-950/80 text-emerald-400 border-emerald-800"
+                              : "bg-[#181818] text-[#666666] border-[#2B2B2B]"
+                          }`}
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          {exp.enabled !== false ? "● ON (Tampil)" : "○ OFF (Disembunyikan)"}
                         </button>
                       </div>
-                    ))}
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const updated = [...cv.experiences];
-                        updated[expIdx].highlights.push("Delivered high-impact technical solutions.");
-                        setCv({ ...cv, experiences: updated });
-                      }}
-                      className="text-[10px] text-[#A0A0A0] hover:text-white inline-flex items-center gap-1 font-bold pt-1"
-                    >
-                      <Plus className="w-3 h-3" />
-                      <span>Add Achievement Point</span>
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setCv({
+                            ...cv,
+                            experiences: cv.experiences.filter((_, i) => i !== expIdx),
+                          })
+                        }
+                        className="text-[#777777] hover:text-red-400 p-1 transition-colors"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <input
+                        type="text"
+                        placeholder={isId ? "Nama Jabatan / Posisi (ID)" : "Job Title / Role (EN)"}
+                        value={currentRole}
+                        onChange={(e) => {
+                          const updated = [...cv.experiences];
+                          if (isId) {
+                            updated[expIdx].roleId = e.target.value;
+                          } else {
+                            updated[expIdx].role = e.target.value;
+                          }
+                          setCv({ ...cv, experiences: updated });
+                        }}
+                        className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Company Name"
+                        value={exp.company}
+                        onChange={(e) => {
+                          const updated = [...cv.experiences];
+                          updated[expIdx].company = e.target.value;
+                          setCv({ ...cv, experiences: updated });
+                        }}
+                        className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Start Year (e.g. 2023)"
+                        value={exp.startDate}
+                        onChange={(e) => {
+                          const updated = [...cv.experiences];
+                          updated[expIdx].startDate = e.target.value;
+                          setCv({ ...cv, experiences: updated });
+                        }}
+                        className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
+                      />
+                      <input
+                        type="text"
+                        placeholder="End Year (or Present)"
+                        value={exp.endDate}
+                        onChange={(e) => {
+                          const updated = [...cv.experiences];
+                          updated[expIdx].endDate = e.target.value;
+                          setCv({ ...cv, experiences: updated });
+                        }}
+                        className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
+                      />
+                    </div>
+
+                    {/* Highlights Bullet Points */}
+                    <div className="space-y-2 pt-2 border-t border-[#1C1C1C]">
+                      <span className="text-[10px] text-[#777777] uppercase tracking-wider block font-semibold">
+                        Poin Pencapaian & Tanggung Jawab ({isId ? "ID" : "EN"})
+                      </span>
+                      {currentHighlights.map((h, hIdx) => (
+                        <div key={hIdx} className="flex gap-2 items-center">
+                          <input
+                            type="text"
+                            value={h}
+                            onChange={(e) => {
+                              const updated = [...cv.experiences];
+                              if (isId) {
+                                const list = [...(updated[expIdx].highlightsId || updated[expIdx].highlights)];
+                                list[hIdx] = e.target.value;
+                                updated[expIdx].highlightsId = list;
+                              } else {
+                                const list = [...updated[expIdx].highlights];
+                                list[hIdx] = e.target.value;
+                                updated[expIdx].highlights = list;
+                              }
+                              setCv({ ...cv, experiences: updated });
+                            }}
+                            className="flex-1 bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none text-[11px]"
+                          />
+                          <button
+                            type="button"
+                            disabled={aiLoading === `exp-${expIdx}-${hIdx}`}
+                            onClick={() =>
+                              handleAiPolish(
+                                "experience_highlight",
+                                h,
+                                (enhanced) => {
+                                  const updated = [...cv.experiences];
+                                  if (isId) {
+                                    const list = [...(updated[expIdx].highlightsId || updated[expIdx].highlights)];
+                                    list[hIdx] = enhanced;
+                                    updated[expIdx].highlightsId = list;
+                                  } else {
+                                    const list = [...updated[expIdx].highlights];
+                                    list[hIdx] = enhanced;
+                                    updated[expIdx].highlights = list;
+                                  }
+                                  setCv({ ...cv, experiences: updated });
+                                },
+                                `exp-${expIdx}-${hIdx}`,
+                                { role: currentRole }
+                              )
+                            }
+                            className="p-1.5 bg-[#181818] hover:bg-[#222222] text-[#E31B23] border border-[#2B2B2B]"
+                            title="AI Enhance bullet point"
+                          >
+                            {aiLoading === `exp-${expIdx}-${hIdx}` ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : (
+                              <Sparkles className="w-3.5 h-3.5" />
+                            )}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = [...cv.experiences];
+                              if (isId) {
+                                updated[expIdx].highlightsId = (updated[expIdx].highlightsId || updated[expIdx].highlights).filter(
+                                  (_, i) => i !== hIdx
+                                );
+                              } else {
+                                updated[expIdx].highlights = updated[expIdx].highlights.filter(
+                                  (_, i) => i !== hIdx
+                                );
+                              }
+                              setCv({ ...cv, experiences: updated });
+                            }}
+                            className="p-1.5 text-[#666666] hover:text-red-400"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = [...cv.experiences];
+                          const defaultPoint = isId
+                            ? "Memberikan kontribusi signifikan pada stabilitas dan performa arsitektur sistem."
+                            : "Delivered high-impact technical solutions and reliable system workflows.";
+                          if (isId) {
+                            const list = [...(updated[expIdx].highlightsId || updated[expIdx].highlights)];
+                            list.push(defaultPoint);
+                            updated[expIdx].highlightsId = list;
+                          } else {
+                            updated[expIdx].highlights.push(defaultPoint);
+                          }
+                          setCv({ ...cv, experiences: updated });
+                        }}
+                        className="text-[10px] text-[#A0A0A0] hover:text-white inline-flex items-center gap-1 font-bold pt-1"
+                      >
+                        <Plus className="w-3 h-3" />
+                        <span>Add Achievement Point</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
@@ -624,129 +843,146 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                 </button>
               </div>
 
-              {cv.projects.map((proj, pIdx) => (
-                <div key={proj.id} className="bg-[#101010] border border-[#1F1F1F] p-4 space-y-3">
-                  <div className="flex items-center justify-between pb-2 border-b border-[#1C1C1C]">
-                    <div className="flex items-center gap-3">
-                      <span className="text-[#E31B23] font-bold text-xs uppercase">{proj.title}</span>
+              {cv.projects.map((proj, pIdx) => {
+                const currentProjRole = isId ? (proj.roleId ?? proj.role) : proj.role;
+                const currentProjDesc = isId ? (proj.descriptionId ?? proj.description) : proj.description;
+
+                return (
+                  <div key={proj.id} className="bg-[#101010] border border-[#1F1F1F] p-4 space-y-3">
+                    <div className="flex items-center justify-between pb-2 border-b border-[#1C1C1C]">
+                      <div className="flex items-center gap-3">
+                        <span className="text-[#E31B23] font-bold text-xs uppercase">{proj.title}</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...cv.projects];
+                            updated[pIdx].enabled = updated[pIdx].enabled === false ? true : false;
+                            setCv({ ...cv, projects: updated });
+                          }}
+                          className={`px-2.5 py-0.5 text-[10px] font-bold uppercase transition-colors border ${
+                            proj.enabled !== false
+                              ? "bg-emerald-950/80 text-emerald-400 border-emerald-800"
+                              : "bg-[#181818] text-[#666666] border-[#2B2B2B]"
+                          }`}
+                        >
+                          {proj.enabled !== false ? "● ON (Tampil)" : "○ OFF (Disembunyikan)"}
+                        </button>
+                      </div>
+
                       <button
                         type="button"
-                        onClick={() => {
+                        onClick={() =>
+                          setCv({
+                            ...cv,
+                            projects: cv.projects.filter((_, i) => i !== pIdx),
+                          })
+                        }
+                        className="text-[#777777] hover:text-red-400 p-1 transition-colors"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <input
+                        type="text"
+                        placeholder="Project Name"
+                        value={proj.title}
+                        onChange={(e) => {
                           const updated = [...cv.projects];
-                          updated[pIdx].enabled = updated[pIdx].enabled === false ? true : false;
+                          updated[pIdx].title = e.target.value;
                           setCv({ ...cv, projects: updated });
                         }}
-                        className={`px-2.5 py-0.5 text-[10px] font-bold uppercase transition-colors border ${
-                          proj.enabled !== false
-                            ? "bg-emerald-950/80 text-emerald-400 border-emerald-800"
-                            : "bg-[#181818] text-[#666666] border-[#2B2B2B]"
-                        }`}
-                      >
-                        {proj.enabled !== false ? "● ON (Tampil)" : "○ OFF (Disembunyikan)"}
-                      </button>
+                        className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
+                      />
+                      <input
+                        type="text"
+                        placeholder={isId ? "Role dalam Proyek (ID)" : "Role in Project (EN)"}
+                        value={currentProjRole}
+                        onChange={(e) => {
+                          const updated = [...cv.projects];
+                          if (isId) {
+                            updated[pIdx].roleId = e.target.value;
+                          } else {
+                            updated[pIdx].role = e.target.value;
+                          }
+                          setCv({ ...cv, projects: updated });
+                        }}
+                        className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
+                      />
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setCv({
-                          ...cv,
-                          projects: cv.projects.filter((_, i) => i !== pIdx),
-                        })
-                      }
-                      className="text-[#777777] hover:text-red-400 p-1 transition-colors"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input
                       type="text"
-                      placeholder="Project Name"
-                      value={proj.title}
+                      placeholder="Technologies (comma separated)"
+                      value={proj.technologies.join(", ")}
                       onChange={(e) => {
                         const updated = [...cv.projects];
-                        updated[pIdx].title = e.target.value;
+                        updated[pIdx].technologies = e.target.value
+                          .split(",")
+                          .map((t) => t.trim())
+                          .filter(Boolean);
                         setCv({ ...cv, projects: updated });
                       }}
-                      className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
+                      className="w-full bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none text-[11px]"
                     />
-                    <input
-                      type="text"
-                      placeholder="Role in Project"
-                      value={proj.role}
-                      onChange={(e) => {
-                        const updated = [...cv.projects];
-                        updated[pIdx].role = e.target.value;
-                        setCv({ ...cv, projects: updated });
-                      }}
-                      className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
-                    />
-                  </div>
 
-                  <input
-                    type="text"
-                    placeholder="Technologies (comma separated)"
-                    value={proj.technologies.join(", ")}
-                    onChange={(e) => {
-                      const updated = [...cv.projects];
-                      updated[pIdx].technologies = e.target.value
-                        .split(",")
-                        .map((t) => t.trim())
-                        .filter(Boolean);
-                      setCv({ ...cv, projects: updated });
-                    }}
-                    className="w-full bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none text-[11px]"
-                  />
+                    <div className="space-y-1.5 pt-1">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[10px] text-[#A0A0A0] uppercase tracking-wider font-semibold">
+                          Deskripsi Proyek ({isId ? "ID" : "EN"})
+                        </label>
+                        <button
+                          type="button"
+                          disabled={aiLoading === `proj-desc-${pIdx}` || !currentProjDesc.trim()}
+                          onClick={() =>
+                            handleAiPolish(
+                              "project_description",
+                              currentProjDesc,
+                              (enhanced) => {
+                                const updated = [...cv.projects];
+                                if (isId) {
+                                  updated[pIdx].descriptionId = enhanced;
+                                } else {
+                                  updated[pIdx].description = enhanced;
+                                }
+                                setCv({ ...cv, projects: updated });
+                              },
+                              `proj-desc-${pIdx}`,
+                              { role: currentProjRole, technologies: proj.technologies }
+                            )
+                          }
+                          className="inline-flex items-center gap-1.5 text-[10px] text-[#E31B23] hover:text-red-400 font-bold uppercase transition-colors disabled:opacity-40"
+                          title="Perbaiki & Poles Kata-kata Deskripsi Proyek dengan AI"
+                        >
+                          {aiLoading === `proj-desc-${pIdx}` ? (
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                          ) : (
+                            <Sparkles className="w-3 h-3" />
+                          )}
+                          <span>✨ AI Polish Deskripsi</span>
+                        </button>
+                      </div>
 
-                  <div className="space-y-1.5 pt-1">
-                    <div className="flex items-center justify-between">
-                      <label className="text-[10px] text-[#A0A0A0] uppercase tracking-wider font-semibold">
-                        Deskripsi Proyek (Ringkas & Berdampak)
-                      </label>
-                      <button
-                        type="button"
-                        disabled={aiLoading === `proj-desc-${pIdx}` || !proj.description.trim()}
-                        onClick={() =>
-                          handleAiPolish(
-                            "project_description",
-                            proj.description,
-                            (enhanced) => {
-                              const updated = [...cv.projects];
-                              updated[pIdx].description = enhanced;
-                              setCv({ ...cv, projects: updated });
-                            },
-                            `proj-desc-${pIdx}`,
-                            { role: proj.role, technologies: proj.technologies }
-                          )
-                        }
-                        className="inline-flex items-center gap-1.5 text-[10px] text-[#E31B23] hover:text-red-400 font-bold uppercase transition-colors disabled:opacity-40"
-                        title="Perbaiki & Poles Kata-kata Deskripsi Proyek dengan AI"
-                      >
-                        {aiLoading === `proj-desc-${pIdx}` ? (
-                          <Loader2 className="w-3 h-3 animate-spin" />
-                        ) : (
-                          <Sparkles className="w-3 h-3" />
-                        )}
-                        <span>✨ AI Polish Deskripsi</span>
-                      </button>
+                      <textarea
+                        rows={2}
+                        placeholder={isId ? "Membangun website pondok digital beserta sistem..." : "Architected digital web platform..."}
+                        value={currentProjDesc}
+                        onChange={(e) => {
+                          const updated = [...cv.projects];
+                          if (isId) {
+                            updated[pIdx].descriptionId = e.target.value;
+                          } else {
+                            updated[pIdx].description = e.target.value;
+                          }
+                          setCv({ ...cv, projects: updated });
+                        }}
+                        className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] p-2.5 text-[#F5F5F5] outline-none text-[11px] leading-relaxed"
+                      />
                     </div>
-
-                    <textarea
-                      rows={2}
-                      placeholder="Project Brief Description (Singkat & Padat)"
-                      value={proj.description}
-                      onChange={(e) => {
-                        const updated = [...cv.projects];
-                        updated[pIdx].description = e.target.value;
-                        setCv({ ...cv, projects: updated });
-                      }}
-                      className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] p-2.5 text-[#F5F5F5] outline-none text-[11px] leading-relaxed"
-                    />
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
@@ -828,90 +1064,103 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                 </button>
               </div>
 
-              {cv.education.map((edu, eIdx) => (
-                <div key={edu.id} className="bg-[#101010] border border-[#1F1F1F] p-4 space-y-3">
-                  <div className="flex items-center justify-between pb-2 border-b border-[#1C1C1C]">
-                    <div className="flex items-center gap-3">
-                      <span className="text-[#E31B23] font-bold text-xs">Pendidikan #{eIdx + 1}</span>
+              {cv.education.map((edu, eIdx) => {
+                const currentDegree = isId ? (edu.degreeId ?? edu.degree) : edu.degree;
+                const currentDetails = isId ? (edu.detailsId ?? edu.details) : edu.details;
+
+                return (
+                  <div key={edu.id} className="bg-[#101010] border border-[#1F1F1F] p-4 space-y-3">
+                    <div className="flex items-center justify-between pb-2 border-b border-[#1C1C1C]">
+                      <div className="flex items-center gap-3">
+                        <span className="text-[#E31B23] font-bold text-xs">Pendidikan #{eIdx + 1}</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...cv.education];
+                            updated[eIdx].enabled = updated[eIdx].enabled === false ? true : false;
+                            setCv({ ...cv, education: updated });
+                          }}
+                          className={`px-2.5 py-0.5 text-[10px] font-bold uppercase transition-colors border ${
+                            edu.enabled !== false
+                              ? "bg-emerald-950/80 text-emerald-400 border-emerald-800"
+                              : "bg-[#181818] text-[#666666] border-[#2B2B2B]"
+                          }`}
+                        >
+                          {edu.enabled !== false ? "● ON (Tampil)" : "○ OFF (Disembunyikan)"}
+                        </button>
+                      </div>
+
                       <button
                         type="button"
-                        onClick={() => {
-                          const updated = [...cv.education];
-                          updated[eIdx].enabled = updated[eIdx].enabled === false ? true : false;
-                          setCv({ ...cv, education: updated });
-                        }}
-                        className={`px-2.5 py-0.5 text-[10px] font-bold uppercase transition-colors border ${
-                          edu.enabled !== false
-                            ? "bg-emerald-950/80 text-emerald-400 border-emerald-800"
-                            : "bg-[#181818] text-[#666666] border-[#2B2B2B]"
-                        }`}
+                        onClick={() =>
+                          setCv({
+                            ...cv,
+                            education: cv.education.filter((_, i) => i !== eIdx),
+                          })
+                        }
+                        className="text-[#777777] hover:text-red-400 p-1 transition-colors"
                       >
-                        {edu.enabled !== false ? "● ON (Tampil)" : "○ OFF (Disembunyikan)"}
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setCv({
-                          ...cv,
-                          education: cv.education.filter((_, i) => i !== eIdx),
-                        })
-                      }
-                      className="text-[#777777] hover:text-red-400 p-1 transition-colors"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <input
+                        type="text"
+                        placeholder={isId ? "Gelar / Tingkat Pendidikan (ID)" : "Degree / Title (EN)"}
+                        value={currentDegree}
+                        onChange={(e) => {
+                          const updated = [...cv.education];
+                          if (isId) {
+                            updated[eIdx].degreeId = e.target.value;
+                          } else {
+                            updated[eIdx].degree = e.target.value;
+                          }
+                          setCv({ ...cv, education: updated });
+                        }}
+                        className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Institution / University"
+                        value={edu.institution}
+                        onChange={(e) => {
+                          const updated = [...cv.education];
+                          updated[eIdx].institution = e.target.value;
+                          setCv({ ...cv, education: updated });
+                        }}
+                        className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Year (e.g. 2020 - 2024)"
+                        value={edu.year}
+                        onChange={(e) => {
+                          const updated = [...cv.education];
+                          updated[eIdx].year = e.target.value;
+                          setCv({ ...cv, education: updated });
+                        }}
+                        className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
+                      />
+                      <input
+                        type="text"
+                        placeholder={isId ? "Jurusan / Fokus (ID, contoh: Informatika)" : "Details / Focus (EN)"}
+                        value={currentDetails || ""}
+                        onChange={(e) => {
+                          const updated = [...cv.education];
+                          if (isId) {
+                            updated[eIdx].detailsId = e.target.value;
+                          } else {
+                            updated[eIdx].details = e.target.value;
+                          }
+                          setCv({ ...cv, education: updated });
+                        }}
+                        className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
+                      />
+                    </div>
                   </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input
-                      type="text"
-                      placeholder="Degree / Title"
-                      value={edu.degree}
-                      onChange={(e) => {
-                        const updated = [...cv.education];
-                        updated[eIdx].degree = e.target.value;
-                        setCv({ ...cv, education: updated });
-                      }}
-                      className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Institution / University"
-                      value={edu.institution}
-                      onChange={(e) => {
-                        const updated = [...cv.education];
-                        updated[eIdx].institution = e.target.value;
-                        setCv({ ...cv, education: updated });
-                      }}
-                      className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Year (e.g. 2020 - 2024)"
-                      value={edu.year}
-                      onChange={(e) => {
-                        const updated = [...cv.education];
-                        updated[eIdx].year = e.target.value;
-                        setCv({ ...cv, education: updated });
-                      }}
-                      className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Details / Focus"
-                      value={edu.details || ""}
-                      onChange={(e) => {
-                        const updated = [...cv.education];
-                        updated[eIdx].details = e.target.value;
-                        setCv({ ...cv, education: updated });
-                      }}
-                      className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"
-                    />
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -923,7 +1172,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
           <div className="flex items-center justify-between bg-[#101010] p-3 border border-[#1F1F1F]">
             <div className="flex items-center gap-2 text-[#777777] text-[11px] font-semibold uppercase">
               <Eye className="w-4 h-4 text-[#E31B23]" />
-              <span>A4 Live Preview Document</span>
+              <span>A4 Live Preview ({cv.language === "id" ? "Bahasa Indonesia" : "English"})</span>
             </div>
 
             <div className="flex items-center gap-2">

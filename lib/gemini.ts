@@ -1,3 +1,5 @@
+import { CvData, CvExperience, CvEducation, CvProjectItem } from "@/types";
+
 // Verified active models ordered by speed and availability (tested < 1.5s latency)
 const ACTIVE_MODELS = [
   "gemini-flash-lite-latest",
@@ -354,5 +356,68 @@ Requirements:
   }
 
   throw new Error("Failed to enhance text with Gemini AI.");
+}
+
+export async function translateFullCvWithAi(cv: CvData, targetLang: "en" | "id"): Promise<any> {
+  const isTargetId = targetLang === "id";
+  const prompt = `You are an elite bilingual Tech Resume Consultant and Translator (English <-> Indonesian).
+Translate and professionalize all resume fields from ${isTargetId ? "English to Indonesian" : "Indonesian to English"}.
+
+Source Resume Content:
+- jobTitle: ${JSON.stringify(isTargetId ? (cv.jobTitle || "") : (cv.jobTitleId || cv.jobTitle || ""))}
+- summary: ${JSON.stringify(isTargetId ? (cv.summary || "") : (cv.summaryId || cv.summary || ""))}
+- experiences: ${JSON.stringify(
+    cv.experiences.map((e: CvExperience) => ({
+      id: e.id,
+      role: isTargetId ? (e.role || "") : (e.roleId || e.role || ""),
+      highlights: isTargetId ? (e.highlights || []) : (e.highlightsId || e.highlights || []),
+    }))
+  )}
+- projects: ${JSON.stringify(
+    cv.projects.map((p: CvProjectItem) => ({
+      id: p.id,
+      role: isTargetId ? (p.role || "") : (p.roleId || p.role || ""),
+      description: isTargetId ? (p.description || "") : (p.descriptionId || p.description || ""),
+    }))
+  )}
+- education: ${JSON.stringify(
+    cv.education.map((edu: CvEducation) => ({
+      id: edu.id,
+      degree: isTargetId ? (edu.degree || "") : (edu.degreeId || edu.degree || ""),
+      details: isTargetId ? (edu.details || "") : (edu.detailsId || edu.details || ""),
+    }))
+  )}
+
+Requirements:
+- Translate with natural, high-impact phrasing suitable for standard tech resumes.
+- Keep technical terms (e.g. Next.js, PostgreSQL, Docker, full-stack, API) consistent.
+- Return ONLY valid JSON matching this exact JSON structure:
+{
+  "jobTitle": "string",
+  "summary": "string",
+  "experiences": [
+    {
+      "id": "string",
+      "role": "string",
+      "highlights": ["string"]
+    }
+  ],
+  "projects": [
+    {
+      "id": "string",
+      "role": "string",
+      "description": "string"
+    }
+  ],
+  "education": [
+    {
+      "id": "string",
+      "degree": "string",
+      "details": "string"
+    }
+  ]
+}`;
+
+  return await callGemini(prompt);
 }
 

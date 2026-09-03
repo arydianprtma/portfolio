@@ -159,22 +159,27 @@ export interface CvSkillCategory {
 export interface CvExperience {
   id: string;
   role: string;
+  roleId?: string;
   company: string;
   location?: string;
+  locationId?: string;
   startDate: string;
   endDate: string;
   current?: boolean;
   highlights: string[];
+  highlightsId?: string[];
   enabled?: boolean;
 }
 
 export interface CvEducation {
   id: string;
   degree: string;
+  degreeId?: string;
   institution: string;
   location?: string;
   year: string;
   details?: string;
+  detailsId?: string;
   enabled?: boolean;
 }
 
@@ -182,10 +187,13 @@ export interface CvProjectItem {
   id: string;
   title: string;
   role: string;
+  roleId?: string;
   technologies: string[];
   link?: string;
   description: string;
+  descriptionId?: string;
   highlights: string[];
+  highlightsId?: string[];
   enabled?: boolean;
 }
 
@@ -194,13 +202,16 @@ export interface CvData {
   language: "en" | "id";
   fullName: string;
   jobTitle: string;
+  jobTitleId?: string;
   email: string;
   phone?: string;
   location: string;
+  locationId?: string;
   website?: string;
   github?: string;
   linkedin?: string;
   summary: string;
+  summaryId?: string;
   showProjects?: boolean;
   showExperience?: boolean;
   showSkills?: boolean;
@@ -212,6 +223,7 @@ export interface CvData {
   skillCategories: CvSkillCategory[];
   languages?: string[];
   certifications?: string[];
+  certificationsId?: string[];
   updatedAt?: string;
 }
 

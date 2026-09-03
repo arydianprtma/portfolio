@@ -1031,14 +1031,22 @@ export async function generateDefaultCvFromProfile(): Promise<CvData> {
     id: `proj-${idx + 1}`,
     title: p.title,
     role: p.role || "Lead Developer",
+    roleId: p.roleId || (p.role ? "Pengembang Utama" : "Pengembang Utama"),
     technologies: p.technologies ? p.technologies.slice(0, 4) : [],
     link: p.demo || p.github || "",
     description: cleanCvSnippet(p.overview || p.description),
+    descriptionId: cleanCvSnippet(p.overviewId || p.descriptionId || p.overview || p.description),
     highlights:
       p.features && p.features.length > 0
         ? p.features.slice(0, 2).map((f) => cleanCvSnippet(f))
         : [
             `Engineered high-performance web architecture using ${p.technologies.slice(0, 3).join(", ")}.`,
+          ],
+    highlightsId:
+      p.featuresId && p.featuresId.length > 0
+        ? p.featuresId.slice(0, 2).map((f) => cleanCvSnippet(f))
+        : [
+            `Merancang dan mengembangkan arsitektur web berkinerja tinggi menggunakan ${p.technologies.slice(0, 3).join(", ")}.`,
           ],
     enabled: idx < 2, // Enable top 2 projects by default to fit clean A4 page
   }));
@@ -1054,9 +1062,11 @@ export async function generateDefaultCvFromProfile(): Promise<CvData> {
     language: "en",
     fullName: profile.name || "Ary Dian Pratama",
     jobTitle: profile.role || "Full Stack Developer & Systems Engineer",
+    jobTitleId: profile.roleId || "Pengembang Web Full Stack & Rekayasa Perangkat Lunak",
     email: profile.email || "arydianprtma@gmail.com",
     phone: "+62 812-3456-7890",
     location: profile.location || "Kediri, East Java, Indonesia",
+    locationId: "Kediri, Jawa Timur, Indonesia",
     website: "https://portfolio.ardp.my.id",
     github: profile.socials?.github || "https://github.com/arydianprtma",
     linkedin: profile.socials?.linkedin || "https://linkedin.com/in/arydianprtma",
@@ -1064,6 +1074,10 @@ export async function generateDefaultCvFromProfile(): Promise<CvData> {
       Array.isArray(profile.bio) && profile.bio.length > 0
         ? profile.bio.join(" ")
         : "High-performance software engineer with extensive experience in Next.js, TypeScript, C#, and scalable web architectures. Passionate about crafting immersive, ultra-responsive digital products and robust full-stack systems.",
+    summaryId:
+      Array.isArray(profile.bioId) && profile.bioId.length > 0
+        ? profile.bioId.join(" ")
+        : "Software engineer berkinerja tinggi dengan pengalaman mendalam dalam Next.js, TypeScript, C#, dan arsitektur web modern. Berfokus pada pembangunan produk digital yang responsif, stabil, aman, dan berdaya guna tinggi.",
     showProjects: false,
     showExperience: true,
     showSkills: true,
@@ -1073,8 +1087,10 @@ export async function generateDefaultCvFromProfile(): Promise<CvData> {
       {
         id: "exp-1",
         role: "Full Stack Developer & Technical Lead",
+        roleId: "Pengembang Full Stack & Lead Developer",
         company: "Digital Craftsman / Freelance",
         location: "Remote / Indonesia",
+        locationId: "Remote / Indonesia",
         startDate: "2023",
         endDate: "Present",
         current: true,
@@ -1083,12 +1099,19 @@ export async function generateDefaultCvFromProfile(): Promise<CvData> {
           "Implemented robust authentication, role-based access control (RBAC), and automated invoice telemetry.",
           "Optimized front-end rendering pipelines achieving 99+ Lighthouse performance scores and sub-second page loads.",
         ],
+        highlightsId: [
+          "Merancang dan mendeploy aplikasi web berskala enterprise menggunakan Next.js 16, TypeScript, Tailwind CSS, dan PostgreSQL.",
+          "Mengimplementasikan autentikasi keamanan tinggi, role-based access control (RBAC), dan sistem telemetri invoice otomatis.",
+          "Mengoptimalkan performa rendering front-end hingga meraih skor 99+ Lighthouse dan waktu muat halaman di bawah 1 detik.",
+        ],
       },
       {
         id: "exp-2",
         role: "Systems & Game Modding Developer",
+        roleId: "Pengembang Sistem & Game Modding",
         company: "Independent Software Projects",
         location: "Kediri, Indonesia",
+        locationId: "Kediri, Indonesia",
         startDate: "2022",
         endDate: "2024",
         current: false,
@@ -1096,16 +1119,32 @@ export async function generateDefaultCvFromProfile(): Promise<CvData> {
           "Engineered native C# memory hooks, real-time telemetry simulation, and custom UI components for complex systems.",
           "Built high-throughput multi-terminal Point of Sale (POS) and inventory synchronization engines.",
         ],
+        highlightsId: [
+          "Merekayasa native C# memory hooks, simulasi telemetri real-time, dan komponen antarmuka pengguna kustom.",
+          "Membangun sistem Point of Sale (POS) multi-terminal throughput tinggi dan mesin sinkronisasi inventaris.",
+        ],
       },
     ],
     education: [
       {
         id: "edu-1",
         degree: "Bachelor of Computer Science / Informatics",
-        institution: "Universitas / Institute of Technology",
-        location: "East Java, Indonesia",
-        year: "2020 - 2024",
-        details: "Focus on Software Engineering, Distributed Systems, and Web Technologies.",
+        degreeId: "S1 Informatika",
+        institution: "Universitas Amikom Purwokerto",
+        location: "Purwokerto, Indonesia",
+        year: "2022 - 2026",
+        details: "Focus on Software Engineering & Web Technologies.",
+        detailsId: "Fokus Rekayasa Perangkat Lunak & Teknologi Web.",
+      },
+      {
+        id: "edu-2",
+        degree: "Senior High School",
+        degreeId: "Sekolah Menengah Atas",
+        institution: "SMA N 1 Banjarsari",
+        location: "Indonesia",
+        year: "2019 - 2022",
+        details: "Social Sciences",
+        detailsId: "Ilmu Pengetahuan Sosial",
       },
     ],
     projects: topProjects,
@@ -1130,6 +1169,10 @@ export async function generateDefaultCvFromProfile(): Promise<CvData> {
     certifications: [
       "Full-Stack Web Development Certification",
       "Modern Next.js & React Architecture Specialist",
+    ],
+    certificationsId: [
+      "Sertifikasi Full-Stack Web Development",
+      "Spesialis Arsitektur Modern Next.js & React",
     ],
     updatedAt: new Date().toISOString(),
   };

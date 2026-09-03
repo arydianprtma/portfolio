@@ -40,6 +40,14 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
   const isId = cv.language === "id";
   const template = cv.template || "modern";
 
+  // Bilingual Dynamic Fields
+  const displayJobTitle = isId ? (cv.jobTitleId || cv.jobTitle) : cv.jobTitle;
+  const displayLocation = isId ? (cv.locationId || cv.location) : cv.location;
+  const displaySummary = isId ? (cv.summaryId || cv.summary) : cv.summary;
+  const displayCertifications = isId
+    ? (cv.certificationsId && cv.certificationsId.length > 0 ? cv.certificationsId : cv.certifications)
+    : cv.certifications;
+
   const enabledSkills = (cv.skillCategories || []).filter((c) => c.enabled !== false);
   const enabledExperiences = (cv.experiences || []).filter((e) => e.enabled !== false);
   const enabledProjects =
@@ -128,15 +136,15 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                     {cv.fullName}
                   </h1>
                   <p className="text-[#E31B23] font-bold font-mono text-xs sm:text-sm tracking-wider uppercase mt-0.5">
-                    {cv.jobTitle}
+                    {displayJobTitle}
                   </p>
                 </div>
 
                 <div className="flex flex-wrap sm:flex-col sm:items-end gap-x-4 gap-y-1 text-[10.5px] font-mono text-[#4B5563]">
-                  {cv.location && (
+                  {displayLocation && (
                     <span className="inline-flex items-center gap-1">
                       <MapPin className="w-3 h-3 text-[#E31B23]" />
-                      <span>{cv.location}</span>
+                      <span>{displayLocation}</span>
                     </span>
                   )}
                   {cv.email && (
@@ -167,9 +175,9 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
               </div>
 
               {/* Professional Summary */}
-              {cv.summary && (
+              {displaySummary && (
                 <p className="mt-2.5 text-[#374151] leading-relaxed text-justify text-[11px]">
-                  {formatPlainText(cv.summary)}
+                  {formatPlainText(displaySummary)}
                 </p>
               )}
             </header>
@@ -200,25 +208,33 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                   <span>{isId ? "PENGALAMAN KERJA & REKAYASA SISTEM" : "PROFESSIONAL WORK EXPERIENCE"}</span>
                 </h2>
                 <div className="space-y-2.5">
-                  {enabledExperiences.map((exp) => (
-                    <div key={exp.id} className="space-y-0.5">
-                      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between">
-                        <span className="font-bold text-[#111827] text-[12px]">
-                          {exp.role} <span className="text-[#E31B23]">@ {exp.company}</span>
-                        </span>
-                        <span className="font-mono text-[10px] text-[#6B7280] font-semibold">
-                          {exp.startDate} – {exp.current ? (isId ? "Sekarang" : "Present") : exp.endDate} {exp.location ? `| ${exp.location}` : ""}
-                        </span>
+                  {enabledExperiences.map((exp) => {
+                    const role = isId ? (exp.roleId || exp.role) : exp.role;
+                    const loc = isId ? (exp.locationId || exp.location) : exp.location;
+                    const highlights = isId
+                      ? (exp.highlightsId && exp.highlightsId.length > 0 ? exp.highlightsId : exp.highlights)
+                      : exp.highlights;
+
+                    return (
+                      <div key={exp.id} className="space-y-0.5">
+                        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between">
+                          <span className="font-bold text-[#111827] text-[12px]">
+                            {role} <span className="text-[#E31B23]">@ {exp.company}</span>
+                          </span>
+                          <span className="font-mono text-[10px] text-[#6B7280] font-semibold">
+                            {exp.startDate} – {exp.current ? (isId ? "Sekarang" : "Present") : exp.endDate} {loc ? `| ${loc}` : ""}
+                          </span>
+                        </div>
+                        {highlights && highlights.length > 0 && (
+                          <ul className="list-disc ml-4 space-y-0.5 text-[#374151] text-[11px]">
+                            {highlights.map((h, i) => (
+                              <li key={i} className="leading-snug">{formatPlainText(h)}</li>
+                            ))}
+                          </ul>
+                        )}
                       </div>
-                      {exp.highlights && exp.highlights.length > 0 && (
-                        <ul className="list-disc ml-4 space-y-0.5 text-[#374151] text-[11px]">
-                          {exp.highlights.map((h, i) => (
-                            <li key={i} className="leading-snug">{formatPlainText(h)}</li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </section>
             )}
@@ -231,26 +247,31 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                   <span>{isId ? "PROYEK UNGGULAN & SISTEM ARSITEKTUR" : "KEY FEATURED PROJECTS & SYSTEMS"}</span>
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  {enabledProjects.map((proj) => (
-                    <div key={proj.id} className="border border-[#E5E7EB] p-2 bg-[#F9FAFB] rounded-sm space-y-1">
-                      <div className="flex items-baseline justify-between gap-1">
-                        <span className="font-bold text-[#111827] text-xs uppercase truncate">{proj.title}</span>
-                        <span className="font-mono text-[9px] text-[#E31B23] font-semibold shrink-0">{proj.role}</span>
-                      </div>
-                      <p className="text-[10.5px] text-[#4B5563] leading-snug">
-                        {formatPlainText(proj.description)}
-                      </p>
-                      {proj.technologies && proj.technologies.length > 0 && (
-                        <div className="flex flex-wrap gap-1 pt-0.5">
-                          {proj.technologies.slice(0, 5).map((t, idx) => (
-                            <span key={idx} className="bg-white border border-[#D1D5DB] text-[#374151] text-[8.5px] font-mono px-1.5 py-0.2 rounded">
-                              {t}
-                            </span>
-                          ))}
+                  {enabledProjects.map((proj) => {
+                    const projRole = isId ? (proj.roleId || proj.role) : proj.role;
+                    const projDesc = isId ? (proj.descriptionId || proj.description) : proj.description;
+
+                    return (
+                      <div key={proj.id} className="border border-[#E5E7EB] p-2 bg-[#F9FAFB] rounded-sm space-y-1">
+                        <div className="flex items-baseline justify-between gap-1">
+                          <span className="font-bold text-[#111827] text-xs uppercase truncate">{proj.title}</span>
+                          {projRole && <span className="font-mono text-[9px] text-[#E31B23] font-semibold shrink-0">{projRole}</span>}
                         </div>
-                      )}
-                    </div>
-                  ))}
+                        <p className="text-[10.5px] text-[#4B5563] leading-snug">
+                          {formatPlainText(projDesc)}
+                        </p>
+                        {proj.technologies && proj.technologies.length > 0 && (
+                          <div className="flex flex-wrap gap-1 pt-0.5">
+                            {proj.technologies.slice(0, 5).map((t, idx) => (
+                              <span key={idx} className="bg-white border border-[#D1D5DB] text-[#374151] text-[8.5px] font-mono px-1.5 py-0.2 rounded">
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </section>
             )}
@@ -265,16 +286,23 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                     <span>{isId ? "PENDIDIKAN" : "EDUCATION"}</span>
                   </h2>
                   <div className="space-y-1.5 text-[11px] pt-0.5">
-                    {enabledEducation.map((edu) => (
-                      <div key={edu.id}>
-                        <div className="font-bold text-[#111827]">{edu.degree}</div>
-                        <div className="text-[#4B5563] flex items-center justify-between text-[10px] font-mono">
-                          <span>{edu.institution}</span>
-                          <span>{edu.year}</span>
+                    {enabledEducation.map((edu) => {
+                      const degree = isId ? (edu.degreeId || edu.degree) : edu.degree;
+                      const details = isId ? (edu.detailsId || edu.details) : edu.details;
+
+                      return (
+                        <div key={edu.id}>
+                          <div className="font-bold text-[#111827] flex items-baseline justify-between">
+                            <span>{degree}</span>
+                            <span className="text-[#6B7280] text-[9.5px] font-mono shrink-0 ml-2">{edu.year}</span>
+                          </div>
+                          <div className="text-[#4B5563] text-[10.5px]">
+                            <span>{edu.institution}</span>
+                            {details && <span className="text-[#6B7280]"> ({details})</span>}
+                          </div>
                         </div>
-                        {edu.details && <p className="text-[10px] text-[#6B7280] mt-0.5">{edu.details}</p>}
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </section>
               )}
@@ -286,9 +314,9 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                   <span>{isId ? "SERTIFIKASI & BAHASA" : "CERTIFICATIONS & LANGUAGES"}</span>
                 </h2>
                 <div className="space-y-1 text-[10.5px] pt-0.5">
-                  {cv.certifications && cv.certifications.length > 0 && (
+                  {displayCertifications && displayCertifications.length > 0 && (
                     <ul className="list-disc ml-4 space-y-0.5 text-[#374151]">
-                      {cv.certifications.map((c, i) => (
+                      {displayCertifications.map((c, i) => (
                         <li key={i}>{c}</li>
                       ))}
                     </ul>
@@ -312,9 +340,9 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
           <div className="space-y-3.5 text-[11.5px] leading-relaxed text-[#111827]">
             <header className="text-center border-b border-[#111827] pb-2.5">
               <h1 className="text-2xl font-bold uppercase tracking-wide">{cv.fullName}</h1>
-              <p className="text-xs font-semibold text-[#374151] mt-0.5">{cv.jobTitle}</p>
+              <p className="text-xs font-semibold text-[#374151] mt-0.5">{displayJobTitle}</p>
               <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-[10.5px] text-[#4B5563] mt-1.5">
-                {cv.location && <span>{cv.location}</span>}
+                {displayLocation && <span>{displayLocation}</span>}
                 {cv.email && <span>• {cv.email}</span>}
                 {cv.phone && <span>• {cv.phone}</span>}
                 {cv.website && <span>• {cv.website.replace(/^https?:\/\//, "")}</span>}
@@ -322,12 +350,12 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
               </div>
             </header>
 
-            {cv.summary && (
+            {displaySummary && (
               <section className="space-y-0.5">
                 <h2 className="text-[11px] font-bold uppercase tracking-wider border-b border-[#9CA3AF] pb-0.5">
                   {isId ? "RINGKASAN PROFESIONAL" : "PROFESSIONAL SUMMARY"}
                 </h2>
-                <p className="text-[11px] text-[#374151] text-justify pt-0.5">{formatPlainText(cv.summary)}</p>
+                <p className="text-[11px] text-[#374151] text-justify pt-0.5">{formatPlainText(displaySummary)}</p>
               </section>
             )}
 
@@ -353,23 +381,30 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                   {isId ? "PENGALAMAN KERJA" : "WORK EXPERIENCE"}
                 </h2>
                 <div className="space-y-2 pt-0.5">
-                  {enabledExperiences.map((exp) => (
-                    <div key={exp.id} className="space-y-0.5">
-                      <div className="flex justify-between font-bold text-[11.5px]">
-                        <span>{exp.role} — {exp.company}</span>
-                        <span className="font-normal text-[10.5px] text-[#6B7280]">
-                          {exp.startDate} – {exp.current ? (isId ? "Sekarang" : "Present") : exp.endDate}
-                        </span>
+                  {enabledExperiences.map((exp) => {
+                    const role = isId ? (exp.roleId || exp.role) : exp.role;
+                    const highlights = isId
+                      ? (exp.highlightsId && exp.highlightsId.length > 0 ? exp.highlightsId : exp.highlights)
+                      : exp.highlights;
+
+                    return (
+                      <div key={exp.id} className="space-y-0.5">
+                        <div className="flex justify-between font-bold text-[11.5px]">
+                          <span>{role} — {exp.company}</span>
+                          <span className="font-normal text-[10.5px] text-[#6B7280]">
+                            {exp.startDate} – {exp.current ? (isId ? "Sekarang" : "Present") : exp.endDate}
+                          </span>
+                        </div>
+                        {highlights && (
+                          <ul className="list-disc ml-5 space-y-0.5 text-[10.5px] text-[#374151]">
+                            {highlights.map((h, i) => (
+                              <li key={i}>{formatPlainText(h)}</li>
+                            ))}
+                          </ul>
+                        )}
                       </div>
-                      {exp.highlights && (
-                        <ul className="list-disc ml-5 space-y-0.5 text-[10.5px] text-[#374151]">
-                          {exp.highlights.map((h, i) => (
-                            <li key={i}>{formatPlainText(h)}</li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </section>
             )}
@@ -380,17 +415,22 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                   {isId ? "PROYEK KUNCI" : "KEY PROJECTS"}
                 </h2>
                 <div className="space-y-1 pt-0.5 text-[11px]">
-                  {enabledProjects.map((proj) => (
-                    <div key={proj.id}>
-                      <div className="font-bold flex justify-between">
-                        <span>{proj.title}{proj.role ? ` (${proj.role})` : ""}</span>
-                        {proj.technologies && proj.technologies.length > 0 && (
-                          <span className="font-normal text-[10px] text-[#6B7280]">{proj.technologies.slice(0, 4).join(", ")}</span>
-                        )}
+                  {enabledProjects.map((proj) => {
+                    const projRole = isId ? (proj.roleId || proj.role) : proj.role;
+                    const projDesc = isId ? (proj.descriptionId || proj.description) : proj.description;
+
+                    return (
+                      <div key={proj.id}>
+                        <div className="font-bold flex justify-between">
+                          <span>{proj.title}{projRole ? ` (${projRole})` : ""}</span>
+                          {proj.technologies && proj.technologies.length > 0 && (
+                            <span className="font-normal text-[10px] text-[#6B7280]">{proj.technologies.slice(0, 4).join(", ")}</span>
+                          )}
+                        </div>
+                        <p className="text-[10.5px] text-[#374151] leading-snug">{formatPlainText(projDesc)}</p>
                       </div>
-                      <p className="text-[10.5px] text-[#374151] leading-snug">{formatPlainText(proj.description)}</p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </section>
             )}
@@ -401,16 +441,21 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                   {isId ? "PENDIDIKAN" : "EDUCATION"}
                 </h2>
                 <div className="space-y-1 pt-0.5 text-[11px]">
-                  {enabledEducation.map((edu) => (
-                    <div key={edu.id} className="flex justify-between items-baseline">
-                      <div>
-                        <span className="font-bold text-[#111827]">{edu.degree}</span>
-                        {edu.details && <span className="text-[#4B5563]"> ({edu.details})</span>}
-                        <span className="text-[#374151]"> — {edu.institution}</span>
+                  {enabledEducation.map((edu) => {
+                    const degree = isId ? (edu.degreeId || edu.degree) : edu.degree;
+                    const details = isId ? (edu.detailsId || edu.details) : edu.details;
+
+                    return (
+                      <div key={edu.id} className="flex justify-between items-baseline">
+                        <div>
+                          <span className="font-bold text-[#111827]">{degree}</span>
+                          {details && <span className="text-[#4B5563]"> ({details})</span>}
+                          <span className="text-[#374151]"> — {edu.institution}</span>
+                        </div>
+                        <span className="text-[#6B7280] font-mono text-[10.5px] shrink-0 ml-2">{edu.year}</span>
                       </div>
-                      <span className="text-[#6B7280] font-mono text-[10.5px] shrink-0 ml-2">{edu.year}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </section>
             )}
@@ -427,12 +472,12 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
               <div className="space-y-3.5">
                 <div>
                   <h1 className="text-lg font-bold uppercase text-[#111827]">{cv.fullName}</h1>
-                  <p className="text-[10.5px] font-semibold text-[#E31B23] uppercase mt-0.5">{cv.jobTitle}</p>
+                  <p className="text-[10.5px] font-semibold text-[#E31B23] uppercase mt-0.5">{displayJobTitle}</p>
                 </div>
 
                 <div className="space-y-1.5 text-[10.5px] text-[#4B5563] pt-2 border-t border-[#D1D5DB]">
                   <span className="text-[9.5px] font-bold uppercase tracking-wider text-[#111827] block">Contact</span>
-                  {cv.location && <div className="flex items-center gap-1.5"><MapPin className="w-3 h-3 text-[#E31B23] shrink-0" /><span>{cv.location}</span></div>}
+                  {displayLocation && <div className="flex items-center gap-1.5"><MapPin className="w-3 h-3 text-[#E31B23] shrink-0" /><span>{displayLocation}</span></div>}
                   {cv.email && <div className="flex items-center gap-1.5"><Mail className="w-3 h-3 text-[#E31B23] shrink-0" /><span className="truncate">{cv.email}</span></div>}
                   {cv.phone && <div className="flex items-center gap-1.5"><Phone className="w-3 h-3 text-[#E31B23] shrink-0" /><span>{cv.phone}</span></div>}
                   {cv.website && <div className="flex items-center gap-1.5"><Globe className="w-3 h-3 text-[#E31B23] shrink-0" /><span>{cv.website.replace(/^https?:\/\//, "")}</span></div>}
@@ -456,13 +501,18 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                 {enabledEducation.length > 0 && (
                   <div className="space-y-1.5 pt-2 border-t border-[#D1D5DB]">
                     <span className="text-[9.5px] font-bold uppercase tracking-wider text-[#111827] block">Education</span>
-                    {enabledEducation.map((edu) => (
-                      <div key={edu.id} className="text-[10px]">
-                        <span className="font-bold text-[#111827] block">{edu.degree}</span>
-                        <span className="text-[#4B5563] block">{edu.institution} ({edu.year})</span>
-                        {edu.details && <span className="text-[#6B7280] block text-[9px]">{edu.details}</span>}
-                      </div>
-                    ))}
+                    {enabledEducation.map((edu) => {
+                      const degree = isId ? (edu.degreeId || edu.degree) : edu.degree;
+                      const details = isId ? (edu.detailsId || edu.details) : edu.details;
+
+                      return (
+                        <div key={edu.id} className="text-[10px]">
+                          <span className="font-bold text-[#111827] block">{degree}</span>
+                          <span className="text-[#4B5563] block">{edu.institution} ({edu.year})</span>
+                          {details && <span className="text-[#6B7280] block text-[9px]">{details}</span>}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -470,7 +520,7 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
               {/* Languages at bottom of sidebar */}
               {cv.languages && cv.languages.length > 0 && (
                 <div className="pt-2 border-t border-[#D1D5DB] text-[9.5px] text-[#6B7280] font-mono">
-                  <span className="font-bold text-[#111827] block mb-0.5">Languages</span>
+                  <span className="font-bold text-[#111827] block mb-0.5">{isId ? "Bahasa" : "Languages"}</span>
                   <span>{cv.languages.join(" • ")}</span>
                 </div>
               )}
@@ -478,37 +528,44 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
 
             {/* Right Column (65% Width) */}
             <div className="col-span-8 space-y-3.5 pl-2">
-              {cv.summary && (
+              {displaySummary && (
                 <section className="space-y-1">
                   <h2 className="text-xs font-bold uppercase tracking-widest text-[#111827] border-b-2 border-[#E31B23] pb-0.5">
-                    Executive Summary
+                    {isId ? "RINGKASAN EKSEKUTIF" : "EXECUTIVE SUMMARY"}
                   </h2>
-                  <p className="text-[11px] text-[#374151] leading-relaxed text-justify">{formatPlainText(cv.summary)}</p>
+                  <p className="text-[11px] text-[#374151] leading-relaxed text-justify">{formatPlainText(displaySummary)}</p>
                 </section>
               )}
 
               {enabledExperiences.length > 0 && (
                 <section className="space-y-2">
                   <h2 className="text-xs font-bold uppercase tracking-widest text-[#111827] border-b-2 border-[#E31B23] pb-0.5">
-                    Experience
+                    {isId ? "PENGALAMAN KERJA" : "EXPERIENCE"}
                   </h2>
                   <div className="space-y-2">
-                    {enabledExperiences.map((exp) => (
-                      <div key={exp.id} className="space-y-0.5">
-                        <div className="flex justify-between items-baseline">
-                          <span className="font-bold text-[11.5px] text-[#111827]">{exp.role}</span>
-                          <span className="text-[9.5px] font-mono text-[#6B7280]">{exp.startDate} – {exp.endDate || "Present"}</span>
+                    {enabledExperiences.map((exp) => {
+                      const role = isId ? (exp.roleId || exp.role) : exp.role;
+                      const highlights = isId
+                        ? (exp.highlightsId && exp.highlightsId.length > 0 ? exp.highlightsId : exp.highlights)
+                        : exp.highlights;
+
+                      return (
+                        <div key={exp.id} className="space-y-0.5">
+                          <div className="flex justify-between items-baseline">
+                            <span className="font-bold text-[11.5px] text-[#111827]">{role}</span>
+                            <span className="text-[9.5px] font-mono text-[#6B7280]">{exp.startDate} – {exp.current ? (isId ? "Sekarang" : "Present") : exp.endDate}</span>
+                          </div>
+                          <span className="text-[10.5px] font-semibold text-[#E31B23] block">{exp.company}</span>
+                          {highlights && (
+                            <ul className="list-disc ml-4 text-[10.5px] text-[#4B5563] space-y-0.5">
+                              {highlights.map((h, i) => (
+                                <li key={i}>{formatPlainText(h)}</li>
+                              ))}
+                            </ul>
+                          )}
                         </div>
-                        <span className="text-[10.5px] font-semibold text-[#E31B23] block">{exp.company}</span>
-                        {exp.highlights && (
-                          <ul className="list-disc ml-4 text-[10.5px] text-[#4B5563] space-y-0.5">
-                            {exp.highlights.map((h, i) => (
-                              <li key={i}>{formatPlainText(h)}</li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </section>
               )}
@@ -516,23 +573,28 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
               {enabledProjects.length > 0 && (
                 <section className="space-y-1.5">
                   <h2 className="text-xs font-bold uppercase tracking-widest text-[#111827] border-b-2 border-[#E31B23] pb-0.5">
-                    Key Projects
+                    {isId ? "PROYEK KUNCI" : "KEY PROJECTS"}
                   </h2>
                   <div className="space-y-1">
-                    {enabledProjects.map((proj) => (
-                      <div key={proj.id} className="border-l-2 border-[#E31B23] pl-2 space-y-0.5">
-                        <div className="flex justify-between items-baseline">
-                          <span className="font-bold text-[11px] text-[#111827]">{proj.title}</span>
-                          <span className="text-[9.5px] font-mono text-[#6B7280]">{proj.role}</span>
-                        </div>
-                        <p className="text-[10.5px] text-[#4B5563] leading-snug">{formatPlainText(proj.description)}</p>
-                        {proj.technologies && proj.technologies.length > 0 && (
-                          <div className="text-[9.5px] text-[#6B7280] font-mono">
-                            <span>Tech: {proj.technologies.join(", ")}</span>
+                    {enabledProjects.map((proj) => {
+                      const projRole = isId ? (proj.roleId || proj.role) : proj.role;
+                      const projDesc = isId ? (proj.descriptionId || proj.description) : proj.description;
+
+                      return (
+                        <div key={proj.id} className="border-l-2 border-[#E31B23] pl-2 space-y-0.5">
+                          <div className="flex justify-between items-baseline">
+                            <span className="font-bold text-[11px] text-[#111827]">{proj.title}</span>
+                            {projRole && <span className="text-[9.5px] font-mono text-[#6B7280]">{projRole}</span>}
                           </div>
-                        )}
-                      </div>
-                    ))}
+                          <p className="text-[10.5px] text-[#4B5563] leading-snug">{formatPlainText(projDesc)}</p>
+                          {proj.technologies && proj.technologies.length > 0 && (
+                            <div className="text-[9.5px] text-[#6B7280] font-mono">
+                              <span>Tech: {proj.technologies.join(", ")}</span>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </section>
               )}

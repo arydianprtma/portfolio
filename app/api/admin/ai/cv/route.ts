@@ -10,10 +10,11 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { type, currentText, roleContext, language } = body as {
-      type: "summary" | "experience_highlight" | "project_highlight";
+    const { type, currentText, roleContext, technologiesContext, language } = body as {
+      type: "summary" | "experience_highlight" | "project_highlight" | "project_description";
       currentText: string;
       roleContext?: string;
+      technologiesContext?: string[];
       language: "en" | "id";
     };
 
@@ -25,6 +26,7 @@ export async function POST(req: Request) {
       type: type || "summary",
       currentText: currentText.trim(),
       roleContext: roleContext || "Full Stack Developer",
+      technologiesContext,
       language: language || "en",
     });
 

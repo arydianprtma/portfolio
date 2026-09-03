@@ -68,13 +68,14 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
   };
 
   const handleAiPolish = async (
-    type: "summary" | "experience_highlight" | "project_highlight",
+    type: "summary" | "experience_highlight" | "project_highlight" | "project_description",
     currentText: string,
     callback: (enhanced: string) => void,
-    key: string
+    loadingKey: string,
+    extraContext?: { role?: string; technologies?: string[] }
   ) => {
     if (!currentText.trim()) return;
-    setAiLoading(key);
+    setAiLoading(loadingKey);
     setError(null);
 
     try {
@@ -84,7 +85,8 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
         body: JSON.stringify({
           type,
           currentText,
-          roleContext: cv.jobTitle,
+          roleContext: extraContext?.role || cv.jobTitle,
+          technologiesContext: extraContext?.technologies,
           language: cv.language,
         }),
       });
@@ -698,17 +700,51 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                     className="w-full bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none text-[11px]"
                   />
 
-                  <textarea
-                    rows={2}
-                    placeholder="Project Brief Description (Singkat & Padat)"
-                    value={proj.description}
-                    onChange={(e) => {
-                      const updated = [...cv.projects];
-                      updated[pIdx].description = e.target.value;
-                      setCv({ ...cv, projects: updated });
-                    }}
-                    className="w-full bg-[#141414] border border-[#262626] p-2.5 text-[#F5F5F5] outline-none text-[11px]"
-                  />
+                  <div className="space-y-1.5 pt-1">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[10px] text-[#A0A0A0] uppercase tracking-wider font-semibold">
+                        Deskripsi Proyek (Ringkas & Berdampak)
+                      </label>
+                      <button
+                        type="button"
+                        disabled={aiLoading === `proj-desc-${pIdx}` || !proj.description.trim()}
+                        onClick={() =>
+                          handleAiPolish(
+                            "project_description",
+                            proj.description,
+                            (enhanced) => {
+                              const updated = [...cv.projects];
+                              updated[pIdx].description = enhanced;
+                              setCv({ ...cv, projects: updated });
+                            },
+                            `proj-desc-${pIdx}`,
+                            { role: proj.role, technologies: proj.technologies }
+                          )
+                        }
+                        className="inline-flex items-center gap-1.5 text-[10px] text-[#E31B23] hover:text-red-400 font-bold uppercase transition-colors disabled:opacity-40"
+                        title="Perbaiki & Poles Kata-kata Deskripsi Proyek dengan AI"
+                      >
+                        {aiLoading === `proj-desc-${pIdx}` ? (
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                        ) : (
+                          <Sparkles className="w-3 h-3" />
+                        )}
+                        <span>✨ AI Polish Deskripsi</span>
+                      </button>
+                    </div>
+
+                    <textarea
+                      rows={2}
+                      placeholder="Project Brief Description (Singkat & Padat)"
+                      value={proj.description}
+                      onChange={(e) => {
+                        const updated = [...cv.projects];
+                        updated[pIdx].description = e.target.value;
+                        setCv({ ...cv, projects: updated });
+                      }}
+                      className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] p-2.5 text-[#F5F5F5] outline-none text-[11px] leading-relaxed"
+                    />
+                  </div>
                 </div>
               ))}
             </div>

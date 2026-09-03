@@ -300,25 +300,29 @@ export async function chatWithGemini({
 }
 
 export async function enhanceCvSectionWithAi(params: {
-  type: "summary" | "experience_highlight" | "project_highlight";
+  type: "summary" | "experience_highlight" | "project_highlight" | "project_description";
   currentText: string;
   roleContext?: string;
+  technologiesContext?: string[];
   language: "en" | "id";
 }): Promise<string> {
   const isId = params.language === "id";
   const prompt = `You are an elite Tech Career Consultant and ATS Resume Specialist.
-Refine, polish, and elevate the following ${params.type} for a Software Engineer / Full Stack Developer resume.
+Refine, polish, and elevate the following ${params.type.replace(/_/g, " ")} for a Software Engineer / Full Stack Developer CV / resume.
 
 Context Role: ${params.roleContext || "Full Stack Developer & Systems Engineer"}
-Target Language: ${isId ? "Bahasa Indonesia (Formal, Professional, High Impact)" : "English (High-impact, Action-oriented, Concise)"}
+${params.technologiesContext && params.technologiesContext.length > 0 ? `Technologies Used: ${params.technologiesContext.join(", ")}` : ""}
+Target Language: ${isId ? "Bahasa Indonesia (Formal, Profesional, Berbobot, Menggunakan Kata Kerja Aksi Kuat)" : "English (High-impact, Action-oriented, Concise, Professional)"}
 
 Input Content:
 "${params.currentText}"
 
 Requirements:
-- Make it punchy, professional, and result-driven with strong action verbs.
-- Maintain technical accuracy (mention modern web architecture, clean code, reliability).
-- Output ONLY the refined plain text directly without markdown wrappers or conversational filler.`;
+- Transform into 1-2 powerful, well-structured, clear, and impactful professional sentences.
+- Use strong active verbs (e.g., Merancang, Mengembangkan, Mengintegrasikan, Mengoptimalkan / Architected, Engineered, Integrated, Deployed).
+- Highlight key functionality, system scalability, and technical stack clearly.
+- Keep it concise, natural, and suitable for standard A4 CV layout (avoid excessive wordiness or boilerplate).
+- Output ONLY the refined plain text directly without quotes, asterisks, bullet marks, or markdown wrappers.`;
 
   const apiKey = getApiKey();
   for (const modelName of ACTIVE_MODELS) {

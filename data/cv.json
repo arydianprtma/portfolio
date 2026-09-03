@@ -52,6 +52,14 @@
       "location": "East Java, Indonesia",
       "year": "2022 - 2026",
       "details": "Informatika"
+    },
+    {
+      "id": "edu-1788418295637",
+      "degree": "Sekolah Menengah Atas",
+      "institution": "SMA N 1 Banjarsari",
+      "location": "City, Indonesia",
+      "year": "2019- 2022",
+      "details": "Ilmu Pengetahuan Sosial"
     }
   ],
   "projects": [
@@ -161,5 +169,5 @@
     "Full-Stack Web Development Certification",
     "Modern Next.js & React Architecture Specialist"
   ],
-  "updatedAt": "2026-09-03T06:45:54.026Z"
+  "updatedAt": "2026-09-03T06:52:49.968Z"
 }

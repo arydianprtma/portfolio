@@ -6,17 +6,18 @@ export async function POST(request: Request) {
     const body = await request.json().catch(() => ({}));
     const { event, path } = body;
 
-    // Reject tracking on admin and invoice paths
+    // Reject tracking on admin, invoice, cv, and api paths
     if (
       path &&
       (path.startsWith("/admin") ||
         path.startsWith("/invoice") ||
+        path.startsWith("/cv") ||
         path.startsWith("/api"))
     ) {
       return NextResponse.json({
         success: true,
         ignored: true,
-        reason: "Internal / Private route",
+        reason: "Internal / Private / Excluded route",
       });
     }
 

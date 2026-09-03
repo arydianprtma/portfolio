@@ -20,11 +20,12 @@ export const PageTracker: React.FC = () => {
   const trackedRef = useRef(false);
 
   useEffect(() => {
-    // DO NOT track admin dashboard or invoice sharing pages
+    // DO NOT track admin dashboard, invoice, CV, or api routes
     if (
       !pathname ||
       pathname.startsWith("/admin") ||
       pathname.startsWith("/invoice") ||
+      pathname.startsWith("/cv") ||
       pathname.startsWith("/api")
     ) {
       return;

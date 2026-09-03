@@ -571,15 +571,10 @@ export const ChatBot: React.FC = () => {
                 <div className="w-6 h-6 rounded-full bg-[#E31B23]/10 border border-[#E31B23]/40 flex items-center justify-center text-[#E31B23] shrink-0 animate-pulse">
                   <Bot className="w-3.5 h-3.5" />
                 </div>
-                <div className="bg-[var(--background)] border border-[var(--border)] px-3.5 py-2 rounded-xl rounded-bl-none flex items-center gap-2.5 shadow-sm">
-                  <div className="flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#E31B23] animate-bounce [animation-delay:-0.3s]" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#E31B23]/80 animate-bounce [animation-delay:-0.15s]" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#E31B23]/50 animate-bounce" />
-                  </div>
-                  <span className="text-[11px] font-mono text-[var(--muted)]">
-                    {language === "id" ? "ARDP AI sedang mengetik..." : "ARDP AI is typing..."}
-                  </span>
+                <div className="bg-[var(--background)] border border-[var(--border)] px-3.5 py-2.5 rounded-xl rounded-bl-none flex items-center gap-1.5 shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#E31B23] animate-bounce [animation-delay:-0.3s]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#E31B23]/80 animate-bounce [animation-delay:-0.15s]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#E31B23]/50 animate-bounce" />
                 </div>
               </div>
             )}

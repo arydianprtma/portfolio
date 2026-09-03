@@ -423,6 +423,21 @@ export async function incrementCvDownload(metadata?: { ip?: string; userAgent?: 
   }
 }
 
+export async function getPostViews(slug: string): Promise<number> {
+  try {
+    const blogPath = `/blog/${slug}`;
+    const count = await prisma.pageViewEvent.count({
+      where: {
+        path: blogPath,
+      },
+    });
+    return count;
+  } catch (err) {
+    console.error("Error getting post views:", err);
+    return 0;
+  }
+}
+
 export async function resetAnalytics(): Promise<boolean> {
   try {
     const existing = await prisma.analytics.findFirst();

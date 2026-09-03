@@ -62,7 +62,7 @@
     },
     {
       "id": "edu-1788418295637",
-      "degree": "High School Diploma",
+      "degree": "High School",
       "institution": "SMA N 1 Banjarsari",
       "location": "City, Indonesia",
       "year": "2019- 2022",
@@ -111,14 +111,14 @@
     {
       "category": "WEB DEVELOPMENT",
       "skills": [
+        "PHP",
+        "Laravel",
         "Next.js",
         "React",
         "TypeScript",
-        "JavaScript (ESNext)",
+        "JavaScript",
         "Tailwind CSS",
         "Node.js",
-        "PHP",
-        "Laravel",
         "REST & GraphQL",
         "WebSockets"
       ],
@@ -177,6 +177,7 @@
     "Certificate No. 24ML00590",
     ""
   ],
-  "updatedAt": "2026-09-03T08:16:00.300Z",
-  "summaryId": "Pengembang Web Full-Stack berpengalaman dalam merancang, mengembangkan, dan mengoptimalkan aplikasi web berskala tinggi dengan performa optimal. Mengintegrasikan arsitektur kode bersih dan teknologi modern untuk menghadirkan produk digital yang cepat, andal, serta berpusat pada pengguna."
+  "updatedAt": "2026-09-03T08:22:25.090Z",
+  "summaryId": "Pengembang Web Full-Stack berpengalaman dalam merancang, mengembangkan, dan mengoptimalkan aplikasi web berskala tinggi dengan performa optimal. Mengintegrasikan arsitektur kode bersih dan teknologi modern untuk menghadirkan produk digital yang cepat, andal, serta berpusat pada pengguna.",
+  "showLanguages": false
 }

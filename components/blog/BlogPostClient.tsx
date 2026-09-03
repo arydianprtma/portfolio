@@ -7,6 +7,7 @@ import {
   Calendar,
   Clock,
   User,
+  Eye,
 } from "lucide-react";
 import { Post, Profile } from "@/types";
 import { useLanguage } from "@/context/LanguageContext";
@@ -15,9 +16,10 @@ import { ArticleContent } from "@/components/blog/ArticleContent";
 interface BlogPostClientProps {
   post: Post;
   profile: Profile;
+  views?: number;
 }
 
-export const BlogPostClient: React.FC<BlogPostClientProps> = ({ post, profile }) => {
+export const BlogPostClient: React.FC<BlogPostClientProps> = ({ post, profile, views = 0 }) => {
   const { language, t } = useLanguage();
 
   // Dual-language active values with fallback to English
@@ -97,6 +99,13 @@ export const BlogPostClient: React.FC<BlogPostClientProps> = ({ post, profile })
           <div className="flex items-center gap-1.5">
             <Clock className="w-4 h-4 text-[#E31B23]" />
             <span>{post.readingTime}</span>
+          </div>
+
+          <div className="flex items-center gap-1.5 text-[var(--foreground)] font-semibold">
+            <Eye className="w-4 h-4 text-[#E31B23]" />
+            <span>
+              {views} {language === "id" ? "kali dibaca" : views === 1 ? "read" : "reads"}
+            </span>
           </div>
         </div>
       </header>

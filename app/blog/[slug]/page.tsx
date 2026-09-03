@@ -1,7 +1,7 @@
 import React from "react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getPostBySlug, getPosts, getProfile } from "@/lib/storage";
+import { getPostBySlug, getPosts, getProfile, getPostViews } from "@/lib/storage";
 import { Navbar } from "@/components/navigation/Navbar";
 import { Footer } from "@/components/footer/Footer";
 import { BlogPostClient } from "@/components/blog/BlogPostClient";
@@ -42,9 +42,10 @@ export async function generateMetadata({
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
-  const [post, profile] = await Promise.all([
+  const [post, profile, views] = await Promise.all([
     getPostBySlug(slug),
     getProfile(),
+    getPostViews(slug),
   ]);
 
   if (!post || post.published === false) {
@@ -56,7 +57,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <Navbar />
 
       <main className="pt-32 pb-24 md:pt-40 md:pb-36">
-        <BlogPostClient post={post} profile={profile} />
+        <BlogPostClient post={post} profile={profile} views={views} />
       </main>
 
       <Footer />

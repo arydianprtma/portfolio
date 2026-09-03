@@ -256,7 +256,7 @@ export async function chatWithGemini({
 
   for (const modelName of ACTIVE_MODELS) {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
+    const timeoutId = setTimeout(() => controller.abort(), 12000);
 
     try {
       const restRes = await fetch(

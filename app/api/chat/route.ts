@@ -168,11 +168,46 @@ STRICT SCOPE & GUARDRAIL RULES (MANDATORY):
 3. **CONCISE & FAST ANSWERS**: Keep responses short, direct, and under 3-4 sentences whenever possible. Never output long essays.
 4. If asked about pricing, hiring, or consulting, invite them to submit an inquiry through the Contact section or email ${profile.email}.`;
 
-    // 4. Call Gemini AI
-    const reply = await chatWithGemini({
-      messages,
-      systemInstruction,
-    });
+    // 4. Call Gemini AI with graceful fallback handling
+    let reply: string;
+    try {
+      reply = await chatWithGemini({
+        messages,
+        systemInstruction,
+      });
+    } catch (aiErr) {
+      console.warn("Gemini AI API temporarily unavailable, using smart fallback reply:", aiErr);
+      const lastUserMsg = (messages[messages.length - 1]?.content || "").toLowerCase();
+
+      if (
+        lastUserMsg.includes("cv") ||
+        lastUserMsg.includes("resume") ||
+        lastUserMsg.includes("riwayat") ||
+        lastUserMsg.includes("download") ||
+        lastUserMsg.includes("liat") ||
+        lastUserMsg.includes("lihat")
+      ) {
+        reply = `Tentu! Anda dapat melihat dan mengunduh berkas resmi **Curriculum Vitae (PDF)** Ary Dian Pratama di sini:\n\n[Download Curriculum Vitae (PDF)](${resumePdfUrl})\n[Buka Halaman CV Interaktif](https://portfolio.ardp.my.id/cv)\n\nSilakan beri tahu saya jika ada rincian pengalaman atau proyek Ary yang ingin Anda ketahui lebih lanjut!`;
+      } else if (
+        lastUserMsg.includes("kontak") ||
+        lastUserMsg.includes("contact") ||
+        lastUserMsg.includes("email") ||
+        lastUserMsg.includes("hire") ||
+        lastUserMsg.includes("hubungi") ||
+        lastUserMsg.includes("kerja")
+      ) {
+        reply = `Anda dapat menghubungi Ary Dian Pratama langsung melalui:\n- Email: [${profile.email || "arydianprtma@gmail.com"}](mailto:${profile.email || "arydianprtma@gmail.com"})\n- LinkedIn: [Ary Dian Pratama](${profile.socials?.linkedin || "https://linkedin.com"})\n- Atau melalui formulir Kontak di bagian bawah halaman website ini.`;
+      } else if (
+        lastUserMsg.includes("proyek") ||
+        lastUserMsg.includes("project") ||
+        lastUserMsg.includes("karya") ||
+        lastUserMsg.includes("portfolio")
+      ) {
+        reply = `Ary Dian Pratama telah merancang dan membangun berbagai aplikasi web berkinerja tinggi serta sistem full-stack. Anda dapat melihat detail case study di bagian **Featured Works** pada portofolio ini.`;
+      } else {
+        reply = `Halo! Saya adalah ARDP AI Assistant. Saya siap membantu Anda mengetahui lebih lanjut seputar keahlian teknis (Next.js, TypeScript, PostgreSQL), portofolio proyek, serta layanan pengembangan software **Ary Dian Pratama**. Ada yang ingin Anda tanyakan seputar karya Ary?`;
+      }
+    }
 
     return NextResponse.json({
       success: true,

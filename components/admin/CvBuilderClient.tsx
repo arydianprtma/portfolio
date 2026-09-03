@@ -1176,7 +1176,9 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                     <span className="text-[#F5F5F5] font-bold text-xs uppercase block">
                       Sertifikasi & Lisensi ({isId ? "ID" : "EN"})
                     </span>
-                    <span className="text-[10px] text-[#666666]">Pisahkan dengan baris baru (Enter)</span>
+                    <span className="text-[10px] text-[#888888]">
+                      Tulis judul sertifikat di baris 1, institusi/detail di baris berikutnya. Beri 1 baris kosong (Enter 2x) untuk sertifikat baru.
+                    </span>
                   </div>
 
                   <button
@@ -1198,22 +1200,26 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                 </div>
 
                 <textarea
-                  rows={2}
-                  placeholder={isId ? "Sertifikasi Full-Stack Developer\nSpesialis Next.js" : "Full-Stack Web Development Certification\nNext.js Specialist"}
+                  rows={6}
+                  placeholder={
+                    isId
+                      ? "RH 124: Red Hat Enterprise Linux System Administration I\nRed Hat Academy • Amikom Purwokerto University • August 2024\nCertificate No. 0124-002360\n\nApplied Microsoft Office\nTrust Training Partners • Universitas Amikom Purwokerto • September 2024\nWord 90 • Excel 93.33 • PowerPoint 83.33\nCertificate No. 24ML00590"
+                      : "RH 124: Red Hat Enterprise Linux System Administration I\nRed Hat Academy • Amikom Purwokerto University • August 2024\nCertificate No. 0124-002360\n\nApplied Microsoft Office\nTrust Training Partners • Universitas Amikom Purwokerto • September 2024\nWord 90 • Excel 93.33 • PowerPoint 83.33\nCertificate No. 24ML00590"
+                  }
                   value={
                     isId
                       ? (cv.certificationsId || cv.certifications || []).join("\n")
                       : (cv.certifications || []).join("\n")
                   }
                   onChange={(e) => {
-                    const list = e.target.value.split("\n").map((s) => s.trim()).filter(Boolean);
+                    const list = e.target.value.split("\n");
                     if (isId) {
                       setCv({ ...cv, certificationsId: list });
                     } else {
                       setCv({ ...cv, certifications: list });
                     }
                   }}
-                  className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] p-2.5 text-[#F5F5F5] outline-none text-[11px] leading-relaxed"
+                  className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] p-2.5 text-[#F5F5F5] outline-none text-[11px] leading-relaxed font-mono"
                 />
               </div>
 

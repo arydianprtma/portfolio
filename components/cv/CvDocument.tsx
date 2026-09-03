@@ -52,6 +52,28 @@ function formatExpDate(exp: { startDate: string; endDate: string; current?: bool
   return "";
 }
 
+interface ParsedCert {
+  title: string;
+  lines: string[];
+}
+
+function parseCertificationList(certs?: string[]): ParsedCert[] {
+  if (!certs || certs.length === 0) return [];
+  const joined = certs.join("\n").trim();
+  if (!joined) return [];
+
+  // Split by double newline (blocks) or if each item has newlines
+  const blocks = joined.split(/\n\s*\n/).filter((b) => b.trim().length > 0);
+
+  return blocks.map((block) => {
+    const rawLines = block.split("\n").map((l) => l.trim()).filter(Boolean);
+    return {
+      title: rawLines[0] || "",
+      lines: rawLines.slice(1),
+    };
+  });
+}
+
 export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
   const isId = cv.language === "id";
   const template = cv.template || "modern";
@@ -67,8 +89,9 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
     ? (cv.languagesId && cv.languagesId.length > 0 ? cv.languagesId : cv.languages)
     : cv.languages;
 
+  const parsedCerts = parseCertificationList(displayCertifications);
   const showLanguagesSection = cv.showLanguages !== false && displayLanguages && displayLanguages.length > 0;
-  const showCertificationsSection = cv.showCertifications !== false && displayCertifications && displayCertifications.length > 0;
+  const showCertificationsSection = cv.showCertifications !== false && parsedCerts.length > 0;
 
   const enabledSkills = (cv.skillCategories || []).filter((c) => c.enabled !== false);
   const enabledExperiences = (cv.experiences || []).filter((e) => e.enabled !== false);
@@ -365,13 +388,20 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                         : isId ? "BAHASA" : "LANGUAGES"}
                     </span>
                   </h2>
-                  <div className="space-y-1 text-[10.5px] pt-0.5">
+                  <div className="space-y-1.5 text-[10.5px] pt-0.5">
                     {showCertificationsSection && (
-                      <ul className="list-disc ml-4 space-y-0.5 text-[#374151]">
-                        {displayCertifications!.map((c, i) => (
-                          <li key={i}>{c}</li>
+                      <div className="space-y-1.5">
+                        {parsedCerts.map((c, i) => (
+                          <div key={i} className="text-[10px] space-y-0.5">
+                            <span className="font-bold text-[#111827] block leading-tight">{c.title}</span>
+                            {c.lines.map((line, lIdx) => (
+                              <span key={lIdx} className="text-[#4B5563] block text-[9px] leading-tight">
+                                {line}
+                              </span>
+                            ))}
+                          </div>
                         ))}
-                      </ul>
+                      </div>
                     )}
                     {showLanguagesSection && (
                       <div className="pt-0.5 font-mono text-[9.5px] text-[#6B7280]">
@@ -519,11 +549,18 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                 <h2 className="text-[11px] font-bold uppercase tracking-wider border-b border-[#9CA3AF] pb-0.5">
                   {isId ? "SERTIFIKASI & LISENSI" : "CERTIFICATIONS"}
                 </h2>
-                <ul className="list-disc ml-5 space-y-0.5 pt-0.5 text-[10.5px] text-[#374151]">
-                  {displayCertifications!.map((c, i) => (
-                    <li key={i}>{c}</li>
+                <div className="space-y-1.5 pt-0.5 text-[11px]">
+                  {parsedCerts.map((c, i) => (
+                    <div key={i} className="text-[10px] space-y-0.5">
+                      <span className="font-bold text-[#111827] block leading-tight">{c.title}</span>
+                      {c.lines.map((line, lIdx) => (
+                        <span key={lIdx} className="text-[#4B5563] block text-[9.5px] leading-tight">
+                          {line}
+                        </span>
+                      ))}
+                    </div>
                   ))}
-                </ul>
+                </div>
               </section>
             )}
           </div>
@@ -589,11 +626,18 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                     <span className="text-[9.5px] font-bold uppercase tracking-wider text-[#111827] block">
                       {isId ? "Sertifikasi" : "Certifications"}
                     </span>
-                    <ul className="list-disc ml-3.5 space-y-0.5 text-[9.5px] text-[#4B5563]">
-                      {displayCertifications!.map((c, i) => (
-                        <li key={i} className="leading-tight">{c}</li>
+                    <div className="space-y-1.5">
+                      {parsedCerts.map((c, i) => (
+                        <div key={i} className="text-[10px] space-y-0.5">
+                          <span className="font-bold text-[#111827] block leading-tight">{c.title}</span>
+                          {c.lines.map((line, lIdx) => (
+                            <span key={lIdx} className="text-[#4B5563] block text-[9px] leading-tight">
+                              {line}
+                            </span>
+                          ))}
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   </div>
                 )}
               </div>

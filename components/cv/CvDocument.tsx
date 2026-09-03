@@ -383,8 +383,10 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                   {enabledProjects.map((proj) => (
                     <div key={proj.id}>
                       <div className="font-bold flex justify-between">
-                        <span>{proj.title} ({proj.role})</span>
-                        <span className="font-normal text-[10px] text-[#6B7280]">{proj.technologies.slice(0, 4).join(", ")}</span>
+                        <span>{proj.title}{proj.role ? ` (${proj.role})` : ""}</span>
+                        {proj.technologies && proj.technologies.length > 0 && (
+                          <span className="font-normal text-[10px] text-[#6B7280]">{proj.technologies.slice(0, 4).join(", ")}</span>
+                        )}
                       </div>
                       <p className="text-[10.5px] text-[#374151] leading-snug">{formatPlainText(proj.description)}</p>
                     </div>
@@ -400,11 +402,13 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                 </h2>
                 <div className="space-y-1 pt-0.5 text-[11px]">
                   {enabledEducation.map((edu) => (
-                    <div key={edu.id} className="flex justify-between">
+                    <div key={edu.id} className="flex justify-between items-baseline">
                       <div>
-                        <span className="font-bold">{edu.degree}</span> — <span>{edu.institution}</span>
+                        <span className="font-bold text-[#111827]">{edu.degree}</span>
+                        {edu.details && <span className="text-[#4B5563]"> ({edu.details})</span>}
+                        <span className="text-[#374151]"> — {edu.institution}</span>
                       </div>
-                      <span className="text-[#6B7280] font-mono text-[10.5px]">{edu.year}</span>
+                      <span className="text-[#6B7280] font-mono text-[10.5px] shrink-0 ml-2">{edu.year}</span>
                     </div>
                   ))}
                 </div>
@@ -455,7 +459,8 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                     {enabledEducation.map((edu) => (
                       <div key={edu.id} className="text-[10px]">
                         <span className="font-bold text-[#111827] block">{edu.degree}</span>
-                        <span className="text-[#4B5563]">{edu.institution} ({edu.year})</span>
+                        <span className="text-[#4B5563] block">{edu.institution} ({edu.year})</span>
+                        {edu.details && <span className="text-[#6B7280] block text-[9px]">{edu.details}</span>}
                       </div>
                     ))}
                   </div>

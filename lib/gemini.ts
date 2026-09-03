@@ -1,10 +1,10 @@
 import { CvData, CvExperience, CvEducation, CvProjectItem } from "@/types";
 
-// Verified active models ordered by speed and availability (tested < 1.5s latency)
+// Verified active Google Gemini models ordered by speed and capability (< 850ms latency)
 const ACTIVE_MODELS = [
-  "gemini-flash-lite-latest",
   "gemini-3.5-flash-lite",
-  "gemini-3.1-flash-lite",
+  "gemini-3.6-flash",
+  "gemini-flash-lite-latest",
 ];
 
 function getApiKey(): string {

@@ -214,7 +214,7 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                       <span className="font-bold text-[#111827] text-xs uppercase truncate">{proj.title}</span>
                       <span className="font-mono text-[9.5px] text-[#E31B23] font-semibold shrink-0">{proj.role}</span>
                     </div>
-                    <p className="text-[10.5px] text-[#4B5563] line-clamp-2 leading-tight">
+                    <p className="text-[10.5px] text-[#4B5563] leading-snug">
                       {formatPlainText(proj.description)}
                     </p>
                     {proj.technologies && proj.technologies.length > 0 && (
@@ -482,12 +482,17 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                 </h2>
                 <div className="space-y-1.5">
                   {enabledProjects.map((proj) => (
-                    <div key={proj.id} className="border-l-2 border-[#E31B23] pl-2 space-y-0.5">
+                    <div key={proj.id} className="border-l-2 border-[#E31B23] pl-2 space-y-1">
                       <div className="flex justify-between items-baseline">
-                        <span className="font-bold text-[11px]">{proj.title}</span>
+                        <span className="font-bold text-[11px] text-[#111827]">{proj.title}</span>
                         <span className="text-[9.5px] font-mono text-[#6B7280]">{proj.role}</span>
                       </div>
-                      <p className="text-[10.5px] text-[#4B5563] line-clamp-2">{formatPlainText(proj.description)}</p>
+                      <p className="text-[10.5px] text-[#4B5563] leading-snug">{formatPlainText(proj.description)}</p>
+                      {proj.technologies && proj.technologies.length > 0 && (
+                        <div className="text-[9.5px] text-[#6B7280] font-mono">
+                          <span>Tech: {proj.technologies.join(", ")}</span>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

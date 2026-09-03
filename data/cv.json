@@ -1,0 +1,165 @@
+{
+  "template": "executive",
+  "language": "en",
+  "fullName": "ARY DIAN PRATAMA",
+  "jobTitle": "WEB DEVELOPER",
+  "email": "arydianprtma@gmail.com",
+  "phone": "+62 812-3456-7890",
+  "location": "Indonesia",
+  "website": "https://portfolio.ardp.my.id",
+  "github": "https://github.com/arydianprtma",
+  "linkedin": "https://www.linkedin.com/in/arydianprtma/",
+  "summary": "I am a Website Developer focused on engineering high-performance web applications and crafting immersive, interactive digital experiences. I prioritize access speed, system stability, and clean code architecture in every solution I build. By combining modern web technologies with precision interface animations, I design responsive, fully optimized digital products that deliver seamless and engaging visual experiences for every user.",
+  "showProjects": true,
+  "showExperience": true,
+  "showSkills": true,
+  "showEducation": true,
+  "showCertifications": true,
+  "experiences": [
+    {
+      "id": "exp-1",
+      "role": "Full Stack Developer & Technical Lead",
+      "company": "Digital Craftsman / Freelance",
+      "location": "Remote / Indonesia",
+      "startDate": "2023",
+      "endDate": "Present",
+      "current": true,
+      "highlights": [
+        "Architected and deployed responsive enterprise web applications using Next.js 16, TypeScript, Tailwind CSS, and PostgreSQL.",
+        "Implemented robust authentication, role-based access control (RBAC), and automated invoice telemetry.",
+        "Optimized front-end rendering pipelines achieving 99+ Lighthouse performance scores and sub-second page loads."
+      ]
+    },
+    {
+      "id": "exp-2",
+      "role": "Systems & Game Modding Developer",
+      "company": "Independent Software Projects",
+      "location": "Kediri, Indonesia",
+      "startDate": "2022",
+      "endDate": "2024",
+      "current": false,
+      "highlights": [
+        "Engineered native C# memory hooks, real-time telemetry simulation, and custom UI components for complex systems.",
+        "Built high-throughput multi-terminal Point of Sale (POS) and inventory synchronization engines."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "id": "edu-1",
+      "degree": "S1 Informatika",
+      "institution": "Universitas Amikom Purwokerto",
+      "location": "East Java, Indonesia",
+      "year": "2022 - 2026",
+      "details": "Informatika"
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-1",
+      "title": "Pondok Pesantren Riyadussalikin & SPMB Online Platform",
+      "role": "Lead Developer",
+      "technologies": [
+        "Laravel 11",
+        "Vue.js 3",
+        "Inertia.js",
+        "Filament PHP v3"
+      ],
+      "link": "https://riyadussalikin.ponpes.id/",
+      "description": "Membangun sebuah website pondok digital beserta sistem penerimaan murid baru menggunakan teknologi terbaru seperti Laravel 11, TailwindCss, Api Key Whatsapp",
+      "highlights": [
+        "Sistem SPMB Mandiri Online multi-tahap dengan pemotong foto interaktif dan unggah dokumen KK/Akta.",
+        "E-Verifikasi Cepat & Sistem Kode QR Dinamis pada kartu peserta untuk presensi ujian instan."
+      ],
+      "enabled": true
+    },
+    {
+      "id": "proj-2",
+      "title": "Sekolah Digital - Educational Management System",
+      "role": "Lead Developer & Full-Stack Architect",
+      "technologies": [
+        "Laravel 11",
+        "Filament 3",
+        "Vue 3",
+        "Inertia.js"
+      ],
+      "link": "https://github.com/arydianprtma/sekolah-digital",
+      "description": "Designed and architected a modern, full-stack educational digital platform for High Schools (SMA). The system bridges complex administrat...",
+      "highlights": [
+        "Dynamic Public Academic Portal: High-performance public pages (News, Announcements, School Agenda, Gallery, Facilities, Achievements) fea...",
+        "Automated Online PPDB (New Student Admission): Comprehensive online admission module supporting wave management, document uploads, regist..."
+      ],
+      "enabled": false
+    }
+  ],
+  "skillCategories": [
+    {
+      "category": "WEB DEVELOPMENT",
+      "skills": [
+        "Next.js",
+        "React",
+        "TypeScript",
+        "JavaScript (ESNext)",
+        "Tailwind CSS",
+        "Node.js",
+        "PHP",
+        "Laravel",
+        "REST & GraphQL",
+        "WebSockets"
+      ],
+      "enabled": true
+    },
+    {
+      "category": "SOFTWARE & SYSTEMS",
+      "skills": [
+        "C#",
+        ".NET Core",
+        "Python",
+        "C++",
+        "System Architecture",
+        "Multi-threading & Asynchronous I/O",
+        "Process Telemetry"
+      ],
+      "enabled": true
+    },
+    {
+      "category": "DATABASES & INFRA",
+      "skills": [
+        "PostgreSQL",
+        "SQLite",
+        "Prisma ORM",
+        "Redis",
+        "Docker",
+        "Git & GitHub Actions",
+        "Linux / Bash Scripting",
+        "Vercel & Cloud Deployments"
+      ],
+      "enabled": true
+    },
+    {
+      "category": "OTHER & SPECIALIZED",
+      "skills": [
+        "Game Modding (GTA V / ScriptHook)",
+        "Native Memory Hooks & Telemetry"
+      ],
+      "enabled": false
+    },
+    {
+      "category": "MOBILE APP",
+      "skills": [
+        "Flutter",
+        "Dart"
+      ],
+      "enabled": false
+    }
+  ],
+  "languages": [
+    "Indonesian (Native)",
+    "English (Professional Working Proficiency)"
+  ],
+  "certifications": [
+    "Full-Stack Web Development Certification",
+    "Modern Next.js & React Architecture Specialist"
+  ],
+  "updatedAt": "2026-09-03T06:45:54.026Z"
+}

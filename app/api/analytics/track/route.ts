@@ -6,11 +6,12 @@ export async function POST(request: Request) {
     const body = await request.json().catch(() => ({}));
     const { event, path } = body;
 
-    // Reject tracking on admin, invoice, cv, and api paths
+    // Reject tracking on admin, invoice, proposal, cv, and api paths
     if (
       path &&
       (path.startsWith("/admin") ||
         path.startsWith("/invoice") ||
+        path.startsWith("/proposal") ||
         path.startsWith("/cv") ||
         path.startsWith("/api"))
     ) {

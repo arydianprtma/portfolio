@@ -2,10 +2,10 @@ import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "BOS — Software Developer Portfolio",
-    short_name: "BOS",
+    name: "Ary Dian Pratama — Portfolio & Engineering",
+    short_name: "ARDP",
     description:
-      "Personal portfolio of BOS, a software developer building high-performance web applications, game modding systems, native software, and interactive tools.",
+      "Personal portfolio of Ary Dian Pratama, a full-stack engineer and web developer crafting high-performance digital experiences.",
     start_url: "/",
     display: "standalone",
     background_color: "#0A0A0A",
@@ -15,6 +15,16 @@ export default function manifest(): MetadataRoute.Manifest {
         src: "/favicon.ico",
         sizes: "any",
         type: "image/x-icon",
+      },
+      {
+        src: "/icon-192.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+      {
+        src: "/icon-512.png",
+        sizes: "512x512",
+        type: "image/png",
       },
     ],
   };

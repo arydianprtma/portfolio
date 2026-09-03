@@ -152,7 +152,49 @@ export const ChatBot: React.FC = () => {
     }
   };
 
-  // Proactive Chat Prompt Timer (Triggers after 20 seconds of viewing, never in admin/invoice)
+  const [bubbleMessage, setBubbleMessage] = useState("");
+
+  const getDynamicBubbleText = (path: string | null, lang: "id" | "en") => {
+    if (path?.startsWith("/work")) {
+      return lang === "id"
+        ? "Tertarik dengan arsitektur & teknologi di balik proyek ini? Tanyakan langsung detailnya pada saya!"
+        : "Interested in the architecture & tech stack behind this project? Ask me for details!";
+    }
+    if (path?.startsWith("/blog")) {
+      return lang === "id"
+        ? "Ada pertanyaan teknis seputar artikel tutorial ini? Saya siap bantu jelaskan!"
+        : "Have technical questions about this tutorial article? I'm here to assist!";
+    }
+    if (path?.startsWith("/proposal")) {
+      return lang === "id"
+        ? "Sedang meninjau proposal proyek ini? Saya bisa bantu jelaskan rincian modul atau estimasi biayanya!"
+        : "Reviewing this project proposal? I can help explain the module details or investment costs!";
+    }
+    if (path?.startsWith("/cv")) {
+      return lang === "id"
+        ? "Ingin mengunduh berkas CV resmi (PDF) atau bertanya seputar pengalaman kerja Ary? Klik di sini!"
+        : "Looking to download the official CV (PDF) or inquire about Ary's work experience? Click here!";
+    }
+
+    // Home / General Rotating Prompts
+    const homePromptsId = [
+      "Punya kode proposal proyek, butuh file CV (PDF), atau ingin konsultasi tech stack? Tanyakan langsung pada saya!",
+      "Mau tahu tech stack utama, arsitektur Next.js & Laravel, atau estimasi proyek? Klik di sini untuk ngobrol!",
+      "Hai! Ingin lihat case study lengkap, unduh CV resmi, atau diskusi software engineering? Saya siap bantu!",
+    ];
+
+    const homePromptsEn = [
+      "Have a proposal code, need Ary's official CV (PDF), or want to consult on tech stacks? Ask me directly!",
+      "Want to know Ary's core tech stack, Next.js & Laravel architecture, or project scoping? Click here to chat!",
+      "Hi! Need assistance exploring projects, downloading Ary's CV, or discussing software engineering? Ask me!",
+    ];
+
+    const list = lang === "id" ? homePromptsId : homePromptsEn;
+    const idx = Math.floor(Math.random() * list.length);
+    return list[idx];
+  };
+
+  // Proactive Chat Prompt Timer (Triggers after 20 seconds of viewing, never in admin/invoice/proposal)
   useEffect(() => {
     if (pathname?.startsWith("/admin") || pathname?.startsWith("/invoice")) {
       return;
@@ -166,19 +208,20 @@ export const ChatBot: React.FC = () => {
           setShowPromptBubble((prev) => {
             // Only show and play chime if chat hasn't been opened yet
             if (!isOpen) {
+              setBubbleMessage(getDynamicBubbleText(pathname, language));
               playNotificationSound();
               return true;
             }
             return prev;
           });
-        }, 20000); // 20 seconds
+        }, 15000); // 15 seconds
       }
     } catch (err) {}
 
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [isOpen, pathname]);
+  }, [isOpen, pathname, language]);
 
   const initialWelcome =
     language === "id"
@@ -440,9 +483,10 @@ export const ChatBot: React.FC = () => {
                 }}
               >
                 <p className="font-mono text-xs text-[var(--foreground)] leading-relaxed">
-                  {language === "id"
-                    ? "Punya kode proposal proyek, butuh file CV (PDF), atau ingin konsultasi estimasi tech stack? Tanyakan langsung pada saya!"
-                    : "Have a proposal code, need Ary's CV (PDF), or want to consult on project tech stack? Ask me directly!"}
+                  {bubbleMessage ||
+                    (language === "id"
+                      ? "Punya kode proposal proyek, butuh file CV (PDF), atau ingin konsultasi estimasi tech stack? Tanyakan langsung pada saya!"
+                      : "Have a proposal code, need Ary's CV (PDF), or want to consult on project tech stack? Ask me directly!")}
                 </p>
                 <span className="font-mono text-[10px] text-[#E31B23] font-bold mt-1.5 inline-flex items-center gap-1 hover:underline">
                   <span>{language === "id" ? "Buka Chat" : "Open Chat"}</span>

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { CvData } from "@/types";
 import { CvDocument } from "@/components/cv/CvDocument";
+import { printCvDocument } from "@/lib/printCv";
 import {
   Printer,
   ArrowLeft,
@@ -24,9 +25,7 @@ export const PublicCvClient: React.FC<PublicCvClientProps> = ({ initialCv }) => 
   const [copied, setCopied] = useState(false);
 
   const handlePrint = () => {
-    if (typeof window !== "undefined") {
-      window.print();
-    }
+    printCvDocument();
   };
 
   const handleCopyLink = () => {

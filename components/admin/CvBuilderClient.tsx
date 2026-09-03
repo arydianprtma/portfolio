@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { CvData, CvExperience, CvEducation, CvProjectItem } from "@/types";
 import { CvDocument } from "@/components/cv/CvDocument";
+import { printCvDocument } from "@/lib/printCv";
 import {
   Save,
   CheckCircle2,
@@ -198,7 +199,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
   };
 
   const handlePrintPdf = () => {
-    window.print();
+    printCvDocument();
   };
 
   // Add Experience Item

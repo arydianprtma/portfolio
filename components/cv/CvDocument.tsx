@@ -503,9 +503,9 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
         {/* TEMPLATE 3: EXECUTIVE PROFESSIONAL (SIDEBAR LAYOUT)                        */}
         {/* ========================================================================= */}
         {template === "executive" && (
-          <div className="grid grid-cols-12 gap-5 text-[11px] leading-relaxed h-full min-h-[269mm]">
+          <div className="grid grid-cols-12 text-[11px] leading-relaxed h-[297mm] max-h-[297mm] overflow-hidden -m-[14mm] -my-[14mm]">
             {/* Left Column (35% Width) - Full Height Sidebar */}
-            <div className="col-span-4 bg-[#F3F4F6] p-4 -my-[14mm] -ml-[16mm] space-y-3.5 border-r border-[#E5E7EB] min-h-[297mm] h-full flex flex-col justify-between">
+            <div className="col-span-4 bg-[#F3F4F6] p-5 space-y-3.5 border-r border-[#E5E7EB] h-[297mm] flex flex-col justify-between">
               <div className="space-y-3.5">
                 <div>
                   <h1 className="text-lg font-bold uppercase text-[#111827]">{cv.fullName}</h1>
@@ -564,7 +564,7 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
             </div>
 
             {/* Right Column (65% Width) */}
-            <div className="col-span-8 space-y-3.5 pl-2">
+            <div className="col-span-8 p-5 space-y-3.5 h-[297mm] overflow-hidden">
               {displaySummary && (
                 <section className="space-y-1">
                   <h2 className="text-xs font-bold uppercase tracking-widest text-[#111827] border-b-2 border-[#E31B23] pb-0.5">

@@ -412,9 +412,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                 />
               </div>
             </div>
-          )}
-
-          {/* TAB 2: EXPERIENCE */}
+          )}          {/* TAB 2: EXPERIENCE */}
           {activeTab === "experience" && (
             <div className="space-y-4">
               <div className="flex justify-between items-center bg-[#101010] p-3 border border-[#1F1F1F]">
@@ -434,7 +432,25 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
               {cv.experiences.map((exp, expIdx) => (
                 <div key={exp.id} className="bg-[#101010] border border-[#1F1F1F] p-4 space-y-3">
                   <div className="flex items-center justify-between pb-2 border-b border-[#1C1C1C]">
-                    <span className="text-[#E31B23] font-bold text-xs">Role #{expIdx + 1}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[#E31B23] font-bold text-xs">Role #{expIdx + 1}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = [...cv.experiences];
+                          updated[expIdx].enabled = updated[expIdx].enabled === false ? true : false;
+                          setCv({ ...cv, experiences: updated });
+                        }}
+                        className={`px-2.5 py-0.5 text-[10px] font-bold uppercase transition-colors border ${
+                          exp.enabled !== false
+                            ? "bg-emerald-950/80 text-emerald-400 border-emerald-800"
+                            : "bg-[#181818] text-[#666666] border-[#2B2B2B]"
+                        }`}
+                      >
+                        {exp.enabled !== false ? "● ON (Tampil)" : "○ OFF (Disembunyikan)"}
+                      </button>
+                    </div>
+
                     <button
                       type="button"
                       onClick={() =>
@@ -548,7 +564,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                           }}
                           className="p-1.5 text-[#666666] hover:text-red-400"
                         >
-                          <Trash2 className="w-3 h-3" />
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     ))}
@@ -574,14 +590,51 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
           {/* TAB 3: PROJECTS */}
           {activeTab === "projects" && (
             <div className="space-y-4">
-              <div className="bg-[#101010] p-3 border border-[#1F1F1F]">
+              <div className="bg-[#101010] p-3 border border-[#1F1F1F] flex items-center justify-between">
                 <span className="text-[#A0A0A0] uppercase tracking-wider text-[11px] font-semibold">
                   Featured Projects on Resume ({cv.projects.length})
+                </span>
+                <span className="text-[10px] text-[#666666]">
+                  Disarankan 1-2 proyek agar muat 1 lembar A4
                 </span>
               </div>
 
               {cv.projects.map((proj, pIdx) => (
                 <div key={proj.id} className="bg-[#101010] border border-[#1F1F1F] p-4 space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-[#1C1C1C]">
+                    <div className="flex items-center gap-3">
+                      <span className="text-[#E31B23] font-bold text-xs uppercase">{proj.title}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = [...cv.projects];
+                          updated[pIdx].enabled = updated[pIdx].enabled === false ? true : false;
+                          setCv({ ...cv, projects: updated });
+                        }}
+                        className={`px-2.5 py-0.5 text-[10px] font-bold uppercase transition-colors border ${
+                          proj.enabled !== false
+                            ? "bg-emerald-950/80 text-emerald-400 border-emerald-800"
+                            : "bg-[#181818] text-[#666666] border-[#2B2B2B]"
+                        }`}
+                      >
+                        {proj.enabled !== false ? "● ON (Tampil)" : "○ OFF (Disembunyikan)"}
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setCv({
+                          ...cv,
+                          projects: cv.projects.filter((_, i) => i !== pIdx),
+                        })
+                      }
+                      className="text-[#777777] hover:text-red-400 p-1 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input
                       type="text"
@@ -624,7 +677,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
 
                   <textarea
                     rows={2}
-                    placeholder="Project Brief Description"
+                    placeholder="Project Brief Description (Singkat & Padat)"
                     value={proj.description}
                     onChange={(e) => {
                       const updated = [...cv.projects];
@@ -641,22 +694,46 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
           {/* TAB 4: SKILLS */}
           {activeTab === "skills" && (
             <div className="bg-[#101010] border border-[#1F1F1F] p-4 space-y-4">
-              <span className="text-[#A0A0A0] uppercase tracking-wider text-[11px] font-semibold block">
-                Technical Skill Categories
-              </span>
+              <div className="flex items-center justify-between pb-2 border-b border-[#1F1F1F]">
+                <span className="text-[#A0A0A0] uppercase tracking-wider text-[11px] font-semibold">
+                  Technical Skill Categories ({cv.skillCategories.length})
+                </span>
+                <span className="text-[10px] text-[#666666]">
+                  Klik tombol ON/OFF untuk memilih kategori yang ingin ditampilkan
+                </span>
+              </div>
 
               {cv.skillCategories.map((cat, cIdx) => (
-                <div key={cIdx} className="space-y-1.5 pb-3 border-b border-[#1C1C1C]">
-                  <input
-                    type="text"
-                    value={cat.category}
-                    onChange={(e) => {
-                      const updated = [...cv.skillCategories];
-                      updated[cIdx].category = e.target.value;
-                      setCv({ ...cv, skillCategories: updated });
-                    }}
-                    className="font-bold text-[#E31B23] bg-transparent border-b border-[#2B2B2B] px-1 py-0.5 outline-none text-xs"
-                  />
+                <div key={cIdx} className="space-y-2 pb-4 border-b border-[#1C1C1C]">
+                  <div className="flex items-center justify-between">
+                    <input
+                      type="text"
+                      value={cat.category}
+                      onChange={(e) => {
+                        const updated = [...cv.skillCategories];
+                        updated[cIdx].category = e.target.value;
+                        setCv({ ...cv, skillCategories: updated });
+                      }}
+                      className="font-bold text-[#E31B23] bg-transparent border-b border-[#2B2B2B] px-1 py-0.5 outline-none text-xs"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = [...cv.skillCategories];
+                        updated[cIdx].enabled = updated[cIdx].enabled === false ? true : false;
+                        setCv({ ...cv, skillCategories: updated });
+                      }}
+                      className={`px-3 py-1 text-[10px] font-bold uppercase transition-colors border ${
+                        cat.enabled !== false
+                          ? "bg-emerald-950/80 text-emerald-400 border-emerald-800"
+                          : "bg-[#181818] text-[#666666] border-[#2B2B2B]"
+                      }`}
+                    >
+                      {cat.enabled !== false ? "● ON (Tampil di CV)" : "○ OFF (Disembunyikan)"}
+                    </button>
+                  </div>
+
                   <input
                     type="text"
                     value={cat.skills.join(", ")}
@@ -694,6 +771,40 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
 
               {cv.education.map((edu, eIdx) => (
                 <div key={edu.id} className="bg-[#101010] border border-[#1F1F1F] p-4 space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-[#1C1C1C]">
+                    <div className="flex items-center gap-3">
+                      <span className="text-[#E31B23] font-bold text-xs">Pendidikan #{eIdx + 1}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = [...cv.education];
+                          updated[eIdx].enabled = updated[eIdx].enabled === false ? true : false;
+                          setCv({ ...cv, education: updated });
+                        }}
+                        className={`px-2.5 py-0.5 text-[10px] font-bold uppercase transition-colors border ${
+                          edu.enabled !== false
+                            ? "bg-emerald-950/80 text-emerald-400 border-emerald-800"
+                            : "bg-[#181818] text-[#666666] border-[#2B2B2B]"
+                        }`}
+                      >
+                        {edu.enabled !== false ? "● ON (Tampil)" : "○ OFF (Disembunyikan)"}
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setCv({
+                          ...cv,
+                          education: cv.education.filter((_, i) => i !== eIdx),
+                        })
+                      }
+                      className="text-[#777777] hover:text-red-400 p-1 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input
                       type="text"

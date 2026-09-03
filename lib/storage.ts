@@ -1006,6 +1006,22 @@ export async function deleteInvoice(id: string): Promise<boolean> {
 // -------------------------------------------------------------
 const CV_DATA_PATH = path.join(process.cwd(), "data", "cv.json");
 
+function cleanCvSnippet(text?: string): string {
+  if (!text) return "";
+  const cleaned = text
+    .replace(/###\s+/g, "")
+    .replace(/##\s+/g, "")
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/\*(.*?)\*/g, "$1")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/\[(.*?)\]\(.*?\)/g, "$1")
+    .replace(/^[0-9]+\.\s*/gm, "")
+    .replace(/^-\s*/gm, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  return cleaned.length > 140 ? cleaned.slice(0, 137) + "..." : cleaned;
+}
+
 export async function generateDefaultCvFromProfile(): Promise<CvData> {
   const profile = await getProfile();
   const skills = await getSkills();
@@ -1015,21 +1031,22 @@ export async function generateDefaultCvFromProfile(): Promise<CvData> {
     id: `proj-${idx + 1}`,
     title: p.title,
     role: p.role || "Lead Developer",
-    technologies: p.technologies || [],
+    technologies: p.technologies ? p.technologies.slice(0, 4) : [],
     link: p.demo || p.github || "",
-    description: p.overview || p.description,
+    description: cleanCvSnippet(p.overview || p.description),
     highlights:
       p.features && p.features.length > 0
-        ? p.features.slice(0, 3)
+        ? p.features.slice(0, 2).map((f) => cleanCvSnippet(f))
         : [
             `Engineered high-performance web architecture using ${p.technologies.slice(0, 3).join(", ")}.`,
-            `Integrated responsive UI, secure data handling, and optimized rendering workflows.`,
           ],
+    enabled: idx < 2, // Enable top 2 projects by default to fit clean A4 page
   }));
 
-  const skillCats = skills.map((s) => ({
+  const skillCats = skills.map((s, idx) => ({
     category: s.title,
     skills: s.skills,
+    enabled: idx < 3, // Enable first 3 categories by default
   }));
 
   return {

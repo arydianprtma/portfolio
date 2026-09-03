@@ -150,6 +150,12 @@ export interface Invoice {
   updatedAt?: string;
 }
 
+export interface CvSkillCategory {
+  category: string;
+  skills: string[];
+  enabled?: boolean;
+}
+
 export interface CvExperience {
   id: string;
   role: string;
@@ -159,6 +165,7 @@ export interface CvExperience {
   endDate: string;
   current?: boolean;
   highlights: string[];
+  enabled?: boolean;
 }
 
 export interface CvEducation {
@@ -168,6 +175,7 @@ export interface CvEducation {
   location?: string;
   year: string;
   details?: string;
+  enabled?: boolean;
 }
 
 export interface CvProjectItem {
@@ -178,6 +186,7 @@ export interface CvProjectItem {
   link?: string;
   description: string;
   highlights: string[];
+  enabled?: boolean;
 }
 
 export interface CvData {
@@ -195,7 +204,7 @@ export interface CvData {
   experiences: CvExperience[];
   education: CvEducation[];
   projects: CvProjectItem[];
-  skillCategories: { category: string; skills: string[] }[];
+  skillCategories: CvSkillCategory[];
   languages?: string[];
   certifications?: string[];
   updatedAt?: string;

@@ -57,8 +57,12 @@ export const ProposalDocument: React.FC<ProposalDocumentProps> = ({
             </p>
             <div className="text-[11px] text-gray-600 mt-1 space-x-2">
               <span>Email: {profile?.email || "arydianprtma@gmail.com"}</span>
-              <span>•</span>
-              <span>Web: https://portfolio.ardp.my.id</span>
+              {profile?.socials?.whatsapp && (
+                <>
+                  <span>•</span>
+                  <span>WhatsApp: {profile.socials.whatsapp}</span>
+                </>
+              )}
               <span>•</span>
               <span>Indonesia</span>
             </div>

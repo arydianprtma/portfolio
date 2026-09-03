@@ -1,14 +1,14 @@
 {
   "template": "executive",
-  "language": "id",
+  "language": "en",
   "fullName": "ARY DIAN PRATAMA",
-  "jobTitle": "WEB DEVELOPER",
+  "jobTitle": "Web Dev",
   "email": "arydianprtma@gmail.com",
-  "phone": "+62 812-3456-7890",
-  "location": "Indonesia",
-  "website": "https://portfolio.ardp.my.id",
-  "github": "https://github.com/arydianprtma",
-  "linkedin": "https://www.linkedin.com/in/arydianprtma/",
+  "phone": "+62 822-1400-3125",
+  "location": "Pangandaran | Jawa Barat",
+  "website": "",
+  "github": "",
+  "linkedin": "",
   "summary": "I am a Website Developer focused on engineering high-performance web applications and crafting immersive, interactive digital experiences. I prioritize access speed, system stability, and clean code architecture in every solution I build. By combining modern web technologies with precision interface animations, I design responsive, fully optimized digital products that deliver seamless and engaging visual experiences for every user.",
   "showProjects": true,
   "showExperience": true,
@@ -35,26 +35,26 @@
   "education": [
     {
       "id": "edu-1",
-      "degree": "S1 Informatika",
+      "degree": "Bachelor of Computer Science (S.Kom.) in Informatics",
       "institution": "Universitas Amikom Purwokerto",
       "location": "East Java, Indonesia",
       "year": "2022 - 2026",
-      "details": "Informatika"
+      "details": "Informatics"
     },
     {
       "id": "edu-1788418295637",
-      "degree": "Sekolah Menengah Atas",
+      "degree": "High School Diploma",
       "institution": "SMA N 1 Banjarsari",
       "location": "City, Indonesia",
       "year": "2019- 2022",
-      "details": "Ilmu Pengetahuan Sosial"
+      "details": "Social Sciences"
     }
   ],
   "projects": [
     {
       "id": "proj-1",
       "title": "Pondok Pesantren Riyadussalikin & SPMB Online Platform",
-      "role": "",
+      "role": "Lead Developer & Full-Stack Architect",
       "technologies": [
         "Laravel 11",
         "Vue.js 3",
@@ -62,7 +62,7 @@
         "Filament PHP v3"
       ],
       "link": "https://riyadussalikin.ponpes.id/",
-      "description": "Merancang dan mendeploy platform digital pesantren modern berskala tinggi menggunakan Laravel 11, Vue.js 3, Inertia.js, dan Filament PHP v3, yang dilengkapi sistem Penerimaan Peserta Didik Baru (PPDB) otomatis dan integrasi WhatsApp API untuk notifikasi real-time, sehingga berhasil memangkas beban kerja administratif manual serta meningkatkan responsivitas sistem secara signifikan.",
+      "description": "Designed and deployed a high-scale modern Islamic boarding school (pesantren) digital platform using Laravel 11, Vue.js 3, Inertia.js, and Filament PHP v3, featuring an automated New Student Admission (PPDB) system and WhatsApp API integration for real-time notifications, successfully cutting manual administrative workload and significantly boosting system responsiveness.",
       "highlights": [
         "Sistem SPMB Mandiri Online multi-tahap dengan pemotong foto interaktif dan unggah dokumen KK/Akta.",
         "E-Verifikasi Cepat & Sistem Kode QR Dinamis pada kartu peserta untuk presensi ujian instan."
@@ -80,7 +80,7 @@
         "Inertia.js"
       ],
       "link": "https://github.com/arydianprtma/sekolah-digital",
-      "description": "Merancang dan membangun platform digital pendidikan skala menengah atas secara end-to-end menggunakan Laravel 11, Filament 3, dan Vue.js via Inertia.js untuk mengintegrasikan kompleksitas administrasi akademik, meningkatkan skalabilitas sistem, serta mengoptimalkan pengalaman pengguna secara optimal.",
+      "description": "Designed and built an end-to-end digital platform for senior high school education using Laravel 11, Filament 3, and Vue.js via Inertia.js to streamline complex academic administration, enhance system scalability, and optimize the overall user experience.",
       "highlights": [
         "Dynamic Public Academic Portal: High-performance public pages (News, Announcements, School Agenda, Gallery, Facilities, Achievements) fea...",
         "Automated Online PPDB (New Student Admission): Comprehensive online admission module supporting wave management, document uploads, regist..."
@@ -151,5 +151,6 @@
     "Full-Stack Web Development Certification",
     "Modern Next.js & React Architecture Specialist"
   ],
-  "updatedAt": "2026-09-03T06:58:25.512Z"
+  "updatedAt": "2026-09-03T07:09:01.337Z",
+  "summaryId": "Pengembang Web Full-Stack berpengalaman dalam merancang, mengembangkan, dan mengoptimalkan aplikasi web berskala tinggi dengan performa optimal. Mengintegrasikan arsitektur kode bersih dan teknologi modern untuk menghadirkan produk digital yang cepat, andal, serta berpusat pada pengguna."
 }

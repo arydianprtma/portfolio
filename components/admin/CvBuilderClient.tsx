@@ -1161,6 +1161,102 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                   </div>
                 );
               })}
+
+              {/* Certifications Management */}
+              <div className="bg-[#101010] border border-[#1F1F1F] p-4 space-y-3">
+                <div className="flex items-center justify-between pb-2 border-b border-[#1C1C1C]">
+                  <div>
+                    <span className="text-[#F5F5F5] font-bold text-xs uppercase block">
+                      Sertifikasi & Lisensi ({isId ? "ID" : "EN"})
+                    </span>
+                    <span className="text-[10px] text-[#666666]">Pisahkan dengan baris baru (Enter)</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setCv({
+                        ...cv,
+                        showCertifications: cv.showCertifications === false ? true : false,
+                      })
+                    }
+                    className={`px-3 py-1 text-[10px] font-bold uppercase transition-colors border ${
+                      cv.showCertifications !== false
+                        ? "bg-emerald-950/80 text-emerald-400 border-emerald-800"
+                        : "bg-[#181818] text-[#666666] border-[#2B2B2B]"
+                    }`}
+                  >
+                    {cv.showCertifications !== false ? "● ON (Tampil)" : "○ OFF (Disembunyikan)"}
+                  </button>
+                </div>
+
+                <textarea
+                  rows={2}
+                  placeholder={isId ? "Sertifikasi Full-Stack Developer\nSpesialis Next.js" : "Full-Stack Web Development Certification\nNext.js Specialist"}
+                  value={
+                    isId
+                      ? (cv.certificationsId || cv.certifications || []).join("\n")
+                      : (cv.certifications || []).join("\n")
+                  }
+                  onChange={(e) => {
+                    const list = e.target.value.split("\n").map((s) => s.trim()).filter(Boolean);
+                    if (isId) {
+                      setCv({ ...cv, certificationsId: list });
+                    } else {
+                      setCv({ ...cv, certifications: list });
+                    }
+                  }}
+                  className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] p-2.5 text-[#F5F5F5] outline-none text-[11px] leading-relaxed"
+                />
+              </div>
+
+              {/* Languages Management */}
+              <div className="bg-[#101010] border border-[#1F1F1F] p-4 space-y-3">
+                <div className="flex items-center justify-between pb-2 border-b border-[#1C1C1C]">
+                  <div>
+                    <span className="text-[#F5F5F5] font-bold text-xs uppercase block">
+                      Bahasa yang Dikuasai ({isId ? "ID" : "EN"})
+                    </span>
+                    <span className="text-[10px] text-[#666666]">Pisahkan dengan koma (,) atau tombol OFF jika tidak mau ditampilkan</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setCv({
+                        ...cv,
+                        showLanguages: cv.showLanguages === false ? true : false,
+                      })
+                    }
+                    className={`px-3 py-1 text-[10px] font-bold uppercase transition-colors border ${
+                      cv.showLanguages !== false
+                        ? "bg-emerald-950/80 text-emerald-400 border-emerald-800"
+                        : "bg-[#181818] text-[#666666] border-[#2B2B2B]"
+                    }`}
+                  >
+                    {cv.showLanguages !== false ? "● ON (Tampil)" : "○ OFF (Disembunyikan)"}
+                  </button>
+                </div>
+
+                <input
+                  type="text"
+                  placeholder={isId ? "Bahasa Indonesia (Native), English (Profesional)" : "Indonesian (Native), English (Working Proficiency)"}
+                  value={
+                    isId
+                      ? (cv.languagesId || cv.languages || []).join(", ")
+                      : (cv.languages || []).join(", ")
+                  }
+                  onChange={(e) => {
+                    const list = e.target.value.split(",").map((s) => s.trim()).filter(Boolean);
+                    if (isId) {
+                      setCv({ ...cv, languagesId: list });
+                    } else {
+                      setCv({ ...cv, languages: list });
+                    }
+                  }}
+                  className="w-full bg-[#141414] border border-[#262626] focus:border-[#E31B23] px-3 py-2 text-[#F5F5F5] outline-none text-[11px]"
+                />
+              </div>
             </div>
           )}
         </div>

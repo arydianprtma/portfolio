@@ -47,6 +47,12 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
   const displayCertifications = isId
     ? (cv.certificationsId && cv.certificationsId.length > 0 ? cv.certificationsId : cv.certifications)
     : cv.certifications;
+  const displayLanguages = isId
+    ? (cv.languagesId && cv.languagesId.length > 0 ? cv.languagesId : cv.languages)
+    : cv.languages;
+
+  const showLanguagesSection = cv.showLanguages !== false && displayLanguages && displayLanguages.length > 0;
+  const showCertificationsSection = cv.showCertifications !== false && displayCertifications && displayCertifications.length > 0;
 
   const enabledSkills = (cv.skillCategories || []).filter((c) => c.enabled !== false);
   const enabledExperiences = (cv.experiences || []).filter((e) => e.enabled !== false);
@@ -277,7 +283,7 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
             )}
 
             {/* Education & Certifications Row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-1">
+            <div className={`grid grid-cols-1 ${showCertificationsSection || showLanguagesSection ? "sm:grid-cols-2 gap-5" : ""} pt-1`}>
               {/* Education */}
               {enabledEducation.length > 0 && (
                 <section className="space-y-1">
@@ -308,27 +314,35 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
               )}
 
               {/* Certifications / Languages */}
-              <section className="space-y-1">
-                <h2 className="text-xs font-mono font-bold tracking-widest text-[#111827] uppercase flex items-center gap-2 border-b border-[#E5E7EB] pb-1">
-                  <span className="w-2 h-2 bg-[#E31B23] inline-block" />
-                  <span>{isId ? "SERTIFIKASI & BAHASA" : "CERTIFICATIONS & LANGUAGES"}</span>
-                </h2>
-                <div className="space-y-1 text-[10.5px] pt-0.5">
-                  {displayCertifications && displayCertifications.length > 0 && (
-                    <ul className="list-disc ml-4 space-y-0.5 text-[#374151]">
-                      {displayCertifications.map((c, i) => (
-                        <li key={i}>{c}</li>
-                      ))}
-                    </ul>
-                  )}
-                  {cv.languages && cv.languages.length > 0 && (
-                    <div className="pt-0.5 font-mono text-[9.5px] text-[#6B7280]">
-                      <span className="font-bold text-[#111827]">{isId ? "Bahasa: " : "Languages: "}</span>
-                      <span>{cv.languages.join(" • ")}</span>
-                    </div>
-                  )}
-                </div>
-              </section>
+              {(showCertificationsSection || showLanguagesSection) && (
+                <section className="space-y-1">
+                  <h2 className="text-xs font-mono font-bold tracking-widest text-[#111827] uppercase flex items-center gap-2 border-b border-[#E5E7EB] pb-1">
+                    <span className="w-2 h-2 bg-[#E31B23] inline-block" />
+                    <span>
+                      {showCertificationsSection && showLanguagesSection
+                        ? isId ? "SERTIFIKASI & BAHASA" : "CERTIFICATIONS & LANGUAGES"
+                        : showCertificationsSection
+                        ? isId ? "SERTIFIKASI" : "CERTIFICATIONS"
+                        : isId ? "BAHASA" : "LANGUAGES"}
+                    </span>
+                  </h2>
+                  <div className="space-y-1 text-[10.5px] pt-0.5">
+                    {showCertificationsSection && (
+                      <ul className="list-disc ml-4 space-y-0.5 text-[#374151]">
+                        {displayCertifications!.map((c, i) => (
+                          <li key={i}>{c}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {showLanguagesSection && (
+                      <div className="pt-0.5 font-mono text-[9.5px] text-[#6B7280]">
+                        <span className="font-bold text-[#111827]">{isId ? "Bahasa: " : "Languages: "}</span>
+                        <span>{displayLanguages!.join(" • ")}</span>
+                      </div>
+                    )}
+                  </div>
+                </section>
+              )}
             </div>
           </div>
         )}
@@ -518,10 +532,10 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
               </div>
 
               {/* Languages at bottom of sidebar */}
-              {cv.languages && cv.languages.length > 0 && (
+              {showLanguagesSection && (
                 <div className="pt-2 border-t border-[#D1D5DB] text-[9.5px] text-[#6B7280] font-mono">
                   <span className="font-bold text-[#111827] block mb-0.5">{isId ? "Bahasa" : "Languages"}</span>
-                  <span>{cv.languages.join(" • ")}</span>
+                  <span>{displayLanguages!.join(" • ")}</span>
                 </div>
               )}
             </div>

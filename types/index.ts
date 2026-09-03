@@ -217,11 +217,13 @@ export interface CvData {
   showSkills?: boolean;
   showEducation?: boolean;
   showCertifications?: boolean;
+  showLanguages?: boolean;
   experiences: CvExperience[];
   education: CvEducation[];
   projects: CvProjectItem[];
   skillCategories: CvSkillCategory[];
   languages?: string[];
+  languagesId?: string[];
   certifications?: string[];
   certificationsId?: string[];
   updatedAt?: string;

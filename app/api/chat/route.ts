@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { chatWithGemini, ChatMessage } from "@/lib/gemini";
-import { getProfile, getSkills, getProjects, getPosts } from "@/lib/storage";
+import { getProfile, getSkills, getProjects, getPosts, getCvData } from "@/lib/storage";
 
 // In-memory sliding-window rate limiter (Max 15 queries per 10 minutes per IP)
 interface RateLimitRecord {
@@ -75,11 +75,12 @@ export async function POST(request: Request) {
     }
 
     // 3. Dynamically Fetch Knowledge Context from Database / Storage
-    const [profile, skills, projects, posts] = await Promise.all([
+    const [profile, skills, projects, posts, cvData] = await Promise.all([
       getProfile(),
       getSkills(),
       getProjects(),
       getPosts(),
+      getCvData(),
     ]);
 
     const projectsSummary = projects
@@ -99,11 +100,30 @@ export async function POST(request: Request) {
       .map((p) => `- ${p.title} (Tags: ${(p.tags || []).join(", ")}): ${p.summary}`)
       .join("\n");
 
+    const cvExperiencesSummary = (cvData.experiences || [])
+      .filter((e) => e.enabled !== false)
+      .map((e) => `- ${e.role} @ ${e.company} (${e.startDate} - ${e.endDate || "Present"})`)
+      .join("\n");
+
+    const cvEducationSummary = (cvData.education || [])
+      .filter((e) => e.enabled !== false)
+      .map((e) => `- ${e.degree} at ${e.institution} (${e.year})`)
+      .join("\n");
+
+    const cvCertsSummary = (cvData.certifications || []).join("; ");
+
+    // Compute direct PDF CV link (from profile.resumeUrl or standard resume link)
+    const resumePdfUrl = profile.resumeUrl
+      ? profile.resumeUrl.startsWith("http")
+        ? profile.resumeUrl
+        : `https://portfolio.ardp.my.id${profile.resumeUrl}`
+      : "https://portfolio.ardp.my.id/cv";
+
     const systemInstruction = `You are the official AI Assistant and interactive digital twin for Ary Dian Pratama (often called "Ary" or "ARDP").
 You are embedded directly inside his personal developer portfolio website (portfolio.ardp.my.id).
 
 YOUR MISSION:
-Help visitors, recruiters, and prospective clients learn about Ary's background, engineering philosophy, tech stack, featured projects, services, and how to hire/contact him.
+Help visitors, recruiters, and prospective clients learn about Ary's background, engineering philosophy, tech stack, featured projects, services, provide his CV / Resume, and how to hire/contact him.
 
 ABOUT ARY DIAN PRATAMA:
 - Name: ${profile.name || "Ary Dian Pratama"}
@@ -113,6 +133,16 @@ ABOUT ARY DIAN PRATAMA:
 - Availability: ${profile.status || "Available for select opportunities & contract work"}
 - Bio: ${(profile.bio || []).join(" ")}
 - Socials: GitHub (${profile.socials?.github || ""}), LinkedIn (${profile.socials?.linkedin || ""}), Instagram (${profile.socials?.instagram || ""})
+
+CURRICULUM VITAE (CV / RESUME) ACCESS & DETAILS (CRITICAL):
+- Direct Official CV (PDF) Download Link: [Download Curriculum Vitae (PDF)](${resumePdfUrl})
+- Interactive Live CV Web Page: [Buka Halaman CV Interaktif](https://portfolio.ardp.my.id/cv)
+- When a user or recruiter asks for Ary's CV, Resume, curriculum vitae, riwayat hidup, or asks how to download/see his CV:
+  1. Immediately provide the direct links warmly! Example: "Tentu! Anda dapat mengunduh file PDF resmi Ary di sini: [Download Curriculum Vitae (PDF)](${resumePdfUrl}) atau melihat versi interaktifnya di [Halaman CV Interaktif](https://portfolio.ardp.my.id/cv)."
+  2. Briefly summarize his highlights if helpful:
+     * Experience: ${cvExperiencesSummary || "Lead Developer & Software Engineering Projects"}
+     * Education: ${cvEducationSummary || "Bachelor of Computer Science (Informatics)"}
+     * Certifications: ${cvCertsSummary || "Red Hat System Administration, Applied Microsoft Office"}
 
 CORE SKILLS & TECH STACK:
 ${skillsSummary || "Next.js, React, TypeScript, Tailwind CSS, GSAP, PostgreSQL, Prisma, Supabase, Node.js, REST APIs, Git"}

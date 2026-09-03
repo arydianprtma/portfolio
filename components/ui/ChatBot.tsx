@@ -24,17 +24,17 @@ interface Message {
 }
 
 const QUICK_PROMPTS_ID = [
+  "Bisa minta file CV / Resume Ary?",
   "Apa tech stack utama yang dikuasai Ary?",
   "Ceritakan proyek-proyek unggulan Ary",
   "Bagaimana cara menghubungi atau hire Ary?",
-  "Berapa pengalaman & spesialisasi Ary?",
 ];
 
 const QUICK_PROMPTS_EN = [
+  "Can I get / download Ary's CV or Resume?",
   "What is Ary's core tech stack?",
   "Tell me about Ary's featured projects",
   "How can I contact or hire Ary for a project?",
-  "What are Ary's primary engineering strengths?",
 ];
 
 export const ChatBot: React.FC = () => {

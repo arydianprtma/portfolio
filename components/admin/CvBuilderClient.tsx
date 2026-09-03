@@ -695,6 +695,12 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                         onChange={(e) => {
                           const updated = [...cv.experiences];
                           updated[expIdx].endDate = e.target.value;
+                          const val = e.target.value.trim().toLowerCase();
+                          if (val === "present" || val === "sekarang" || val === "") {
+                            updated[expIdx].current = true;
+                          } else {
+                            updated[expIdx].current = false;
+                          }
                           setCv({ ...cv, experiences: updated });
                         }}
                         className="bg-[#141414] border border-[#262626] px-3 py-1.5 text-[#F5F5F5] outline-none"

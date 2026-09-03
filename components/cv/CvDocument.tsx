@@ -36,6 +36,22 @@ function formatPlainText(text?: string): string {
     .trim();
 }
 
+function formatExpDate(exp: { startDate: string; endDate: string; current?: boolean }, isId: boolean): string {
+  const start = (exp.startDate || "").trim();
+  const end = (exp.endDate || "").trim();
+  const endLower = end.toLowerCase();
+
+  if (exp.current && (end === "" || endLower === "present" || endLower === "sekarang")) {
+    const currentText = isId ? "Sekarang" : "Present";
+    return start ? `${start} – ${currentText}` : currentText;
+  }
+
+  if (start && end) return `${start} – ${end}`;
+  if (start && !end) return start;
+  if (!start && end) return end;
+  return "";
+}
+
 export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
   const isId = cv.language === "id";
   const template = cv.template || "modern";
@@ -251,7 +267,7 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                             {role} <span className="text-[#E31B23]">@ {exp.company}</span>
                           </span>
                           <span className="font-mono text-[10px] text-[#6B7280] font-semibold">
-                            {exp.startDate} – {exp.current ? (isId ? "Sekarang" : "Present") : exp.endDate} {loc ? `| ${loc}` : ""}
+                            {formatExpDate(exp, isId)} {loc ? `| ${loc}` : ""}
                           </span>
                         </div>
                         {highlights && highlights.length > 0 && (
@@ -429,7 +445,7 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                         <div className="flex justify-between font-bold text-[11.5px]">
                           <span>{role} — {exp.company}</span>
                           <span className="font-normal text-[10.5px] text-[#6B7280]">
-                            {exp.startDate} – {exp.current ? (isId ? "Sekarang" : "Present") : exp.endDate}
+                            {formatExpDate(exp, isId)}
                           </span>
                         </div>
                         {highlights && (
@@ -590,7 +606,7 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
                         <div key={exp.id} className="space-y-0.5">
                           <div className="flex justify-between items-baseline">
                             <span className="font-bold text-[11.5px] text-[#111827]">{role}</span>
-                            <span className="text-[9.5px] font-mono text-[#6B7280]">{exp.startDate} – {exp.current ? (isId ? "Sekarang" : "Present") : exp.endDate}</span>
+                            <span className="text-[9.5px] font-mono text-[#6B7280]">{formatExpDate(exp, isId)}</span>
                           </div>
                           <span className="text-[10.5px] font-semibold text-[#E31B23] block">{exp.company}</span>
                           {highlights && (

@@ -241,7 +241,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
   return (
     <div className="space-y-6 font-mono text-xs pb-16">
       {/* Top Action Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-[#1F1F1F]">
+      <div className="no-print flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-[#1F1F1F]">
         <div>
           <div className="flex items-center gap-2 text-[#E31B23] text-xs font-semibold uppercase tracking-widest mb-1">
             <span>●</span>
@@ -298,21 +298,21 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
 
       {/* Notifications */}
       {saveSuccess && (
-        <div className="p-4 bg-emerald-950/40 border border-emerald-800 text-emerald-300 flex items-center gap-3">
+        <div className="no-print p-4 bg-emerald-950/40 border border-emerald-800 text-emerald-300 flex items-center gap-3">
           <CheckCircle2 className="w-5 h-5 shrink-0" />
           <span>CV data saved successfully!</span>
         </div>
       )}
 
       {setActiveSuccess && (
-        <div className="p-4 bg-emerald-950/40 border border-emerald-800 text-emerald-300 flex items-center gap-3">
+        <div className="no-print p-4 bg-emerald-950/40 border border-emerald-800 text-emerald-300 flex items-center gap-3">
           <CheckCircle2 className="w-5 h-5 shrink-0" />
           <span>CV data saved and set as active resume on your portfolio landing page!</span>
         </div>
       )}
 
       {error && (
-        <div className="p-4 bg-red-950/40 border border-red-800 text-red-300 flex items-center gap-3">
+        <div className="no-print p-4 bg-red-950/40 border border-red-800 text-red-300 flex items-center gap-3">
           <AlertCircle className="w-5 h-5 shrink-0" />
           <span>{error}</span>
         </div>
@@ -323,7 +323,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
         {/* ========================================================================= */}
         {/* LEFT COLUMN: CUSTOMIZER & EDITORS (5 COLS)                                 */}
         {/* ========================================================================= */}
-        <div className="xl:col-span-5 space-y-5">
+        <div className="no-print xl:col-span-5 space-y-5">
           {/* Template Layout & Language Bar */}
           <div className="bg-[#101010] border border-[#1F1F1F] p-4 space-y-3.5">
             <div className="flex items-center justify-between">
@@ -1264,8 +1264,8 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
         {/* ========================================================================= */}
         {/* RIGHT COLUMN: LIVE REAL-TIME A4 CV PREVIEW (7 COLS)                        */}
         {/* ========================================================================= */}
-        <div className="xl:col-span-7 space-y-4">
-          <div className="flex items-center justify-between bg-[#101010] p-3 border border-[#1F1F1F]">
+        <div className="xl:col-span-7 space-y-4 print:w-full print:p-0 print:m-0">
+          <div className="no-print flex items-center justify-between bg-[#101010] p-3 border border-[#1F1F1F]">
             <div className="flex items-center gap-2 text-[#777777] text-[11px] font-semibold uppercase">
               <Eye className="w-4 h-4 text-[#E31B23]" />
               <span>A4 Live Preview ({cv.language === "id" ? "Bahasa Indonesia" : "English"})</span>
@@ -1291,7 +1291,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
           </div>
 
           {/* Paper Container */}
-          <div className="bg-[#0A0A0A] border border-[#222222] p-4 sm:p-8 overflow-auto flex justify-center max-h-[850px] shadow-inner">
+          <div className="bg-[#0A0A0A] border border-[#222222] p-4 sm:p-8 overflow-auto flex justify-center max-h-[850px] shadow-inner print:p-0 print:m-0 print:border-none print:bg-transparent print:max-h-none print:overflow-visible">
             <CvDocument cv={cv} scale={previewZoom} />
           </div>
         </div>

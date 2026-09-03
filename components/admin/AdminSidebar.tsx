@@ -56,7 +56,7 @@ export const AdminSidebar: React.FC = () => {
   return (
     <>
       {/* Mobile Top Header Bar with Hamburger Menu (Visible on < md) */}
-      <div className="md:hidden bg-[#0D0D0D] border-b border-[#1F1F1F] p-4 flex items-center justify-between sticky top-0 z-40 select-none">
+      <div className="no-print md:hidden bg-[#0D0D0D] border-b border-[#1F1F1F] p-4 flex items-center justify-between sticky top-0 z-40 select-none">
         <Link href="/admin" className="group">
           <Logo size="sm" subtext="ADMIN" />
         </Link>
@@ -74,13 +74,13 @@ export const AdminSidebar: React.FC = () => {
       {mobileMenuOpen && (
         <div
           onClick={() => setMobileMenuOpen(false)}
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 md:hidden transition-opacity"
+          className="no-print fixed inset-0 bg-black/80 backdrop-blur-sm z-40 md:hidden transition-opacity"
         />
       )}
 
       {/* Main Sidebar Drawer (Slide-in on mobile, fixed on desktop) */}
       <aside
-        className={`fixed md:sticky top-0 bottom-0 left-0 z-50 md:z-auto w-72 md:w-64 bg-[#0D0D0D] border-r border-[#1F1F1F] flex flex-col justify-between h-full md:h-screen p-6 select-none shrink-0 transition-transform duration-300 ease-in-out ${
+        className={`no-print fixed md:sticky top-0 bottom-0 left-0 z-50 md:z-auto w-72 md:w-64 bg-[#0D0D0D] border-r border-[#1F1F1F] flex flex-col justify-between h-full md:h-screen p-6 select-none shrink-0 transition-transform duration-300 ease-in-out ${
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >

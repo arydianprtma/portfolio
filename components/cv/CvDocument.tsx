@@ -83,39 +83,62 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
         }}
         className="cv-a4-page bg-white text-[#111827] shadow-2xl mx-auto font-sans relative overflow-hidden"
       >
-        {/* Strict Print Stylesheet */}
+        {/* Strict Print Stylesheet: Isolates purely the A4 paper and hides all other page elements */}
         <style dangerouslySetInnerHTML={{
           __html: `
             @media print {
               @page {
                 size: A4 portrait;
-                margin: 10mm 12mm 10mm 12mm;
+                margin: 0 !important;
               }
-              body {
-                background: #ffffff !important;
-                color: #111827 !important;
+              *, *:before, *:after {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
+                color-adjust: exact !important;
               }
-              .no-print, .no-print * {
+              html, body {
+                width: 210mm !important;
+                height: 297mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #ffffff !important;
+                color: #111827 !important;
+                overflow: hidden !important;
+              }
+              /* Hide all headers, sidebars, buttons, forms, navs */
+              .no-print, nav, aside, header, footer, button, input, textarea, select {
                 display: none !important;
               }
+              /* Force the scaler wrapper to sit at top-left of the page cleanly */
               .cv-a4-scaler-wrapper {
-                width: 100% !important;
-                height: auto !important;
-                min-height: auto !important;
-                overflow: visible !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                max-width: 210mm !important;
+                max-height: 297mm !important;
+                margin: 0 auto !important;
+                padding: 0 !important;
+                overflow: hidden !important;
+                z-index: 9999999 !important;
+                background: #ffffff !important;
               }
               #cv-printable-document {
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
                 transform: none !important;
                 box-shadow: none !important;
                 margin: 0 !important;
-                padding: 0 !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                height: auto !important;
-                min-height: auto !important;
-                overflow: visible !important;
+                padding: 12mm 15mm !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                min-height: 297mm !important;
+                box-sizing: border-box !important;
+                background: #ffffff !important;
               }
             }
             .cv-a4-page {

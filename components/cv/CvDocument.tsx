@@ -42,7 +42,10 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ cv, scale = 1 }) => {
 
   const enabledSkills = (cv.skillCategories || []).filter((c) => c.enabled !== false);
   const enabledExperiences = (cv.experiences || []).filter((e) => e.enabled !== false);
-  const enabledProjects = (cv.projects || []).filter((p) => p.enabled !== false);
+  const enabledProjects =
+    cv.showProjects !== false
+      ? (cv.projects || []).filter((p) => p.enabled !== false)
+      : [];
   const enabledEducation = (cv.education || []).filter((e) => e.enabled !== false);
 
   return (

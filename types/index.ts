@@ -201,6 +201,11 @@ export interface CvData {
   github?: string;
   linkedin?: string;
   summary: string;
+  showProjects?: boolean;
+  showExperience?: boolean;
+  showSkills?: boolean;
+  showEducation?: boolean;
+  showCertifications?: boolean;
   experiences: CvExperience[];
   education: CvEducation[];
   projects: CvProjectItem[];

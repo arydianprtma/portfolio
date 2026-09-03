@@ -1064,6 +1064,11 @@ export async function generateDefaultCvFromProfile(): Promise<CvData> {
       Array.isArray(profile.bio) && profile.bio.length > 0
         ? profile.bio.join(" ")
         : "High-performance software engineer with extensive experience in Next.js, TypeScript, C#, and scalable web architectures. Passionate about crafting immersive, ultra-responsive digital products and robust full-stack systems.",
+    showProjects: false,
+    showExperience: true,
+    showSkills: true,
+    showEducation: true,
+    showCertifications: true,
     experiences: [
       {
         id: "exp-1",

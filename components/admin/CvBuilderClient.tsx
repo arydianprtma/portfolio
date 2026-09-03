@@ -590,13 +590,36 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
           {/* TAB 3: PROJECTS */}
           {activeTab === "projects" && (
             <div className="space-y-4">
-              <div className="bg-[#101010] p-3 border border-[#1F1F1F] flex items-center justify-between">
-                <span className="text-[#A0A0A0] uppercase tracking-wider text-[11px] font-semibold">
-                  Featured Projects on Resume ({cv.projects.length})
-                </span>
-                <span className="text-[10px] text-[#666666]">
-                  Disarankan 1-2 proyek agar muat 1 lembar A4
-                </span>
+              <div className="bg-[#101010] p-4 border border-[#1F1F1F] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <span className="text-[#F5F5F5] uppercase tracking-wider text-xs font-bold block">
+                    Bagian Proyek di CV (Key Projects)
+                  </span>
+                  <span className="text-[10px] text-[#777777] block mt-0.5">
+                    {cv.showProjects === false
+                      ? "Bagian proyek saat ini DISEMBUNYIKAN dari lembar CV agar lebih padat & fokus."
+                      : "Bagian proyek saat ini DITAMPILKAN di lembar CV."}
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setCv({
+                      ...cv,
+                      showProjects: cv.showProjects === false ? true : false,
+                    })
+                  }
+                  className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors border shrink-0 ${
+                    cv.showProjects !== false
+                      ? "bg-emerald-950/90 text-emerald-300 border-emerald-700 hover:bg-emerald-900"
+                      : "bg-[#1C1C1C] text-[#888888] border-[#333333] hover:text-white"
+                  }`}
+                >
+                  {cv.showProjects !== false
+                    ? "● SECTION PROYEK ON"
+                    : "○ SECTION PROYEK OFF (SEMBUNYIKAN)"}
+                </button>
               </div>
 
               {cv.projects.map((proj, pIdx) => (

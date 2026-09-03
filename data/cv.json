@@ -9,7 +9,7 @@
   "website": "",
   "github": "",
   "linkedin": "",
-  "summary": "Saya merupakan lulusan S1 Informatika Universitas Amikom Purwokerto yang memiliki ketertarikan pada pengembangan aplikasi web. Berfokus sebagai Full-Stack Web Developer, saya terbiasa mempelajari dan menerapkan berbagai teknologi frontend dan backend dalam membangun aplikasi. Memiliki perhatian pada struktur kode, stabilitas sistem, kemudahan pemeliharaan, dan performa aplikasi. Terbiasa mengeksplorasi berbagai kebutuhan pengembangan aplikasi, mulai dari antarmuka pengguna, API, autentikasi, database, hingga sistem backend. Saya juga memiliki ketertarikan untuk terus mempelajari teknologi dan pendekatan baru dalam membangun solusi digital yang efektif dan mudah digunakan.",
+  "summary": "I am an Informatics graduate from Universitas Amikom Purwokerto with an interest in web application development. As a Full-Stack Web Developer, I am accustomed to learning and applying various frontend and backend technologies to build web applications. I pay close attention to code structure, system stability, maintainability, and application performance. I am familiar with exploring various aspects of application development, from user interfaces, APIs, and authentication to databases and backend systems. I am also eager to continuously learn new technologies and approaches to building effective and user-friendly digital solutions.",
   "showProjects": true,
   "showExperience": true,
   "showSkills": true,
@@ -30,6 +30,25 @@
         "Optimized frontend rendering and delivery, achieving 99+ Lighthouse Performance scores and sub-second page load times."
       ],
       "enabled": true
+    },
+    {
+      "id": "exp-1788422594151",
+      "role": "Full-Stack Web Developer",
+      "roleId": "Software Engineer",
+      "company": "DEMA Poltekkes Kemenkes Semarang",
+      "location": "Remote",
+      "locationId": "Remote",
+      "startDate": "2025",
+      "endDate": "Oktober",
+      "current": false,
+      "highlights": [
+        "Designed and developed a web-based voting platform for the HIMA Governor election at Poltekkes Kemenkes Semarang.",
+        "Implemented digital voting workflows including user authentication, candidate selection, and vote submission.",
+        "Focused on vote integrity and preventing duplicate submissions while providing a simple and accessible voting experience."
+      ],
+      "highlightsId": [
+        "Merekayasa sistem web terdistribusi dengan performa tinggi dan kueri data optimal."
+      ]
     }
   ],
   "education": [
@@ -158,6 +177,6 @@
     "Certificate No. 24ML00590",
     ""
   ],
-  "updatedAt": "2026-09-03T08:00:05.337Z",
+  "updatedAt": "2026-09-03T08:16:00.300Z",
   "summaryId": "Pengembang Web Full-Stack berpengalaman dalam merancang, mengembangkan, dan mengoptimalkan aplikasi web berskala tinggi dengan performa optimal. Mengintegrasikan arsitektur kode bersih dan teknologi modern untuk menghadirkan produk digital yang cepat, andal, serta berpusat pada pengguna."
 }

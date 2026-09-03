@@ -199,7 +199,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
   };
 
   const handlePrintPdf = () => {
-    printCvDocument();
+    printCvDocument("Curriculum Vitae");
   };
 
   // Add Experience Item

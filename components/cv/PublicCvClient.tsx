@@ -25,7 +25,7 @@ export const PublicCvClient: React.FC<PublicCvClientProps> = ({ initialCv }) => 
   const [copied, setCopied] = useState(false);
 
   const handlePrint = () => {
-    printCvDocument();
+    printCvDocument("Curriculum Vitae");
   };
 
   const handleCopyLink = () => {

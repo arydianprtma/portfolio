@@ -2,10 +2,15 @@
  * Utility to print CV cleanly as an exact, isolated 1-page A4 PDF
  * without browser headers/footers, dark margins, or dashboard UI elements.
  */
-export function printCvDocument() {
+export function printCvDocument(customTitle: string = "Curriculum Vitae") {
   const sourceElement = document.getElementById("cv-printable-document");
   if (!sourceElement) {
+    const origTitle = document.title;
+    document.title = customTitle;
     window.print();
+    setTimeout(() => {
+      document.title = origTitle;
+    }, 1500);
     return;
   }
 
@@ -53,7 +58,7 @@ export function printCvDocument() {
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Curriculum Vitae - ARDP</title>
+        <title>${customTitle}</title>
         ${styleElements}
         <style>
           @page {
@@ -101,9 +106,16 @@ export function printCvDocument() {
   `);
   iframeDoc.close();
 
+  // Temporarily set document title so browser print dialog default save filename is "Curriculum Vitae"
+  const origTitle = document.title;
+  document.title = customTitle;
+
   // Trigger print once fonts and styles are parsed
   setTimeout(() => {
     iframe.contentWindow?.focus();
     iframe.contentWindow?.print();
+    setTimeout(() => {
+      document.title = origTitle;
+    }, 2000);
   }, 400);
 }

@@ -19,6 +19,7 @@ import {
   Clock,
   Tag,
   Sparkles,
+  Globe,
 } from "lucide-react";
 import { ArticleContent } from "@/components/blog/ArticleContent";
 
@@ -111,8 +112,8 @@ export const PostForm: React.FC<PostFormProps> = ({
       setLangTab(targetLang);
       setTranslateSuccess(
         targetLang === "id"
-          ? "✓ Artikel lengkap (Konten Markdown, Ringkasan, & Tag) berhasil digenerate ke Bahasa Indonesia!"
-          : "✓ Full article draft (Markdown Content, Summary, & Tags) generated in English!"
+          ? "Artikel lengkap (Konten Markdown, Ringkasan, & Tag) berhasil digenerate ke Bahasa Indonesia!"
+          : "Full article draft (Markdown Content, Summary, & Tags) generated in English!"
       );
       setTimeout(() => setTranslateSuccess(null), 5000);
     } catch (err: any) {
@@ -279,7 +280,7 @@ export const PostForm: React.FC<PostFormProps> = ({
                   ) : (
                     <Sparkles className="w-3.5 h-3.5" />
                   )}
-                  <span>{translating ? "Translating..." : langTab === "en" ? "AI Translate (EN ➔ ID)" : "AI Translate (ID ➔ EN)"}</span>
+                  <span>{translating ? "Translating..." : langTab === "en" ? "AI Translate (EN -> ID)" : "AI Translate (ID -> EN)"}</span>
                 </button>
 
                 {/* Language Selector Tab */}
@@ -287,24 +288,26 @@ export const PostForm: React.FC<PostFormProps> = ({
                   <button
                     type="button"
                     onClick={() => setLangTab("en")}
-                    className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors ${
+                    className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors flex items-center gap-1.5 ${
                       langTab === "en"
                         ? "bg-[#E31B23] text-white"
                         : "text-[#777777] hover:text-[#F5F5F5]"
                     }`}
                   >
-                    🇬🇧 EN
+                    <Globe className="w-3 h-3" />
+                    EN
                   </button>
                   <button
                     type="button"
                     onClick={() => setLangTab("id")}
-                    className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors ${
+                    className={`px-3 py-1 uppercase font-bold tracking-wider transition-colors flex items-center gap-1.5 ${
                       langTab === "id"
                         ? "bg-[#E31B23] text-white"
                         : "text-[#777777] hover:text-[#F5F5F5]"
                     }`}
                   >
-                    🇮🇩 ID
+                    <Globe className="w-3 h-3" />
+                    ID
                   </button>
                 </div>
               </div>

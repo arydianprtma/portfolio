@@ -18,6 +18,7 @@ import {
   Languages,
   Layers,
   ArrowRight,
+  Globe,
 } from "lucide-react";
 
 interface CvBuilderClientProps {
@@ -360,24 +361,26 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                   <button
                     type="button"
                     onClick={() => setCv({ ...cv, language: "en" })}
-                    className={`px-2.5 py-1 text-[10px] uppercase font-bold transition-colors ${
+                    className={`px-2.5 py-1 text-[10px] uppercase font-bold transition-colors flex items-center gap-1.5 ${
                       cv.language === "en"
                         ? "bg-[#E31B23] text-white"
                         : "text-[#777777] hover:text-white"
                     }`}
                   >
-                    🇺🇸 English (EN)
+                    <Globe className="w-3 h-3" />
+                    <span>English (EN)</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setCv({ ...cv, language: "id" })}
-                    className={`px-2.5 py-1 text-[10px] uppercase font-bold transition-colors ${
+                    className={`px-2.5 py-1 text-[10px] uppercase font-bold transition-colors flex items-center gap-1.5 ${
                       cv.language === "id"
                         ? "bg-[#E31B23] text-white"
                         : "text-[#777777] hover:text-white"
                     }`}
                   >
-                    🇮🇩 Indonesia (ID)
+                    <Globe className="w-3 h-3" />
+                    <span>Indonesia (ID)</span>
                   </button>
                 </div>
               </div>
@@ -395,7 +398,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                 ) : (
                   <Sparkles className="w-3 h-3 text-amber-400" />
                 )}
-                <span>✨ AI Auto-Translate {isId ? "EN ➔ ID" : "ID ➔ EN"}</span>
+                <span>AI Auto-Translate {isId ? "EN -> ID" : "ID -> EN"}</span>
               </button>
             </div>
           </div>
@@ -403,7 +406,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
           {/* Active Language Mode Banner */}
           <div className="flex items-center justify-between bg-[#151515] px-3.5 py-2 border border-[#242424] text-xs">
             <div className="flex items-center gap-2">
-              <span className="text-[13px]">{isId ? "🇮🇩" : "🇺🇸"}</span>
+              <Globe className="w-3.5 h-3.5 text-[#E31B23]" />
               <span className="font-bold text-[#F5F5F5] text-[11px]">
                 {isId ? "Sedang Mengedit Versi: Bahasa Indonesia (ID)" : "Editing Mode: English Version (EN)"}
               </span>
@@ -967,7 +970,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
                           ) : (
                             <Sparkles className="w-3 h-3" />
                           )}
-                          <span>✨ AI Polish Deskripsi</span>
+                          <span>AI Polish Deskripsi</span>
                         </button>
                       </div>
 

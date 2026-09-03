@@ -98,10 +98,10 @@ export const CvUploader: React.FC<CvUploaderProps> = ({
         <div className="flex items-center gap-3">
           <a
             href="/admin/cv"
-            className="text-[11px] text-[#E31B23] hover:text-red-400 font-bold transition-colors inline-flex items-center gap-1"
+            className="text-[11px] text-[#E31B23] hover:text-red-400 font-bold transition-colors inline-flex items-center gap-1.5"
           >
-            <Sparkles className="w-3 h-3" />
-            <span>✨ Open AI CV Builder</span>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Open AI CV Builder</span>
           </a>
           <button
             type="button"

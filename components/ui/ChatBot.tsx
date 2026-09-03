@@ -271,7 +271,7 @@ export const ChatBot: React.FC = () => {
       const errorMessage: Message = {
         id: `err-${Date.now()}`,
         role: "assistant",
-        content: `⚠️ **Terjadi kendala:** ${err.message || "Gagal menghubungi server."}`,
+        content: `**Terjadi kendala:** ${err.message || "Gagal menghubungi server."}`,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -429,8 +429,8 @@ export const ChatBot: React.FC = () => {
               >
                 <p className="font-mono text-xs text-[var(--foreground)] leading-relaxed">
                   {language === "id"
-                    ? "Hai! 👋 Mau tanya-tanya langsung seputar proyek atau skill Ary? Klik di sini!"
-                    : "Hi! 👋 Want to ask anything about Ary's projects or skills? Click here!"}
+                    ? "Hai! Mau tanya-tanya langsung seputar proyek atau skill Ary? Klik di sini!"
+                    : "Hi! Want to ask anything about Ary's projects or skills? Click here!"}
                 </p>
                 <span className="font-mono text-[10px] text-[#E31B23] font-bold mt-1.5 inline-flex items-center gap-1 hover:underline">
                   <span>{language === "id" ? "Buka Chat" : "Open Chat"}</span>
@@ -443,62 +443,68 @@ export const ChatBot: React.FC = () => {
                   e.stopPropagation();
                   setShowPromptBubble(false);
                   try {
-                    sessionStorage.setItem("ardp_chat_prompt_dismissed", "true");
-                  } catch (err) {}
+                    localStorage.setItem("ardp_chatbot_dismissed", Date.now().toString());
+                  } catch (e) {}
                 }}
-                className="p-1 text-[var(--muted)] hover:text-[#E31B23] rounded transition-colors -mr-1 -mt-1"
-                title="Tutup notifikasi"
+                className="text-[var(--muted)] hover:text-[#E31B23] p-1 transition-colors shrink-0"
+                aria-label="Tutup saran"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
             </div>
-
-            {/* Speech Bubble Arrow pointing down to the button */}
-            <div className="absolute -bottom-1.5 right-8 sm:right-10 w-3 h-3 bg-[var(--surface)] border-b border-r border-[var(--border)] rotate-45" />
           </div>
         )}
 
         <button
-          type="button"
           onClick={() => {
             setShowPromptBubble(false);
             setIsOpen(!isOpen);
           }}
-          aria-label={isOpen ? "Close AI Chat" : "Chat with ARDP AI Assistant"}
-          title={isOpen ? "Tutup Chat" : "Tanya ARDP AI Assistant"}
-          className="relative h-11 sm:h-12 px-3.5 sm:px-4 rounded-full bg-[var(--surface)] border border-[var(--border)] hover:border-[#E31B23] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2.5 group"
+          className={`group flex items-center gap-2.5 px-4 py-3 rounded-full font-mono text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-2xl ${
+            isOpen
+              ? "bg-[var(--surface)] border border-[var(--border)] text-[var(--foreground)] hover:border-[#E31B23]"
+              : "bg-[#E31B23] text-white hover:bg-[#c9141b] hover:scale-105"
+          }`}
+          aria-label="Toggle ARDP AI Chatbot"
+          data-cursor="pointer"
         >
-          <div className="relative">
-            <Bot className="w-5 h-5 text-[#E31B23] group-hover:rotate-12 transition-transform duration-300" />
-            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          </div>
-          <span className="hidden sm:inline font-mono text-xs font-bold text-[var(--foreground)] tracking-wider">
-            ARDP AI
-          </span>
+          {isOpen ? (
+            <>
+              <X className="w-4 h-4" />
+              <span>{language === "id" ? "TUTUP CHAT" : "CLOSE CHAT"}</span>
+            </>
+          ) : (
+            <>
+              <div className="relative">
+                <Bot className="w-4 h-4" />
+                <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-400" />
+              </div>
+              <span>ARDP AI</span>
+            </>
+          )}
         </button>
       </div>
 
-      {/* 2. Expandable Cyberpunk Chat Window */}
       {isOpen && (
-        <div className="fixed inset-x-3 top-16 bottom-4 sm:inset-auto sm:bottom-24 sm:right-8 sm:w-[420px] sm:max-h-[600px] sm:h-[82vh] z-50 bg-[var(--surface)] border border-[var(--border)] rounded-xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
-          {/* Top Decorative Cyberpunk Strip */}
-          <div className="h-1 bg-gradient-to-r from-[#E31B23] via-red-500 to-[#E31B23]" />
-
-          {/* Header Bar */}
-          <div className="p-3.5 sm:p-4 border-b border-[var(--border)] bg-[var(--background)]/90 backdrop-blur-sm flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#E31B23]/15 border border-[#E31B23]/40 flex items-center justify-center text-[#E31B23]">
+        <div className="fixed inset-x-4 bottom-20 sm:inset-auto sm:bottom-24 sm:right-6 w-auto sm:w-[400px] h-[580px] max-h-[85vh] bg-[var(--surface)] border border-[var(--border)] rounded-lg shadow-2xl flex flex-col z-50 overflow-hidden font-sans backdrop-blur-xl animate-in slide-in-from-bottom-5 duration-300">
+          <div className="bg-[var(--background)] px-4 py-3.5 border-b border-[var(--border)] flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-[#E31B23]/10 border border-[#E31B23]/30 flex items-center justify-center text-[#E31B23]">
                 <Bot className="w-4 h-4" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="font-display text-xs font-bold text-[var(--foreground)] uppercase tracking-wider">
-                    ARDP AI ASSISTANT
+                  <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--foreground)]">
+                    ARDP AI Assistant
                   </h3>
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="inline-flex items-center gap-1 text-[9px] font-mono text-emerald-500 font-semibold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                    Online
+                  </span>
                 </div>
-                <p className="font-mono text-[10px] text-[var(--muted)]">
-                  Personal Digital Assistant
+                <p className="text-[10px] text-[var(--muted)] font-mono">
+                  {language === "id" ? "Didukung Gemini 1.5 Flash" : "Powered by Gemini 1.5 Flash"}
                 </p>
               </div>
             </div>
@@ -507,8 +513,8 @@ export const ChatBot: React.FC = () => {
               <button
                 type="button"
                 onClick={handleResetChat}
-                className="p-1.5 text-[var(--muted)] hover:text-[#E31B23] hover:bg-[var(--surface)] rounded transition-colors"
-                title="Bersihkan Percakapan (Clear Chat)"
+                className="p-1.5 text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface)] rounded transition-colors"
+                title={language === "id" ? "Mulai Percakapan Baru" : "Reset Conversation"}
               >
                 <RotateCcw className="w-3.5 h-3.5" />
               </button>
@@ -516,64 +522,60 @@ export const ChatBot: React.FC = () => {
                 type="button"
                 onClick={() => setIsOpen(false)}
                 className="p-1.5 text-[var(--muted)] hover:text-[#E31B23] hover:bg-[var(--surface)] rounded transition-colors"
-                title="Tutup Chat"
+                title="Close"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* Messages Thread Container */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3.5 font-mono text-xs select-text">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs font-mono">
             {messages.map((m) => (
               <div
                 key={m.id}
                 className={`flex gap-2.5 ${
-                  m.role === "user" ? "justify-end" : "justify-start"
+                  m.role === "user" ? "flex-row-reverse" : "flex-row"
                 }`}
               >
-                {m.role === "assistant" && (
-                  <div className="w-6 h-6 rounded-full bg-[#E31B23]/10 border border-[#E31B23]/30 flex items-center justify-center shrink-0 text-[#E31B23] mt-0.5">
-                    <Bot className="w-3.5 h-3.5" />
-                  </div>
-                )}
-
                 <div
-                  className={`max-w-[85%] rounded-lg p-3 leading-relaxed text-xs ${
+                  className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-[10px] ${
                     m.role === "user"
-                      ? "bg-[#E31B23] text-white rounded-br-none"
-                      : "bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] rounded-bl-none"
+                      ? "bg-[#E31B23] text-white"
+                      : "bg-[var(--background)] border border-[var(--border)] text-[#E31B23]"
                   }`}
                 >
-                  <div className="text-[11px] leading-relaxed break-words">
-                    {formatMarkdown(m.content)}
-                  </div>
-                  <div
-                    className={`mt-1.5 text-[9px] text-right ${
+                  {m.role === "user" ? <User className="w-3 h-3" /> : <Bot className="w-3 h-3" />}
+                </div>
+
+                <div
+                  className={`max-w-[80%] rounded-lg p-3 leading-relaxed whitespace-pre-wrap ${
+                    m.role === "user"
+                      ? "bg-[#E31B23] text-white rounded-br-none"
+                      : "bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] rounded-bl-none font-sans text-xs"
+                  }`}
+                >
+                  {formatMarkdown(m.content)}
+                  <span
+                    className={`block text-[9px] mt-1.5 font-mono ${
                       m.role === "user" ? "text-white/70" : "text-[var(--muted)]"
                     }`}
                   >
                     {m.timestamp}
-                  </div>
+                  </span>
                 </div>
-
-                {m.role === "user" && (
-                  <div className="w-6 h-6 rounded-full bg-[var(--background)] border border-[var(--border)] flex items-center justify-center shrink-0 text-[var(--muted)] mt-0.5">
-                    <User className="w-3.5 h-3.5" />
-                  </div>
-                )}
               </div>
             ))}
 
-            {/* Loading Indicator */}
             {loading && (
-              <div className="flex gap-2.5 justify-start items-center">
-                <div className="w-6 h-6 rounded-full bg-[#E31B23]/10 border border-[#E31B23]/30 flex items-center justify-center shrink-0 text-[#E31B23]">
-                  <Bot className="w-3.5 h-3.5" />
+              <div className="flex gap-2.5">
+                <div className="w-6 h-6 rounded-full bg-[var(--background)] border border-[var(--border)] flex items-center justify-center text-[#E31B23] shrink-0">
+                  <Bot className="w-3 h-3" />
                 </div>
-                <div className="p-3 bg-[var(--background)] border border-[var(--border)] rounded-lg rounded-bl-none flex items-center gap-2 text-[var(--muted)] text-[11px]">
+                <div className="bg-[var(--background)] border border-[var(--border)] p-3 rounded-lg rounded-bl-none flex items-center gap-2 text-[var(--muted)]">
                   <Loader2 className="w-3.5 h-3.5 animate-spin text-[#E31B23]" />
-                  <span>ARDP AI sedang mengetik...</span>
+                  <span className="text-[11px] font-mono">
+                    {language === "id" ? "Sedang mengetik..." : "Typing..."}
+                  </span>
                 </div>
               </div>
             )}
@@ -581,11 +583,11 @@ export const ChatBot: React.FC = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Question Chips (If only initial greeting is shown) */}
           {messages.length <= 2 && (
             <div className="px-3 pb-2 pt-1 border-t border-[var(--border)]/50 bg-[var(--background)]/50 flex flex-wrap gap-1.5">
-              <span className="text-[10px] text-[var(--muted)] font-mono block w-full mb-0.5">
-                💡 {language === "id" ? "Pertanyaan Cepat:" : "Quick Questions:"}
+              <span className="text-[10px] text-[var(--muted)] font-mono flex items-center gap-1.5 w-full mb-0.5">
+                <Sparkles className="w-3 h-3 text-[#E31B23]" />
+                <span>{language === "id" ? "Pertanyaan Cepat:" : "Quick Questions:"}</span>
               </span>
               {quickPrompts.map((prompt, pIdx) => (
                 <button

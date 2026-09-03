@@ -194,6 +194,18 @@ export const ChatBot: React.FC = () => {
     },
   ]);
 
+  // Sync welcome message when user toggles language between ID and EN
+  useEffect(() => {
+    setMessages((prev) => {
+      const welcomeText =
+        language === "id"
+          ? "Halo! Saya adalah **ARDP AI Assistant** (didukung Google Gemini 3.5 Flash), asisten digital resmi Ary Dian Pratama.\n\nSaya dapat membantu Anda:\n• 📄 **Unduh Berkas Resmi CV / Resume (PDF)**\n• 📑 **Analisis & Cek Detail Proposal Proyek** *(cukup masukkan kode atau link proposal Anda)*\n• 🛠️ **Konsultasi Estimasi Proyek & Rekomendasi Tech Stack**\n• 🚀 **Menjelaskan Studi Kasus & Arsitektur Sistem**\n\nAda yang ingin Anda tanyakan atau diskusikan hari ini?"
+          : "Hello! I am the **ARDP AI Assistant** (powered by Google Gemini 3.5 Flash), Ary Dian Pratama's official digital twin.\n\nI can assist you with:\n• 📄 **Download Official CV / Resume (PDF)**\n• 📑 **Inspect & Explain Project Proposals** *(simply provide your proposal code or link)*\n• 🛠️ **Tech Stack & Project Scoping Consultations**\n• 🚀 **Explore System Architecture & Case Studies**\n\nHow may I help you today?";
+
+      return prev.map((m) => (m.id === "welcome-1" ? { ...m, content: welcomeText } : m));
+    });
+  }, [language]);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -533,9 +545,15 @@ export const ChatBot: React.FC = () => {
           <div className="bg-[var(--surface-hover)] border-b border-[var(--border)] px-4 py-2 flex items-center justify-between text-[10px] font-mono text-[var(--muted)]">
             <span className="flex items-center gap-1.5">
               <Sparkles className="w-3 h-3 text-[#E31B23] shrink-0" />
-              <span className="truncate">CV PDF • Cek Proposal • Konsultasi Proyek</span>
+              <span className="truncate">
+                {language === "id"
+                  ? "CV PDF • Cek Proposal • Konsultasi Proyek"
+                  : "CV PDF • Check Proposal • Project Scoping"}
+              </span>
             </span>
-            <span className="text-[9px] text-emerald-500 font-bold uppercase shrink-0">Ready</span>
+            <span className="text-[9px] text-emerald-500 font-bold uppercase shrink-0">
+              {language === "id" ? "SIAP" : "READY"}
+            </span>
           </div>
 
           <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs font-mono">

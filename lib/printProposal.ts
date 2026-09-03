@@ -87,6 +87,17 @@ export function printProposalDocument(customTitle: string = "Project Proposal") 
             background-color: #ffffff !important;
             color: #111827 !important;
           }
+          table {
+            border-collapse: collapse !important;
+            width: 100% !important;
+          }
+          table, th, td {
+            border: 1px solid #4b5563 !important;
+          }
+          tr {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
           .page-break {
             page-break-before: always !important;
             break-before: page !important;

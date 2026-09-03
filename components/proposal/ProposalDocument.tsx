@@ -2,18 +2,6 @@
 
 import React from "react";
 import { Proposal, Profile } from "@/types";
-import {
-  Calendar,
-  Clock,
-  CheckCircle2,
-  Layers,
-  FileText,
-  Mail,
-  Phone,
-  MapPin,
-  ShieldCheck,
-  CreditCard,
-} from "lucide-react";
 
 interface ProposalDocumentProps {
   proposal: Proposal;
@@ -54,289 +42,342 @@ export const ProposalDocument: React.FC<ProposalDocumentProps> = ({
   return (
     <div
       id="proposal-printable-document"
-      className="bg-white text-gray-900 font-sans p-8 sm:p-12 max-w-4xl mx-auto shadow-none print:p-0 print:m-0 print:shadow-none print:max-w-none print:w-full"
+      className="bg-white text-gray-900 font-sans p-8 sm:p-14 max-w-4xl mx-auto shadow-none print:p-0 print:m-0 print:shadow-none print:max-w-none print:w-full leading-relaxed"
+      style={{ fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif" }}
     >
-      {/* 1. Proposal Header */}
-      <div className="border-b-2 border-gray-200 pb-8 mb-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          {/* Brand Identity */}
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded bg-gray-900 text-white flex items-center justify-center font-display font-black text-base">
-                <span className="text-[#E31B23]">A</span>
-              </div>
-              <div>
-                <h1 className="font-display text-xl font-extrabold tracking-tight uppercase text-gray-900 leading-tight">
-                  {profile?.name || "Ary Dian Pratama"}
-                </h1>
-                <p className="font-mono text-xs text-gray-700 tracking-wider uppercase">
-                  {profile?.role || "Website Developer & Software Engineer"}
-                </p>
-              </div>
-            </div>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[11px] text-gray-700 pt-1">
-              <span>{profile?.email || "arydianprtma@gmail.com"}</span>
+      {/* 1. Header / Kop Proposal Resmi (Standard Word Letterhead) */}
+      <div className="border-b-2 border-gray-900 pb-4 mb-6">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h1 className="text-xl font-bold uppercase tracking-tight text-gray-900">
+              {profile?.name || "Ary Dian Pratama"}
+            </h1>
+            <p className="text-xs font-medium text-gray-700 uppercase tracking-wide">
+              {profile?.role || "Website Developer & Software Engineer"}
+            </p>
+            <div className="text-[11px] text-gray-600 mt-1 space-x-2">
+              <span>Email: {profile?.email || "arydianprtma@gmail.com"}</span>
               <span>•</span>
-              <span>https://portfolio.ardp.my.id</span>
+              <span>Web: https://portfolio.ardp.my.id</span>
               <span>•</span>
               <span>Indonesia</span>
             </div>
           </div>
 
-          {/* Document Title & Badge */}
-          <div className="sm:text-right space-y-1">
-            <span className="inline-block bg-[#E31B23] text-white text-[11px] font-mono font-bold px-3 py-1 uppercase tracking-widest">
-              PROJECT PROPOSAL
-            </span>
-            <div className="font-mono text-sm font-bold text-gray-900 pt-1">
-              {proposal.proposalNumber}
+          <div className="text-right">
+            <div className="inline-block bg-gray-900 text-white text-[10px] font-bold px-2.5 py-0.5 uppercase tracking-wider mb-1">
+              PROPOSAL PENAWARAN
             </div>
-            <div className="font-mono text-xs text-gray-700">
+            <div className="text-xs font-bold text-gray-900">
+              No: {proposal.proposalNumber}
+            </div>
+            <div className="text-[11px] text-gray-600">
               Tanggal: {formatDate(proposal.issueDate)}
             </div>
-            <div className="font-mono text-xs text-gray-700">
-              Berlaku Hingga: {formatDate(proposal.validUntil)}
-            </div>
           </div>
         </div>
       </div>
 
-      {/* 2. Client Info & Project Title */}
-      <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 bg-gray-50 border border-gray-200 p-6 rounded-lg mb-8 avoid-break">
-        <div className="sm:col-span-6 space-y-2">
-          <span className="font-mono text-[10px] text-gray-700 uppercase tracking-widest font-semibold block">
-            PROPOSAL DITUJUKAN KEPADA:
-          </span>
-          <h2 className="font-display text-lg font-bold text-gray-900">
-            {proposal.clientName}
-          </h2>
-          {proposal.clientCompany && (
-            <p className="font-medium text-sm text-gray-700">
-              {proposal.clientCompany}
-            </p>
-          )}
-          <div className="font-mono text-xs text-gray-700 space-y-1 pt-1">
-            {proposal.clientEmail && <div>{proposal.clientEmail}</div>}
-            {proposal.clientPhone && <div>{proposal.clientPhone}</div>}
-            {proposal.clientAddress && <div>{proposal.clientAddress}</div>}
-          </div>
-        </div>
-
-        <div className="sm:col-span-6 space-y-2 sm:border-l sm:border-gray-200 sm:pl-6">
-          <span className="font-mono text-[10px] text-[#E31B23] uppercase tracking-widest font-bold block">
-            JUDUL PROYEK:
-          </span>
-          <h3 className="font-display text-lg font-black text-gray-900 leading-snug uppercase">
-            {proposal.title}
-          </h3>
-          <div className="pt-2 flex items-center gap-2 font-mono text-xs text-gray-700">
-            <span className="font-semibold text-gray-900">Status Proposal:</span>
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-gray-200 text-gray-800">
-              {proposal.status}
-            </span>
-          </div>
-        </div>
+      {/* 2. Judul Dokumen Utama */}
+      <div className="text-center my-6">
+        <h2 className="text-base font-bold uppercase tracking-wider text-gray-900 border-b border-gray-300 pb-2 inline-block">
+          PROPOSAL PENGEMBANGAN PERANGKAT LUNAK & SISTEM INFORMASI
+        </h2>
+        <h3 className="text-sm font-semibold uppercase text-gray-800 mt-1">
+          PROYEK: {proposal.title}
+        </h3>
       </div>
 
-      {/* 3. Executive Summary */}
+      {/* 3. Tabel Data Klien & Informasi Proyek (Standard Word Table) */}
+      <div className="mb-6 avoid-break">
+        <table className="w-full text-xs border-collapse border border-gray-400">
+          <tbody>
+            <tr>
+              <td className="w-32 bg-gray-100 font-semibold p-2 border border-gray-400 text-gray-800">
+                Nama Klien
+              </td>
+              <td className="p-2 border border-gray-400 text-gray-900 font-medium">
+                {proposal.clientName}
+              </td>
+              <td className="w-32 bg-gray-100 font-semibold p-2 border border-gray-400 text-gray-800">
+                Nomor Dokumen
+              </td>
+              <td className="p-2 border border-gray-400 text-gray-900 font-mono">
+                {proposal.proposalNumber}
+              </td>
+            </tr>
+            <tr>
+              <td className="bg-gray-100 font-semibold p-2 border border-gray-400 text-gray-800">
+                Instansi / Perusahaan
+              </td>
+              <td className="p-2 border border-gray-400 text-gray-900">
+                {proposal.clientCompany || "-"}
+              </td>
+              <td className="bg-gray-100 font-semibold p-2 border border-gray-400 text-gray-800">
+                Masa Berlaku
+              </td>
+              <td className="p-2 border border-gray-400 text-gray-900">
+                s/d {formatDate(proposal.validUntil)}
+              </td>
+            </tr>
+            <tr>
+              <td className="bg-gray-100 font-semibold p-2 border border-gray-400 text-gray-800">
+                Kontak / Email
+              </td>
+              <td className="p-2 border border-gray-400 text-gray-900">
+                {[proposal.clientPhone, proposal.clientEmail].filter(Boolean).join(" / ") || "-"}
+              </td>
+              <td className="bg-gray-100 font-semibold p-2 border border-gray-400 text-gray-800">
+                Status Proposal
+              </td>
+              <td className="p-2 border border-gray-400 text-gray-900 font-semibold uppercase">
+                {proposal.status}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      {/* 4. Bagian 1: Latar Belakang & Ringkasan Solusi */}
       {proposal.summary && (
-        <div className="mb-8 avoid-break">
-          <div className="flex items-center gap-2 border-b border-gray-200 pb-2 mb-3">
-            <div className="w-2 h-2 rounded-full bg-[#E31B23]" />
-            <h4 className="font-display text-sm font-bold uppercase tracking-wider text-gray-900">
-              01. Ringkasan Eksekutif & Solusi Teknis
-            </h4>
-          </div>
-          <div className="text-sm text-gray-700 leading-relaxed text-justify whitespace-pre-line">
+        <div className="mb-6 avoid-break">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-gray-900 mb-2 border-b border-gray-300 pb-1">
+            1. LATAR BELAKANG & RINGKASAN SOLUSI
+          </h4>
+          <div className="text-xs text-gray-800 leading-relaxed text-justify whitespace-pre-line">
             {proposal.summary}
           </div>
         </div>
       )}
 
-      {/* 4. Scope of Work & Deliverables */}
+      {/* 5. Bagian 2: Ruang Lingkup Pekerjaan & Modul Fitur (Clean Word Table Format) */}
       {proposal.deliverables && proposal.deliverables.length > 0 && (
-        <div className="mb-8 avoid-break">
-          <div className="flex items-center gap-2 border-b border-gray-200 pb-2 mb-4">
-            <div className="w-2 h-2 rounded-full bg-[#E31B23]" />
-            <h4 className="font-display text-sm font-bold uppercase tracking-wider text-gray-900">
-              02. Ruang Lingkup Pekerjaan & Modul Fitur
-            </h4>
-          </div>
-          <div className="space-y-4">
-            {proposal.deliverables.map((d, dIdx) => (
-              <div
-                key={d.id || dIdx}
-                className="border border-gray-200 rounded-lg p-4 bg-gray-50/50"
-              >
-                <h5 className="font-display text-sm font-bold text-gray-900 uppercase">
-                  {d.title}
-                </h5>
-                {d.description && (
-                  <p className="text-xs text-gray-600 mt-1 mb-2.5">
-                    {d.description}
-                  </p>
-                )}
-                {d.features && d.features.length > 0 && (
-                  <ul className="space-y-1.5 font-mono text-xs text-gray-700">
-                    {d.features.map((f, fIdx) => (
-                      <li key={fIdx} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#E31B23] shrink-0 mt-0.5" />
-                        <span>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </div>
+        <div className="mb-6 avoid-break">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-gray-900 mb-2 border-b border-gray-300 pb-1">
+            2. RUANG LINGKUP PEKERJAAN & SPESIFIKASI FITUR
+          </h4>
+          <table className="w-full text-xs border-collapse border border-gray-400">
+            <thead>
+              <tr className="bg-gray-100 text-gray-900 text-center font-bold">
+                <th className="w-10 p-2 border border-gray-400">No</th>
+                <th className="w-64 p-2 border border-gray-400 text-left">Nama Modul / Komponen</th>
+                <th className="p-2 border border-gray-400 text-left">Deskripsi & Rincian Fitur</th>
+              </tr>
+            </thead>
+            <tbody>
+              {proposal.deliverables.map((d, dIdx) => (
+                <tr key={d.id || dIdx} className="align-top">
+                  <td className="p-2 border border-gray-400 text-center font-medium">
+                    {dIdx + 1}
+                  </td>
+                  <td className="p-2 border border-gray-400 font-semibold text-gray-900">
+                    {d.title}
+                  </td>
+                  <td className="p-2 border border-gray-400 text-gray-800 space-y-1">
+                    {d.description && (
+                      <p className="text-gray-700 italic mb-1.5">{d.description}</p>
+                    )}
+                    {d.features && d.features.length > 0 && (
+                      <ul className="list-disc list-outside pl-4 space-y-0.5 text-gray-800">
+                        {d.features.map((f, fIdx) => (
+                          <li key={fIdx}>{f}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 
-      {/* 5. Project Timeline & Milestones */}
+      {/* 6. Bagian 3: Rencana Jadwal Pelaksanaan (Timeline Table) */}
       {proposal.timeline && proposal.timeline.length > 0 && (
-        <div className="mb-8 avoid-break">
-          <div className="flex items-center gap-2 border-b border-gray-200 pb-2 mb-4">
-            <div className="w-2 h-2 rounded-full bg-[#E31B23]" />
-            <h4 className="font-display text-sm font-bold uppercase tracking-wider text-gray-900">
-              03. Rencana Jadwal & Tahapan Pengerjaan
-            </h4>
-          </div>
-          <div className="border border-gray-200 rounded-lg overflow-hidden">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-gray-100 font-mono text-gray-700 uppercase border-b border-gray-200">
-                <tr>
-                  <th className="p-3">Tahap / Fase</th>
-                  <th className="p-3">Estimasi Durasi</th>
-                  <th className="p-3">Aktivitas Utama</th>
+        <div className="mb-6 avoid-break">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-gray-900 mb-2 border-b border-gray-300 pb-1">
+            3. JADWAL & TAHAPAN PELAKSANAAN PROYEK
+          </h4>
+          <table className="w-full text-xs border-collapse border border-gray-400">
+            <thead>
+              <tr className="bg-gray-100 text-gray-900 text-center font-bold">
+                <th className="w-10 p-2 border border-gray-400">No</th>
+                <th className="w-48 p-2 border border-gray-400 text-left">Fase / Tahapan</th>
+                <th className="w-32 p-2 border border-gray-400 text-center">Estimasi Waktu</th>
+                <th className="p-2 border border-gray-400 text-left">Aktivitas & Output</th>
+              </tr>
+            </thead>
+            <tbody>
+              {proposal.timeline.map((m, mIdx) => (
+                <tr key={m.id || mIdx} className="align-top">
+                  <td className="p-2 border border-gray-400 text-center font-medium">
+                    {mIdx + 1}
+                  </td>
+                  <td className="p-2 border border-gray-400 font-semibold text-gray-900">
+                    {m.phase}
+                  </td>
+                  <td className="p-2 border border-gray-400 text-center font-medium text-gray-800">
+                    {m.duration}
+                  </td>
+                  <td className="p-2 border border-gray-400 text-gray-800">
+                    {m.activities}
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 font-mono text-gray-800">
-                {proposal.timeline.map((m, mIdx) => (
-                  <tr key={m.id || mIdx} className="hover:bg-gray-50/50">
-                    <td className="p-3 font-semibold text-gray-900">{m.phase}</td>
-                    <td className="p-3 text-gray-600">{m.duration}</td>
-                    <td className="p-3 font-sans text-xs text-gray-700">{m.activities}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 
-      {/* 6. Investment & Cost Breakdown */}
+      {/* 7. Bagian 4: Rencana Anggaran Biaya (RAB) & Investasi */}
       {proposal.items && proposal.items.length > 0 && (
-        <div className="mb-8 avoid-break">
-          <div className="flex items-center gap-2 border-b border-gray-200 pb-2 mb-4">
-            <div className="w-2 h-2 rounded-full bg-[#E31B23]" />
-            <h4 className="font-display text-sm font-bold uppercase tracking-wider text-gray-900">
-              04. Rincian Estimasi Biaya & Investasi
-            </h4>
-          </div>
-          <div className="border border-gray-200 rounded-lg overflow-hidden mb-4">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-gray-100 font-mono text-gray-700 uppercase border-b border-gray-200">
-                <tr>
-                  <th className="p-3">No</th>
-                  <th className="p-3">Deskripsi Komponen / Layanan</th>
-                  <th className="p-3 text-center">Qty</th>
-                  <th className="p-3 text-right">Biaya Satuan</th>
-                  <th className="p-3 text-right">Total</th>
+        <div className="mb-6 avoid-break">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-gray-900 mb-2 border-b border-gray-300 pb-1">
+            4. RINCIAN ANGGARAN BIAYA (RAB) & INVESTASI
+          </h4>
+          <table className="w-full text-xs border-collapse border border-gray-400">
+            <thead>
+              <tr className="bg-gray-100 text-gray-900 text-center font-bold">
+                <th className="w-10 p-2 border border-gray-400">No</th>
+                <th className="p-2 border border-gray-400 text-left">Komponen Pekerjaan / Layanan</th>
+                <th className="w-16 p-2 border border-gray-400 text-center">Qty</th>
+                <th className="w-32 p-2 border border-gray-400 text-right">Biaya Satuan</th>
+                <th className="w-32 p-2 border border-gray-400 text-right">Total Biaya</th>
+              </tr>
+            </thead>
+            <tbody>
+              {proposal.items.map((item, idx) => (
+                <tr key={item.id || idx}>
+                  <td className="p-2 border border-gray-400 text-center font-medium">
+                    {idx + 1}
+                  </td>
+                  <td className="p-2 border border-gray-400 font-medium text-gray-900">
+                    {item.description}
+                  </td>
+                  <td className="p-2 border border-gray-400 text-center text-gray-800">
+                    {item.quantity}
+                  </td>
+                  <td className="p-2 border border-gray-400 text-right text-gray-800 font-mono">
+                    {formatCurrency(item.rate)}
+                  </td>
+                  <td className="p-2 border border-gray-400 text-right font-semibold text-gray-900 font-mono">
+                    {formatCurrency(item.quantity * item.rate)}
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 font-mono text-gray-800">
-                {proposal.items.map((item, idx) => (
-                  <tr key={item.id || idx}>
-                    <td className="p-3 text-gray-700">{idx + 1}</td>
-                    <td className="p-3 font-sans text-xs font-medium text-gray-900">
-                      {item.description}
-                    </td>
-                    <td className="p-3 text-center text-gray-700">{item.quantity}</td>
-                    <td className="p-3 text-right text-gray-700">
-                      {formatCurrency(item.rate)}
-                    </td>
-                    <td className="p-3 text-right font-semibold text-gray-900">
-                      {formatCurrency(item.quantity * item.rate)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
 
-          {/* Summary Calculation */}
-          <div className="flex justify-end">
-            <div className="w-full sm:w-72 space-y-2 font-mono text-xs bg-gray-50 border border-gray-200 p-4 rounded-lg">
-              <div className="flex justify-between text-gray-700">
-                <span>Subtotal:</span>
-                <span>{formatCurrency(proposal.subtotal)}</span>
-              </div>
-              {proposal.discountAmount ? (
-                <div className="flex justify-between text-emerald-700">
-                  <span>Diskon:</span>
-                  <span>-{formatCurrency(proposal.discountAmount)}</span>
-                </div>
-              ) : null}
-              {proposal.taxPercent ? (
-                <div className="flex justify-between text-gray-700">
-                  <span>Pajak ({proposal.taxPercent}%):</span>
-                  <span>{formatCurrency(proposal.taxAmount || 0)}</span>
-                </div>
-              ) : null}
-              <div className="border-t border-gray-300 pt-2 flex justify-between font-bold text-sm text-gray-900">
-                <span>Total Investasi:</span>
-                <span className="text-[#E31B23]">{formatCurrency(proposal.total)}</span>
-              </div>
+              {/* Baris Subtotal */}
+              <tr className="bg-gray-50 font-semibold">
+                <td colSpan={4} className="p-2 border border-gray-400 text-right">
+                  Subtotal:
+                </td>
+                <td className="p-2 border border-gray-400 text-right font-mono">
+                  {formatCurrency(proposal.subtotal)}
+                </td>
+              </tr>
+
+              {/* Baris Diskon jika ada */}
+              {Boolean(proposal.discountAmount) && (
+                <tr className="bg-gray-50 text-emerald-800 font-semibold">
+                  <td colSpan={4} className="p-2 border border-gray-400 text-right">
+                    Diskon:
+                  </td>
+                  <td className="p-2 border border-gray-400 text-right font-mono">
+                    -{formatCurrency(proposal.discountAmount || 0)}
+                  </td>
+                </tr>
+              )}
+
+              {/* Baris Pajak jika ada */}
+              {Boolean(proposal.taxPercent) && (
+                <tr className="bg-gray-50 font-semibold">
+                  <td colSpan={4} className="p-2 border border-gray-400 text-right">
+                    Pajak ({proposal.taxPercent}%):
+                  </td>
+                  <td className="p-2 border border-gray-400 text-right font-mono">
+                    {formatCurrency(proposal.taxAmount || 0)}
+                  </td>
+                </tr>
+              )}
+
+              {/* Baris Total Akhir */}
+              <tr className="bg-gray-100 font-bold text-gray-900 text-sm">
+                <td colSpan={4} className="p-2.5 border border-gray-400 text-right uppercase">
+                  Total Investasi:
+                </td>
+                <td className="p-2.5 border border-gray-400 text-right font-mono text-gray-900">
+                  {formatCurrency(proposal.total)}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* 8. Bagian 5: Syarat Pembayaran & Ketentuan Kerja Sama (Formal Word Numbered List) */}
+      <div className="mb-8 avoid-break space-y-4">
+        <div>
+          <h4 className="text-xs font-bold uppercase tracking-wider text-gray-900 mb-1.5 border-b border-gray-300 pb-1">
+            5. SKEMA & KETENTUAN PEMBAYARAN
+          </h4>
+          <div className="text-xs text-gray-800 leading-relaxed whitespace-pre-line pl-1">
+            {proposal.paymentTerms ||
+              "1. Pembayaran Uang Muka (DP) sebesar 50% dibayarkan saat kesepakatan proyek / kick-off.\n2. Pembayaran Pelunasan sebesar 50% dibayarkan setelah seluruh modul selesai dan serah terima (Go-Live)."}
+          </div>
+        </div>
+
+        <div>
+          <h4 className="text-xs font-bold uppercase tracking-wider text-gray-900 mb-1.5 border-b border-gray-300 pb-1">
+            6. SYARAT, KETENTUAN & GARANSI PEMELIHARAAN
+          </h4>
+          <div className="text-xs text-gray-800 leading-relaxed whitespace-pre-line pl-1">
+            {proposal.terms ||
+              "1. Hak Cipta & Kepemilikan: Seluruh kode sumber (source code) dan aset menjadi hak milik penuh klien setelah pelunasan pembayaran.\n2. Garansi Pemeliharaan: Pengembang memberikan garansi gratis perbaikan bug dan penyesuaian teknis selama 30 hari kalender pasca peluncuran.\n3. Penambahan Fitur: Permintaan penambahan fitur baru di luar cakupan proposal ini akan didiskusikan dan dihitung terpisah (Change Request)."}
+          </div>
+        </div>
+
+        {proposal.notes && (
+          <div>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-gray-900 mb-1.5 border-b border-gray-300 pb-1">
+              7. CATATAN PENUTUP
+            </h4>
+            <div className="text-xs text-gray-800 leading-relaxed pl-1">
+              {proposal.notes}
             </div>
           </div>
-        </div>
-      )}
-
-      {/* 7. Payment Terms & Conditions */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-gray-200 mb-8 avoid-break">
-        <div className="space-y-2">
-          <div className="flex items-center gap-1.5 font-mono text-xs font-bold text-gray-900 uppercase">
-            <CreditCard className="w-3.5 h-3.5 text-[#E31B23]" />
-            <span>Skema Pembayaran</span>
-          </div>
-          <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-line bg-gray-50 border border-gray-200 p-3 rounded">
-            {proposal.paymentTerms ||
-              "• Uang Muka (DP) 50% saat kesepakatan proyek / kick-off.\n• Pelunasan 50% setelah seluruh fitur selesai dan serah terima (Go-Live)."}
-          </p>
-        </div>
-
-        <div className="space-y-2">
-          <div className="flex items-center gap-1.5 font-mono text-xs font-bold text-gray-900 uppercase">
-            <ShieldCheck className="w-3.5 h-3.5 text-[#E31B23]" />
-            <span>Ketentuan & Garansi</span>
-          </div>
-          <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-line bg-gray-50 border border-gray-200 p-3 rounded">
-            {proposal.terms ||
-              "• Seluruh hak cipta source code dan aset menjadi milik klien.\n• Garansi perbaikan bug / error selama 30 hari pasca serah terima.\n• Permintaan penambahan fitur di luar scope akan didiskusikan terpisah."}
-          </p>
-        </div>
+        )}
       </div>
 
-      {/* 8. Signature Section */}
-      <div className="pt-6 border-t-2 border-gray-200 avoid-break">
-        <div className="grid grid-cols-2 gap-8 text-center font-mono text-xs">
+      {/* 9. Bagian 6: Lembar Pengesahan / Tanda Tangan Resmi (Standard Word Signature Block) */}
+      <div className="pt-4 border-t border-gray-400 avoid-break">
+        <div className="text-center font-bold text-xs uppercase tracking-wider text-gray-900 mb-6">
+          LEMBAR KESEPAKATAN & PENGESAHAN PROPOSAL
+        </div>
+
+        <div className="grid grid-cols-2 gap-8 text-center text-xs">
           <div className="space-y-16">
-            <span className="text-gray-700 uppercase block font-semibold">Diajukan Oleh (Pengembang):</span>
-            <div className="space-y-1">
-              <div className="font-bold text-gray-900 underline text-sm">
-                {profile?.name || "Ary Dian Pratama"}
+            <div className="text-gray-800 font-semibold">
+              Diajukan Oleh (Pihak Pengembang):
+            </div>
+            <div className="space-y-0.5">
+              <div className="font-bold text-gray-900 text-sm">
+                <u>{profile?.name || "Ary Dian Pratama"}</u>
               </div>
               <div className="text-[11px] text-gray-700">Full-Stack Web Developer</div>
             </div>
           </div>
 
           <div className="space-y-16">
-            <span className="text-gray-700 uppercase block font-semibold">Disetujui Oleh (Klien):</span>
-            <div className="space-y-1">
-              <div className="font-bold text-gray-900 underline text-sm">
-                ( {proposal.clientName} )
+            <div className="text-gray-800 font-semibold">
+              Disetujui Oleh (Pihak Klien):
+            </div>
+            <div className="space-y-0.5">
+              <div className="font-bold text-gray-900 text-sm">
+                <u>( {proposal.clientName} )</u>
               </div>
-              <div className="text-[11px] text-gray-700">{proposal.clientCompany || "Klien / Pemilik Proyek"}</div>
+              <div className="text-[11px] text-gray-700">
+                {proposal.clientCompany || "Klien / Pemilik Proyek"}
+              </div>
             </div>
           </div>
         </div>

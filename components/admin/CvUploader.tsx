@@ -11,6 +11,7 @@ import {
   Download,
   ExternalLink,
   CheckCircle,
+  Sparkles,
 } from "lucide-react";
 
 interface CvUploaderProps {
@@ -94,14 +95,23 @@ export const CvUploader: React.FC<CvUploaderProps> = ({
         <label className="text-[#A0A0A0] uppercase tracking-wider block font-medium">
           Curriculum Vitae (PDF Resume)
         </label>
-        <button
-          type="button"
-          onClick={() => setManualInput(!manualInput)}
-          className="text-[11px] text-[#777777] hover:text-[#E31B23] transition-colors inline-flex items-center gap-1"
-        >
-          <Link2 className="w-3 h-3" />
-          <span>{manualInput ? "Upload PDF File" : "Enter PDF Link"}</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <a
+            href="/admin/cv"
+            className="text-[11px] text-[#E31B23] hover:text-red-400 font-bold transition-colors inline-flex items-center gap-1"
+          >
+            <Sparkles className="w-3 h-3" />
+            <span>✨ Open AI CV Builder</span>
+          </a>
+          <button
+            type="button"
+            onClick={() => setManualInput(!manualInput)}
+            className="text-[11px] text-[#777777] hover:text-[#E31B23] transition-colors inline-flex items-center gap-1"
+          >
+            <Link2 className="w-3 h-3" />
+            <span>{manualInput ? "Upload PDF File" : "Enter PDF Link"}</span>
+          </button>
+        </div>
       </div>
 
       {error && (

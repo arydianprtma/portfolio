@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import { prisma } from "@/lib/prisma";
 import {
   Project,
@@ -9,6 +11,10 @@ import {
   Invoice,
   InvoiceItem,
   InvoiceStatus,
+  CvData,
+  CvExperience,
+  CvEducation,
+  CvProjectItem,
   StoreData,
   AdminCredentials,
   AnalyticsData,
@@ -994,5 +1000,151 @@ export async function deleteInvoice(id: string): Promise<boolean> {
     return false;
   }
 }
+
+// -------------------------------------------------------------
+// CV / RESUME GENERATOR STORAGE
+// -------------------------------------------------------------
+const CV_DATA_PATH = path.join(process.cwd(), "data", "cv.json");
+
+export async function generateDefaultCvFromProfile(): Promise<CvData> {
+  const profile = await getProfile();
+  const skills = await getSkills();
+  const projects = await getProjects(true);
+
+  const topProjects: CvProjectItem[] = projects.slice(0, 4).map((p, idx) => ({
+    id: `proj-${idx + 1}`,
+    title: p.title,
+    role: p.role || "Lead Developer",
+    technologies: p.technologies || [],
+    link: p.demo || p.github || "",
+    description: p.overview || p.description,
+    highlights:
+      p.features && p.features.length > 0
+        ? p.features.slice(0, 3)
+        : [
+            `Engineered high-performance web architecture using ${p.technologies.slice(0, 3).join(", ")}.`,
+            `Integrated responsive UI, secure data handling, and optimized rendering workflows.`,
+          ],
+  }));
+
+  const skillCats = skills.map((s) => ({
+    category: s.title,
+    skills: s.skills,
+  }));
+
+  return {
+    template: "modern",
+    language: "en",
+    fullName: profile.name || "Ary Dian Pratama",
+    jobTitle: profile.role || "Full Stack Developer & Systems Engineer",
+    email: profile.email || "arydianprtma@gmail.com",
+    phone: "+62 812-3456-7890",
+    location: profile.location || "Kediri, East Java, Indonesia",
+    website: "https://portfolio.ardp.my.id",
+    github: profile.socials?.github || "https://github.com/arydianprtma",
+    linkedin: profile.socials?.linkedin || "https://linkedin.com/in/arydianprtma",
+    summary:
+      Array.isArray(profile.bio) && profile.bio.length > 0
+        ? profile.bio.join(" ")
+        : "High-performance software engineer with extensive experience in Next.js, TypeScript, C#, and scalable web architectures. Passionate about crafting immersive, ultra-responsive digital products and robust full-stack systems.",
+    experiences: [
+      {
+        id: "exp-1",
+        role: "Full Stack Developer & Technical Lead",
+        company: "Digital Craftsman / Freelance",
+        location: "Remote / Indonesia",
+        startDate: "2023",
+        endDate: "Present",
+        current: true,
+        highlights: [
+          "Architected and deployed responsive enterprise web applications using Next.js 16, TypeScript, Tailwind CSS, and PostgreSQL.",
+          "Implemented robust authentication, role-based access control (RBAC), and automated invoice telemetry.",
+          "Optimized front-end rendering pipelines achieving 99+ Lighthouse performance scores and sub-second page loads.",
+        ],
+      },
+      {
+        id: "exp-2",
+        role: "Systems & Game Modding Developer",
+        company: "Independent Software Projects",
+        location: "Kediri, Indonesia",
+        startDate: "2022",
+        endDate: "2024",
+        current: false,
+        highlights: [
+          "Engineered native C# memory hooks, real-time telemetry simulation, and custom UI components for complex systems.",
+          "Built high-throughput multi-terminal Point of Sale (POS) and inventory synchronization engines.",
+        ],
+      },
+    ],
+    education: [
+      {
+        id: "edu-1",
+        degree: "Bachelor of Computer Science / Informatics",
+        institution: "Universitas / Institute of Technology",
+        location: "East Java, Indonesia",
+        year: "2020 - 2024",
+        details: "Focus on Software Engineering, Distributed Systems, and Web Technologies.",
+      },
+    ],
+    projects: topProjects,
+    skillCategories:
+      skillCats.length > 0
+        ? skillCats
+        : [
+            {
+              category: "Frontend & UI",
+              skills: ["Next.js", "React", "TypeScript", "Tailwind CSS", "GSAP", "Framer Motion"],
+            },
+            {
+              category: "Backend & Database",
+              skills: ["Node.js", "PostgreSQL", "Prisma ORM", "RESTful APIs", "Supabase"],
+            },
+            {
+              category: "Languages & Tools",
+              skills: ["TypeScript", "JavaScript", "C#", "Git", "Docker", "Linux"],
+            },
+          ],
+    languages: ["Indonesian (Native)", "English (Professional Working Proficiency)"],
+    certifications: [
+      "Full-Stack Web Development Certification",
+      "Modern Next.js & React Architecture Specialist",
+    ],
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+export async function getCvData(): Promise<CvData> {
+  try {
+    if (fs.existsSync(CV_DATA_PATH)) {
+      const content = fs.readFileSync(CV_DATA_PATH, "utf-8");
+      const parsed = JSON.parse(content);
+      if (parsed && parsed.fullName) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.error("Error reading cv.json:", e);
+  }
+  return generateDefaultCvFromProfile();
+}
+
+export async function saveCvData(data: CvData): Promise<CvData> {
+  try {
+    const dir = path.dirname(CV_DATA_PATH);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    const updated: CvData = {
+      ...data,
+      updatedAt: new Date().toISOString(),
+    };
+    fs.writeFileSync(CV_DATA_PATH, JSON.stringify(updated, null, 2), "utf-8");
+    return updated;
+  } catch (e) {
+    console.error("Error saving cv.json:", e);
+    throw e;
+  }
+}
+
 
 

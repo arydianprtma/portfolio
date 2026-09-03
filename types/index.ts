@@ -150,6 +150,57 @@ export interface Invoice {
   updatedAt?: string;
 }
 
+export interface CvExperience {
+  id: string;
+  role: string;
+  company: string;
+  location?: string;
+  startDate: string;
+  endDate: string;
+  current?: boolean;
+  highlights: string[];
+}
+
+export interface CvEducation {
+  id: string;
+  degree: string;
+  institution: string;
+  location?: string;
+  year: string;
+  details?: string;
+}
+
+export interface CvProjectItem {
+  id: string;
+  title: string;
+  role: string;
+  technologies: string[];
+  link?: string;
+  description: string;
+  highlights: string[];
+}
+
+export interface CvData {
+  template: "modern" | "ats" | "executive";
+  language: "en" | "id";
+  fullName: string;
+  jobTitle: string;
+  email: string;
+  phone?: string;
+  location: string;
+  website?: string;
+  github?: string;
+  linkedin?: string;
+  summary: string;
+  experiences: CvExperience[];
+  education: CvEducation[];
+  projects: CvProjectItem[];
+  skillCategories: { category: string; skills: string[] }[];
+  languages?: string[];
+  certifications?: string[];
+  updatedAt?: string;
+}
+
 export interface StoreData {
   projects: Project[];
   posts?: Post[];
@@ -158,6 +209,7 @@ export interface StoreData {
   skills: SkillCategory[];
   experiments: Experiment[];
   invoices?: Invoice[];
+  cv?: CvData;
   admin?: AdminCredentials;
   analytics?: AnalyticsData;
 }

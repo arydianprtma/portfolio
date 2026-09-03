@@ -49,6 +49,7 @@ export const AdminSidebar: React.FC = () => {
     { label: "ARTICLES", href: "/admin/posts", icon: BookOpen },
     { label: "EXPERIMENTS", href: "/admin/experiments", icon: FlaskConical },
     { label: "PROFILE & SKILLS", href: "/admin/profile", icon: UserCircle },
+    { label: "CV BUILDER", href: "/admin/cv", icon: BookOpen },
     { label: "SETTINGS", href: "/admin/settings", icon: Settings },
   ];
 

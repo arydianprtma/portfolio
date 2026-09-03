@@ -299,3 +299,56 @@ export async function chatWithGemini({
   );
 }
 
+export async function enhanceCvSectionWithAi(params: {
+  type: "summary" | "experience_highlight" | "project_highlight";
+  currentText: string;
+  roleContext?: string;
+  language: "en" | "id";
+}): Promise<string> {
+  const isId = params.language === "id";
+  const prompt = `You are an elite Tech Career Consultant and ATS Resume Specialist.
+Refine, polish, and elevate the following ${params.type} for a Software Engineer / Full Stack Developer resume.
+
+Context Role: ${params.roleContext || "Full Stack Developer & Systems Engineer"}
+Target Language: ${isId ? "Bahasa Indonesia (Formal, Professional, High Impact)" : "English (High-impact, Action-oriented, Concise)"}
+
+Input Content:
+"${params.currentText}"
+
+Requirements:
+- Make it punchy, professional, and result-driven with strong action verbs.
+- Maintain technical accuracy (mention modern web architecture, clean code, reliability).
+- Output ONLY the refined plain text directly without markdown wrappers or conversational filler.`;
+
+  const apiKey = getApiKey();
+  for (const modelName of ACTIVE_MODELS) {
+    try {
+      const restRes = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature: 0.2,
+              maxOutputTokens: 500,
+            },
+          }),
+        }
+      );
+
+      const restData = await restRes.json();
+      if (restData.error) throw new Error(restData.error.message);
+
+      const rawText = restData.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      let cleaned = rawText.trim().replace(/^["']|["']$/g, "").trim();
+      if (cleaned) return cleaned;
+    } catch (err: any) {
+      console.warn(`Model ${modelName} failed, trying next fallback:`, err.message);
+    }
+  }
+
+  throw new Error("Failed to enhance text with Gemini AI.");
+}
+

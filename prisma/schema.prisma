@@ -169,3 +169,33 @@ model Invoice {
   updatedAt      DateTime @updatedAt
 }
 
+model Proposal {
+  id             String   @id @default(cuid())
+  proposalNumber String   @unique
+  title          String
+  clientName     String
+  clientCompany  String?
+  clientEmail    String?
+  clientPhone    String?
+  clientAddress  String?  @db.Text
+  status         String   @default("DRAFT") // DRAFT, SENT, ACCEPTED, REJECTED, REVISED
+  issueDate      DateTime @default(now())
+  validUntil     DateTime
+  currency       String   @default("IDR") // IDR, USD
+  summary        String?  @db.Text // Executive Summary / Latar Belakang & Solusi
+  deliverables   String   @db.Text // Stored as JSON string of ProposalDeliverable[]
+  timeline       String   @db.Text // Stored as JSON string of ProposalMilestone[]
+  items          String   @db.Text // Stored as JSON string of ProposalItem[]
+  subtotal       Float    @default(0)
+  taxPercent     Float?   @default(0)
+  taxAmount      Float?   @default(0)
+  discountAmount Float?   @default(0)
+  total          Float    @default(0)
+  paymentTerms   String?  @db.Text // Skema Pembayaran (DP 50%, Pelunasan 50%, dll)
+  terms          String?  @db.Text // Ketentuan Kerja Sama, Hak Cipta, & Garansi
+  notes          String?  @db.Text // Catatan Penutup
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+

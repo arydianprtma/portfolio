@@ -421,3 +421,84 @@ Requirements:
   return await callGemini(prompt);
 }
 
+export async function generateProposalWithAi(input: {
+  projectTitle: string;
+  clientName: string;
+  clientCompany?: string;
+  briefDescription: string;
+  estimatedBudget?: number;
+  language?: "id" | "en";
+}): Promise<{
+  title: string;
+  summary: string;
+  deliverables: { title: string; description: string; features: string[] }[];
+  timeline: { phase: string; duration: string; activities: string }[];
+  items: { description: string; quantity: number; rate: number }[];
+  paymentTerms: string;
+  terms: string;
+  notes: string;
+}> {
+  const isId = input.language !== "en";
+  const prompt = `You are a Principal Software Engineering Consultant and Senior Tech Solution Architect.
+Create a comprehensive, highly persuasive, professional, and structured Technical & Financial Project Proposal for a client.
+
+Client Information:
+- Client Name: "${input.clientName}"
+- Client Organization/Company: "${input.clientCompany || "-"}"
+- Project Title: "${input.projectTitle}"
+- Project Brief / Client Requirements: "${input.briefDescription}"
+- Estimated Budget/Reference: ${input.estimatedBudget ? `Rp ${input.estimatedBudget}` : "Standard market rate"}
+- Language: ${isId ? "Bahasa Indonesia (Formal, Profesional, Berbobot, & Meyakinkan)" : "English (Executive, Professional, & High-Impact)"}
+
+Requirements:
+1. **summary**: Executive summary (2-3 paragraphs) detailing the background problem, project objectives, and proposed modern technological solution (e.g. Laravel 11, Next.js, PostgreSQL, Tailwind CSS).
+2. **deliverables**: Array of 3-5 structured work modules/scopes. Each module MUST have:
+   - title: e.g. "Modul 1: Desain UI/UX & Prototipe Interaktif", "Modul 2: Pengembangan Sistem Backend & Database", etc.
+   - description: 1-2 concise sentences explaining the module.
+   - features: 3-5 specific feature bullet points.
+3. **timeline**: Array of 3-4 sequential project phases/milestones:
+   - phase: e.g. "Fase 1: Analisis Kebutuhan & Desain UI/UX"
+   - duration: e.g. "3-5 Hari Kerja"
+   - activities: summary of activities.
+4. **items**: Array of 3-5 itemized cost line items with realistic estimated rates matching the estimated budget:
+   - description: e.g. "Desain UI/UX & Responsive Layout", "Pengembangan Fitur & Integrasi Database", "Setup Server, Deployment & QA Testing"
+   - quantity: 1
+   - rate: number (in IDR or integer matching the total scope)
+5. **paymentTerms**: Clear payment scheme (e.g. "DP 50% saat kick-off proyek, 50% setelah serah terima / Go-Live").
+6. **terms**: Standard professional terms & conditions (Hak Cipta source code milik klien, Garansi perbaikan bug 30 hari pasca rilis, dll).
+7. **notes**: Polite and warm closing notes.
+
+Return ONLY valid JSON matching this exact structure:
+{
+  "title": "string",
+  "summary": "string",
+  "deliverables": [
+    {
+      "title": "string",
+      "description": "string",
+      "features": ["string"]
+    }
+  ],
+  "timeline": [
+    {
+      "phase": "string",
+      "duration": "string",
+      "activities": "string"
+    }
+  ],
+  "items": [
+    {
+      "description": "string",
+      "quantity": 1,
+      "rate": 1000000
+    }
+  ],
+  "paymentTerms": "string",
+  "terms": "string",
+  "notes": "string"
+}`;
+
+  return await callGemini(prompt);
+}
+
+

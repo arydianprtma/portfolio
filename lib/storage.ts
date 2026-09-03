@@ -11,6 +11,11 @@ import {
   Invoice,
   InvoiceItem,
   InvoiceStatus,
+  Proposal,
+  ProposalDeliverable,
+  ProposalMilestone,
+  ProposalItem,
+  ProposalStatus,
   CvData,
   CvExperience,
   CvEducation,
@@ -1012,6 +1017,160 @@ export async function deleteInvoice(id: string): Promise<boolean> {
     return true;
   } catch (err) {
     console.error("Error deleting invoice:", err);
+    return false;
+  }
+}
+
+// -------------------------------------------------------------
+// PROPOSAL GENERATOR STORAGE & DATABASE
+// -------------------------------------------------------------
+
+function mapPrismaProposal(p: any): Proposal {
+  return {
+    id: p.id,
+    proposalNumber: p.proposalNumber,
+    title: p.title,
+    clientName: p.clientName,
+    clientCompany: p.clientCompany || undefined,
+    clientEmail: p.clientEmail || undefined,
+    clientPhone: p.clientPhone || undefined,
+    clientAddress: p.clientAddress || undefined,
+    status: (p.status as ProposalStatus) || "DRAFT",
+    issueDate: p.issueDate ? new Date(p.issueDate).toISOString() : new Date().toISOString(),
+    validUntil: p.validUntil ? new Date(p.validUntil).toISOString() : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+    currency: p.currency || "IDR",
+    summary: p.summary || undefined,
+    deliverables: parseJson<ProposalDeliverable[]>(p.deliverables, []),
+    timeline: parseJson<ProposalMilestone[]>(p.timeline, []),
+    items: parseJson<ProposalItem[]>(p.items, []),
+    subtotal: Number(p.subtotal) || 0,
+    taxPercent: Number(p.taxPercent) || 0,
+    taxAmount: Number(p.taxAmount) || 0,
+    discountAmount: Number(p.discountAmount) || 0,
+    total: Number(p.total) || 0,
+    paymentTerms: p.paymentTerms || undefined,
+    terms: p.terms || undefined,
+    notes: p.notes || undefined,
+    createdAt: p.createdAt ? new Date(p.createdAt).toISOString() : undefined,
+    updatedAt: p.updatedAt ? new Date(p.updatedAt).toISOString() : undefined,
+  };
+}
+
+export async function getProposals(): Promise<Proposal[]> {
+  try {
+    const proposals = await prisma.proposal.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    return proposals.map(mapPrismaProposal);
+  } catch (err) {
+    console.error("Error getting proposals:", err);
+    return [];
+  }
+}
+
+export async function getProposalById(id: string): Promise<Proposal | null> {
+  try {
+    const proposal = await prisma.proposal.findFirst({
+      where: {
+        OR: [{ id }, { proposalNumber: id }],
+      },
+    });
+    return proposal ? mapPrismaProposal(proposal) : null;
+  } catch (err) {
+    console.error("Error getting proposal by id:", err);
+    return null;
+  }
+}
+
+export async function saveProposal(
+  data: Partial<Proposal> & { title: string; clientName: string }
+): Promise<Proposal> {
+  // Generate proposal number if missing
+  let proposalNumber = data.proposalNumber?.trim();
+  if (!proposalNumber) {
+    const count = await prisma.proposal.count();
+    const year = new Date().getFullYear();
+    proposalNumber = `PROP-${year}-${String(count + 1).padStart(3, "0")}`;
+  }
+
+  // Calculate totals
+  const items = data.items || [];
+  const subtotal = items.reduce(
+    (sum, item) => sum + (Number(item.quantity) || 0) * (Number(item.rate) || 0),
+    0
+  );
+  const taxPercent = Number(data.taxPercent) || 0;
+  const taxAmount = (subtotal * taxPercent) / 100;
+  const discountAmount = Number(data.discountAmount) || 0;
+  const total = Math.max(0, subtotal + taxAmount - discountAmount);
+
+  const payload = {
+    proposalNumber,
+    title: data.title.trim(),
+    clientName: data.clientName.trim(),
+    clientCompany: data.clientCompany?.trim() || null,
+    clientEmail: data.clientEmail?.trim() || null,
+    clientPhone: data.clientPhone?.trim() || null,
+    clientAddress: data.clientAddress?.trim() || null,
+    status: data.status || "DRAFT",
+    issueDate: data.issueDate ? new Date(data.issueDate) : new Date(),
+    validUntil: data.validUntil
+      ? new Date(data.validUntil)
+      : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+    currency: data.currency || "IDR",
+    summary: data.summary?.trim() || null,
+    deliverables: JSON.stringify(data.deliverables || []),
+    timeline: JSON.stringify(data.timeline || []),
+    items: JSON.stringify(items),
+    subtotal,
+    taxPercent,
+    taxAmount,
+    discountAmount,
+    total,
+    paymentTerms: data.paymentTerms?.trim() || null,
+    terms: data.terms?.trim() || null,
+    notes: data.notes?.trim() || null,
+  };
+
+  let record;
+  if (data.id) {
+    record = await prisma.proposal.update({
+      where: { id: data.id },
+      data: payload,
+    });
+  } else {
+    record = await prisma.proposal.create({
+      data: payload,
+    });
+  }
+
+  return mapPrismaProposal(record);
+}
+
+export async function updateProposalStatus(
+  id: string,
+  status: ProposalStatus
+): Promise<Proposal | null> {
+  try {
+    const record = await prisma.proposal.update({
+      where: { id },
+      data: { status },
+    });
+    return mapPrismaProposal(record);
+  } catch (err) {
+    console.error("Error updating proposal status:", err);
+    return null;
+  }
+}
+
+export async function deleteProposal(id: string): Promise<boolean> {
+  try {
+    await prisma.proposal.delete({
+      where: { id },
+    });
+    return true;
+  } catch (err) {
+    console.error("Error deleting proposal:", err);
     return false;
   }
 }

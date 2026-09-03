@@ -150,6 +150,59 @@ export interface Invoice {
   updatedAt?: string;
 }
 
+export type ProposalStatus = "DRAFT" | "SENT" | "ACCEPTED" | "REJECTED" | "REVISED";
+
+export interface ProposalDeliverable {
+  id: string;
+  title: string;
+  description: string;
+  features: string[];
+}
+
+export interface ProposalMilestone {
+  id: string;
+  phase: string;
+  duration: string;
+  activities: string;
+}
+
+export interface ProposalItem {
+  id: string;
+  description: string;
+  quantity: number;
+  rate: number;
+  amount: number;
+}
+
+export interface Proposal {
+  id: string;
+  proposalNumber: string;
+  title: string;
+  clientName: string;
+  clientCompany?: string;
+  clientEmail?: string;
+  clientPhone?: string;
+  clientAddress?: string;
+  status: ProposalStatus;
+  issueDate: string;
+  validUntil: string;
+  currency: string;
+  summary?: string;
+  deliverables: ProposalDeliverable[];
+  timeline: ProposalMilestone[];
+  items: ProposalItem[];
+  subtotal: number;
+  taxPercent?: number;
+  taxAmount?: number;
+  discountAmount?: number;
+  total: number;
+  paymentTerms?: string;
+  terms?: string;
+  notes?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface CvSkillCategory {
   category: string;
   skills: string[];
@@ -237,6 +290,7 @@ export interface StoreData {
   skills: SkillCategory[];
   experiments: Experiment[];
   invoices?: Invoice[];
+  proposals?: Proposal[];
   cv?: CvData;
   admin?: AdminCredentials;
   analytics?: AnalyticsData;

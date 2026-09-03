@@ -221,7 +221,7 @@ export const CvBuilderClient: React.FC<CvBuilderClientProps> = ({ initialCv }) =
         "Merekayasa sistem web terdistribusi dengan performa tinggi dan kueri data optimal.",
       ],
     };
-    setCv({ ...cv, experiences: [newExp, ...cv.experiences] });
+    setCv({ ...cv, experiences: [...cv.experiences, newExp] });
   };
 
   // Add Education Item

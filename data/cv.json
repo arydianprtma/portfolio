@@ -9,7 +9,7 @@
   "website": "",
   "github": "",
   "linkedin": "",
-  "summary": "I am a Website Developer focused on engineering high-performance web applications and crafting immersive, interactive digital experiences. I prioritize access speed, system stability, and clean code architecture in every solution I build. By combining modern web technologies with precision interface animations, I design responsive, fully optimized digital products that deliver seamless and engaging visual experiences for every user.",
+  "summary": "Saya merupakan lulusan S1 Informatika Universitas Amikom Purwokerto yang memiliki ketertarikan pada pengembangan aplikasi web. Berfokus sebagai Full-Stack Web Developer, saya terbiasa mempelajari dan menerapkan berbagai teknologi frontend dan backend dalam membangun aplikasi. Memiliki perhatian pada struktur kode, stabilitas sistem, kemudahan pemeliharaan, dan performa aplikasi. Terbiasa mengeksplorasi berbagai kebutuhan pengembangan aplikasi, mulai dari antarmuka pengguna, API, autentikasi, database, hingga sistem backend. Saya juga memiliki ketertarikan untuk terus mempelajari teknologi dan pendekatan baru dalam membangun solusi digital yang efektif dan mudah digunakan.",
   "showProjects": true,
   "showExperience": true,
   "showSkills": true,
@@ -25,9 +25,9 @@
       "endDate": "April - Juni",
       "current": true,
       "highlights": [
-        "Architected and deployed responsive enterprise web applications using Next.js 16, TypeScript, Tailwind CSS, and PostgreSQL.",
-        "Implemented robust authentication, role-based access control (RBAC), and automated invoice telemetry.",
-        "Optimized front-end rendering pipelines achieving 99+ Lighthouse performance scores and sub-second page loads."
+        "Architected and deployed production-ready web applications using Next.js 16, TypeScript, Tailwind CSS, and PostgreSQL.",
+        "Implemented secure authentication, role-based access control (RBAC), and automated invoice tracking workflows.",
+        "Optimized frontend rendering and delivery, achieving 99+ Lighthouse Performance scores and sub-second page load times."
       ],
       "enabled": true
     }
@@ -148,9 +148,16 @@
     "English (Professional Working Proficiency)"
   ],
   "certifications": [
-    "Full-Stack Web Development Certification",
-    "Modern Next.js & React Architecture Specialist"
+    "RH 124: Red Hat Enterprise Linux System Administration I",
+    "Red Hat Academy |  Amikom Purwokerto ",
+    "University | August 2024",
+    "Certificate No. 0124-002360",
+    "",
+    "Applied Microsoft Office",
+    "Trust Training Partners | Universitas Amikom Purwokerto | September 2024",
+    "Certificate No. 24ML00590",
+    ""
   ],
-  "updatedAt": "2026-09-03T07:26:25.212Z",
+  "updatedAt": "2026-09-03T08:00:05.337Z",
   "summaryId": "Pengembang Web Full-Stack berpengalaman dalam merancang, mengembangkan, dan mengoptimalkan aplikasi web berskala tinggi dengan performa optimal. Mengintegrasikan arsitektur kode bersih dan teknologi modern untuk menghadirkan produk digital yang cepat, andal, serta berpusat pada pengguna."
 }

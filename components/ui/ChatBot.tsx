@@ -24,17 +24,17 @@ interface Message {
 }
 
 const QUICK_PROMPTS_ID = [
-  "Bisa minta file CV / Resume Ary?",
-  "Apa tech stack utama yang dikuasai Ary?",
-  "Ceritakan proyek-proyek unggulan Ary",
-  "Bagaimana cara menghubungi atau hire Ary?",
+  "Bisa minta file CV / Resume Ary (PDF)?",
+  "Saya punya kode proposal proyek, bisa bantu jelaskan?",
+  "Apa tech stack & layanan pembuatan web Ary?",
+  "Bagaimana cara konsultasi atau hire Ary?",
 ];
 
 const QUICK_PROMPTS_EN = [
-  "Can I get / download Ary's CV or Resume?",
-  "What is Ary's core tech stack?",
-  "Tell me about Ary's featured projects",
-  "How can I contact or hire Ary for a project?",
+  "Can I download Ary's official CV / Resume (PDF)?",
+  "I have a project proposal code, can you explain it?",
+  "What is Ary's core tech stack & web services?",
+  "How can I consult or hire Ary for a project?",
 ];
 
 export const ChatBot: React.FC = () => {
@@ -182,8 +182,8 @@ export const ChatBot: React.FC = () => {
 
   const initialWelcome =
     language === "id"
-      ? "Halo! Saya adalah **ARDP AI Assistant**, asisten digital resmi Ary Dian Pratama. Ada yang ingin Anda tanyakan tentang proyek, keahlian, atau kerja sama software development?"
-      : "Hello! I am the **ARDP AI Assistant**, Ary Dian Pratama's official digital assistant. What would you like to know about Ary's projects, tech stack, or engineering services?";
+      ? "Halo! Saya adalah **ARDP AI Assistant** (didukung Google Gemini 3.5 Flash), asisten digital resmi Ary Dian Pratama.\n\nSaya dapat membantu Anda:\n• 📄 **Unduh Berkas Resmi CV / Resume (PDF)**\n• 📑 **Analisis & Cek Detail Proposal Proyek** *(cukup masukkan kode atau link proposal Anda)*\n• 🛠️ **Konsultasi Estimasi Proyek & Rekomendasi Tech Stack**\n• 🚀 **Menjelaskan Studi Kasus & Arsitektur Sistem**\n\nAda yang ingin Anda tanyakan atau diskusikan hari ini?"
+      : "Hello! I am the **ARDP AI Assistant** (powered by Google Gemini 3.5 Flash), Ary Dian Pratama's official digital twin.\n\nI can assist you with:\n• 📄 **Download Official CV / Resume (PDF)**\n• 📑 **Inspect & Explain Project Proposals** *(simply provide your proposal code or link)*\n• 🛠️ **Tech Stack & Project Scoping Consultations**\n• 🚀 **Explore System Architecture & Case Studies**\n\nHow may I help you today?";
 
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -429,8 +429,8 @@ export const ChatBot: React.FC = () => {
               >
                 <p className="font-mono text-xs text-[var(--foreground)] leading-relaxed">
                   {language === "id"
-                    ? "Hai! Mau tanya-tanya langsung seputar proyek atau skill Ary? Klik di sini!"
-                    : "Hi! Want to ask anything about Ary's projects or skills? Click here!"}
+                    ? "Punya kode proposal proyek, butuh file CV (PDF), atau ingin konsultasi estimasi tech stack? Tanyakan langsung pada saya!"
+                    : "Have a proposal code, need Ary's CV (PDF), or want to consult on project tech stack? Ask me directly!"}
                 </p>
                 <span className="font-mono text-[10px] text-[#E31B23] font-bold mt-1.5 inline-flex items-center gap-1 hover:underline">
                   <span>{language === "id" ? "Buka Chat" : "Open Chat"}</span>
@@ -527,6 +527,15 @@ export const ChatBot: React.FC = () => {
                 <X className="w-4 h-4" />
               </button>
             </div>
+          </div>
+
+          {/* Dynamic Capability Badges Bar */}
+          <div className="bg-[var(--surface-hover)] border-b border-[var(--border)] px-4 py-2 flex items-center justify-between text-[10px] font-mono text-[var(--muted)]">
+            <span className="flex items-center gap-1.5">
+              <Sparkles className="w-3 h-3 text-[#E31B23] shrink-0" />
+              <span className="truncate">CV PDF • Cek Proposal • Konsultasi Proyek</span>
+            </span>
+            <span className="text-[9px] text-emerald-500 font-bold uppercase shrink-0">Ready</span>
           </div>
 
           <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs font-mono">
